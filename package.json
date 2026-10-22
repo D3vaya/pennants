@@ -16,6 +16,14 @@
   ],
   "license": "MIT",
   "author": "d3vaya",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d3vaya/pennants.git"
+  },
+  "homepage": "https://github.com/d3vaya/pennants#readme",
+  "bugs": {
+    "url": "https://github.com/d3vaya/pennants/issues"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css",
