@@ -1,7 +1,8 @@
-// Flag chunks are loaded on demand via dynamic import(); exclude them so budgets measure the eager code.
+// Flag art chunks and the per-set loader maps load on demand via import(); exclude them so these
+// budgets measure eager code only. Real-bundler totals (incl. lazy maps) are gated by bundle:budget.
 const excludeFlagChunks = (config) => ({
   ...config,
-  external: [...[config.external ?? []].flat(), /\/flags\//],
+  external: [...[config.external ?? []].flat(), /\/(flags|art)\/|\/load-(1x1|4x3)-/],
 });
 
 export default [
@@ -32,8 +33,8 @@ export default [
     modifyRolldownConfig: excludeFlagChunks,
   },
   {
-    name: 'one flag (ar)',
-    path: 'dist/flags/ar.js',
+    name: 'one flag art (1x1/ar)',
+    path: 'dist/art/1x1/ar.js',
     rolldown: false,
     limit: '1.5 kB',
   },
