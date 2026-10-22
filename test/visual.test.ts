@@ -13,7 +13,7 @@ import sharp from 'sharp';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadFlagArtwork } from '../scripts/lib/flags.ts';
 import { buildPennant, PENNANT } from '../scripts/lib/pennant.ts';
-import { composeFlag, SHAPE_ART, SHAPE_SIZE, type FlagArt } from '../src/shapes.ts';
+import { BORDER_WIDTH, composeFlag, SHAPE_ART, SHAPE_SIZE, type FlagArt } from '../src/shapes.ts';
 import { renderPng } from '../scripts/lib/png.ts';
 
 const SAMPLE = ['ar', 'us', 'jp', 'br', 'bz', 'de', 'gb', 'ca'];
@@ -159,7 +159,7 @@ describe('frame checks catch regressions', () => {
 /**
  * rect / square / circle have no hand-made references, so their frames are
  * checked against the expected geometry: a white flag must come out white
- * inside, 30 % darker (255 * 0.7 ≈ 179) in the 3px border, transparent
+ * inside, 30 % darker (255 * 0.7 ≈ 179) in the 2px border, transparent
  * outside the outline, and real flags must fill exactly the outline's
  * silhouette.
  */
@@ -181,24 +181,27 @@ describe.each(['rect', 'square', 'circle'] as const)('%s frame', (shape) => {
       .toBuffer();
   });
 
-  it('darkens a 3px inner border by 30% and leaves the inside untouched', () => {
+  it('darkens the 2px inner border by 30% and leaves the inside untouched', () => {
     const midY = height >> 1;
     const midX = width >> 1;
+    const inner = BORDER_WIDTH[shape] - 1; // last pixel inside the border
     for (const [x, y] of [
       [1, midY],
-      [2, midY],
-      [width - 2, midY],
-      [midX, 1],
-      [midX, height - 2],
+      [inner, midY],
+      [width - 1 - inner, midY],
+      [midX, inner],
+      [midX, height - 1 - inner],
     ] as const) {
       const [r, g, b, a] = at(x, y);
       expect(a).toBe(255);
       for (const c of [r, g, b]) expect(Math.abs((c as number) - 179)).toBeLessThanOrEqual(4);
     }
+    const clear = BORDER_WIDTH[shape] + 1; // first pixel clear of anti-aliasing
     for (const [x, y] of [
-      [4, midY],
+      [clear, midY],
       [midX, midY],
-      [width - 5, midY],
+      [width - 1 - clear, midY],
+      [midX, clear],
     ] as const) {
       expect(at(x, y)).toEqual([255, 255, 255, 255]);
     }

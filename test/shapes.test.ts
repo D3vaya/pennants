@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   BAR_CLASS,
+  BORDER_WIDTH,
   circlePath,
   composeFlag,
   isShape,
@@ -27,6 +28,10 @@ describe('shape tables', () => {
       expect(SHAPE_ART[shape]).toMatch(/^(1x1|4x3)$/);
       expect(SHAPE_PATH[shape]).toMatch(/^M.*Z$/);
     }
+  });
+
+  it('scales the border: 3px on the pennant, 2px on the smaller shapes', () => {
+    expect(BORDER_WIDTH).toEqual({ pennant: 3, rect: 2, square: 2, circle: 2 });
   });
 
   it('uses 4:3 art only for rect', () => {
@@ -57,7 +62,7 @@ describe('paths', () => {
 });
 
 describe('composeFlag', () => {
-  it.each(SHAPES)('%s: sized canvas, clipped art, 3px 30%% border', (shape) => {
+  it.each(SHAPES)('%s: sized canvas, clipped art, 30%% inner border', (shape) => {
     const { width, height } = SHAPE_SIZE[shape];
     const svg = composeFlag(art, shape);
     expect(svg).toMatch(
@@ -67,7 +72,7 @@ describe('composeFlag', () => {
     );
     expect(svg).toContain(`<clipPath id="pn-ar-clip"><path d="${SHAPE_PATH[shape]}"/></clipPath>`);
     expect(svg).toContain(
-      `<path d="${SHAPE_PATH[shape]}" fill="none" stroke="#000" stroke-opacity="0.3" stroke-width="6"/>`,
+      `<path d="${SHAPE_PATH[shape]}" fill="none" stroke="#000" stroke-opacity="0.3" stroke-width="${BORDER_WIDTH[shape] * 2}"/>`,
     );
     expect(svg).toContain('preserveAspectRatio="xMidYMid slice"><path id="pn-ar-a"');
     expect(svg).not.toContain('style=');

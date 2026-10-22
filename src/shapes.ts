@@ -5,7 +5,8 @@
  * both produce byte-identical markup.
  *
  * Every shape shares one design language: the artwork is clipped to the
- * shape's outline and a 3 px inner border darkens it by 30 %. The pennant
+ * shape's outline and an inner border (see {@link BORDER_WIDTH}) darkens it
+ * by 30 %. The pennant
  * adds its golden hanging bar and V point.
  *
  * Pure string functions without dependencies: safe on the server and tiny.
@@ -59,8 +60,19 @@ export const PENNANT = {
   barDark: '#8e713f',
 } as const;
 
-/** Inner border shared by all shapes: 3 px of black at 30 % opacity. */
-export const BORDER = { width: 3, opacity: 0.3 } as const;
+/** Inner border shared by all shapes: black at 30 % opacity. */
+export const BORDER = { opacity: 0.3 } as const;
+
+/**
+ * Inner border width per shape, scaled to the canvas so the family has the
+ * same visual weight: 3 px on the 66 px pennant, 2 px on the 48–64 px shapes.
+ */
+export const BORDER_WIDTH: Readonly<Record<PennantShape, number>> = {
+  pennant: 3,
+  rect: 2,
+  square: 2,
+  circle: 2,
+};
 
 /** Corner radius of `rect` and `square`. */
 export const CORNER_RADIUS = 2;
@@ -154,7 +166,7 @@ export function composeFlag(
     `<defs><clipPath id="${clipId}"><path d="${outline}"/></clipPath>${bar[0]}</defs>` +
     `<g clip-path="url(#${clipId})">` +
     `<svg x="0" y="${top}" width="${width}" height="${height - top}" viewBox="${viewBox}" preserveAspectRatio="xMidYMid slice">${content}</svg>` +
-    `<path d="${outline}" fill="none" stroke="#000" stroke-opacity="${BORDER.opacity}" stroke-width="${BORDER.width * 2}"/>` +
+    `<path d="${outline}" fill="none" stroke="#000" stroke-opacity="${BORDER.opacity}" stroke-width="${BORDER_WIDTH[shape] * 2}"/>` +
     `</g>${bar[1]}</svg>`
   );
 }
