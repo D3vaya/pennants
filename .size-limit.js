@@ -22,20 +22,20 @@ export default [
     name: 'react',
     path: 'dist/react/index.js',
     ignore: ['react', 'react-dom', 'react/jsx-runtime'],
-    limit: '5 kB',
+    limit: '3.5 kB',
     modifyRolldownConfig: excludeFlagChunks,
   },
   {
     name: 'element',
     path: 'dist/element/index.js',
-    limit: '5 kB',
+    limit: '3.5 kB',
     modifyRolldownConfig: excludeFlagChunks,
   },
   {
     name: 'one flag (ar)',
     path: 'dist/flags/ar.js',
     rolldown: false,
-    limit: '2 kB',
+    limit: '1.5 kB',
   },
   {
     name: 'css',

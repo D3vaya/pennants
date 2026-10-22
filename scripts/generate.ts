@@ -4,7 +4,7 @@
  *   svg/<code>.svg              standalone SVG files
  *   src/generated/flags/*.ts    one ES module per flag
  *   src/generated/codes.ts      code list + PennantCode type
- *   src/generated/names.ts      English names
+ *   src/generated/names.ts      English names of non-ISO flags
  *   src/generated/loaders.ts    lazy import map
  *   css/pennants(.min).css      flag-icons-like stylesheet
  *   png/{1x,2x}/<code>.png      66x72 and 132x144 rasters

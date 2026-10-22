@@ -1,6 +1,6 @@
 import { codes, isoCodes, type PennantCode } from './generated/codes.ts';
 import { loaders } from './generated/loaders.ts';
-import { englishNames } from './generated/names.ts';
+import { extraNames } from './generated/names.ts';
 
 export { codes, isoCodes, type PennantCode };
 
@@ -43,23 +43,30 @@ export async function loadPennant(code: string): Promise<string> {
   return module.default;
 }
 
+/** Region name from the runtime's CLDR data, or `undefined` if unavailable. */
+function displayName(region: string, locale: string): string | undefined {
+  try {
+    return new Intl.DisplayNames([locale], { type: 'region', fallback: 'none' }).of(region);
+  } catch {
+    // Invalid locale or Intl.DisplayNames missing in this runtime.
+    return undefined;
+  }
+}
+
 /**
- * Localised flag name. Uses `Intl.DisplayNames` for ISO 3166-1 regions and
- * falls back to the bundled English name (e.g. for `eu`, `gb-eng`).
+ * Localised flag name. ISO 3166-1 names come from `Intl.DisplayNames` (no
+ * bundled data); other flags (`gb-eng`, `asean`, ...) use a small bundled
+ * English table. Falls back to the uppercase code as a last resort.
  */
 export function getPennantName(code: string, locale = 'en'): string {
   const normalized = toPennantCode(code);
-  if (normalized.length === 2) {
-    try {
-      const name = new Intl.DisplayNames([locale], { type: 'region', fallback: 'none' }).of(
-        normalized.toUpperCase(),
-      );
-      if (name) return name;
-    } catch {
-      // Invalid locale or region unsupported by this runtime: use bundled name.
-    }
-  }
-  return englishNames[normalized];
+  const region = normalized.toUpperCase();
+  const isRegion = normalized.length === 2;
+  return (
+    (isRegion ? (displayName(region, locale) ?? displayName(region, 'en')) : undefined) ??
+    extraNames[normalized] ??
+    region
+  );
 }
 
 /** Encodes SVG markup as a `data:` URI usable in `<img src>` or CSS `url()`. */

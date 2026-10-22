@@ -19,8 +19,10 @@ describe('generated modules', () => {
     expect(src).toContain('export const isoCodes: readonly PennantCode[] = ["ar"];');
   });
 
-  it('namesModule escapes names', () => {
-    expect(namesModule(sources)).toContain('"gb-eng": "England\'s \\"flag\\"",');
+  it('namesModule bundles only non-ISO names, escaped', () => {
+    const src = namesModule(sources);
+    expect(src).toContain('"gb-eng": "England\'s \\"flag\\"",');
+    expect(src).not.toContain('"ar"');
   });
 
   it('loadersModule creates one dynamic import per flag', () => {

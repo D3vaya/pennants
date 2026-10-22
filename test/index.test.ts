@@ -61,8 +61,23 @@ describe('getPennantName', () => {
     expect(getPennantName('gb-eng', 'es')).toBe('England');
   });
 
-  it('falls back when the locale is invalid', () => {
+  it('falls back to English when the locale is invalid', () => {
     expect(getPennantName('ar', '!!')).toBe('Argentina');
+  });
+
+  it('uses the bundled name for two-letter codes unknown to Intl', () => {
+    expect(getPennantName('xx')).toBe('Unknown');
+  });
+
+  it('falls back to the uppercase code when Intl is unavailable', () => {
+    const original = Object.getOwnPropertyDescriptor(Intl, 'DisplayNames') ?? {};
+    Object.defineProperty(Intl, 'DisplayNames', { ...original, value: undefined });
+    try {
+      expect(getPennantName('ar')).toBe('AR');
+      expect(getPennantName('gb-eng')).toBe('England');
+    } finally {
+      Object.defineProperty(Intl, 'DisplayNames', original);
+    }
   });
 });
 

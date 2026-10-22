@@ -32,13 +32,21 @@ export async function readFlagSources(root = flagIconsRoot()): Promise<FlagSourc
     .sort((a, b) => a.code.localeCompare(b.code));
 }
 
+/**
+ * Integer coordinates in the 512-unit source artwork. The body is drawn at
+ * 66 px, so rounding moves edges by < 0.07 px (< 0.3 px at 4x) while roughly
+ * halving the size of detailed coats of arms.
+ */
+export const FLOAT_PRECISION = 0;
+
 /** Minifies a source flag and namespaces its ids so it can be embedded safely. */
 export function optimizeFlag(code: string, svg: string): FlagArtwork {
   assertValidCode(code);
   const { data } = optimize(svg, {
     multipass: true,
+    floatPrecision: FLOAT_PRECISION,
     plugins: [
-      'preset-default',
+      { name: 'preset-default', params: { floatPrecision: FLOAT_PRECISION } },
       'removeDimensions',
       'removeXlink',
       { name: 'prefixIds', params: { prefix: `pn-${code}`, delim: '-' } },

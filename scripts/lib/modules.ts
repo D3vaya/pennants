@@ -21,12 +21,18 @@ export function codesModule(sources: readonly FlagSource[]): string {
   );
 }
 
+/**
+ * English names of non-ISO flags only (`eu`, `gb-eng`, ...). ISO 3166-1 names
+ * come from `Intl.DisplayNames` at runtime, so they cost nothing in bundles.
+ */
 export function namesModule(sources: readonly FlagSource[]): string {
-  const entries = sources.map((s) => `  ${JSON.stringify(s.code)}: ${JSON.stringify(s.name)},`);
+  const entries = sources
+    .filter((s) => !s.iso)
+    .map((s) => `  ${JSON.stringify(s.code)}: ${JSON.stringify(s.name)},`);
   return (
     BANNER +
     `import type { PennantCode } from './codes.ts';\n\n` +
-    `export const englishNames: Record<PennantCode, string> = {\n${entries.join('\n')}\n};\n`
+    `export const extraNames: Partial<Record<PennantCode, string>> = {\n${entries.join('\n')}\n};\n`
   );
 }
 

@@ -40,6 +40,14 @@ describe('optimizeFlag', () => {
     expect(art.content).not.toMatch(/id="a"/);
   });
 
+  it('rounds coordinates to integers to keep detailed flags small', () => {
+    const art = optimizeFlag(
+      'xx',
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path d="M1.26 2.74L7.51 8.49"/></svg>',
+    );
+    expect(art.content).toBe('<path d="m1 3 7 5"/>');
+  });
+
   it('rejects invalid codes', () => {
     expect(() => optimizeFlag('../ar', '<svg viewBox="0 0 1 1"/>')).toThrow();
   });
