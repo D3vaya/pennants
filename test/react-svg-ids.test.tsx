@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { prepareSvg, svgCode, toIdPrefix } from '../src/internal/svg.ts';
+import { prepareSvg, svgCode, scopedIdPrefix } from '../src/internal/svg.ts';
 
 const ar = readFileSync(new URL('../svg/ar.svg', import.meta.url), 'utf8');
+const us = readFileSync(new URL('../svg/us.svg', import.meta.url), 'utf8');
 const gbEng = readFileSync(new URL('../svg/gb-eng.svg', import.meta.url), 'utf8');
 
 const ids = (svg: string): string[] => [...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1] ?? '');
@@ -18,13 +19,21 @@ describe('svgCode', () => {
   });
 });
 
-describe('toIdPrefix', () => {
+describe('scopedIdPrefix', () => {
   it.each([
-    [':r1:', 'pnr1-'],
-    ['«r1»', 'pnr1-'],
-    ['_R_abc_', 'pn_R_abc_-'],
-    ['a b"c', 'pnabc-'],
-  ])('sanitises %j to %j', (token, prefix) => expect(toIdPrefix(token)).toBe(prefix));
+    [':r1:', 'ar', 'pnr1-ar-'],
+    ['«r1»', 'ar', 'pnr1-ar-'],
+    ['_R_abc_', 'gb-eng', 'pn_R_abc_-gb-eng-'],
+    ['a-b "c', 'us', 'pnabc-us-'],
+  ])('scopes %j + %j to %j', (scope, code, prefix) =>
+    expect(scopedIdPrefix(scope, code)).toBe(prefix),
+  );
+
+  it('keeps the code, so equal scopes of different flags never collide', () => {
+    expect(scopedIdPrefix(':r0:', 'ar')).not.toBe(scopedIdPrefix(':r0:', 'us'));
+    // Dashes are stripped from the scope, so the first "-" always ends it.
+    expect(scopedIdPrefix('a-gb', 'eng')).not.toBe(scopedIdPrefix('a', 'gb-eng'));
+  });
 });
 
 describe('prepareSvg', () => {
@@ -52,23 +61,30 @@ describe('prepareSvg', () => {
   });
 
   it('rewrites every id and reference of the namespace', () => {
-    const out = prepareSvg(ar, 'pnr7-');
+    const out = prepareSvg(ar, ':r7:');
     expect(out).not.toContain('pn-ar-');
-    expect(ids(out)).toEqual(ids(ar).map((id) => id.replace('pn-ar-', 'pnr7-')));
-    expect(out).toContain('clip-path="url(#pnr7-clip)"');
-    expect(out).toContain('href="#pnr7-a"');
-    expect(out).toContain('url(#pnr7-bar)');
+    expect(ids(out)).toEqual(ids(ar).map((id) => id.replace('pn-ar-', 'pnr7-ar-')));
+    expect(out).toContain('clip-path="url(#pnr7-ar-clip)"');
+    expect(out).toContain('href="#pnr7-ar-a"');
+    expect(out).toContain('url(#pnr7-ar-bar)');
   });
 
   it('handles multi-part codes', () => {
-    const out = prepareSvg(gbEng, 'pnx-');
+    const out = prepareSvg(gbEng, 'x');
     expect(out).not.toContain('pn-gb-eng-');
-    expect(out).toContain('id="pnx-clip"');
+    expect(out).toContain('id="pnx-gb-eng-clip"');
   });
 
-  it('gives distinct prefixes disjoint id sets', () => {
-    const a = new Set(ids(prepareSvg(ar, toIdPrefix(':r1:'))));
-    const b = ids(prepareSvg(ar, toIdPrefix(':r2:')));
+  it('gives distinct scopes disjoint id sets', () => {
+    const a = new Set(ids(prepareSvg(ar, ':r1:')));
+    const b = ids(prepareSvg(ar, ':r2:'));
+    expect(b.some((id) => a.has(id))).toBe(false);
+  });
+
+  it('gives different flags with the same scope disjoint id sets', () => {
+    const a = new Set(ids(prepareSvg(ar, ':r0:')));
+    const b = ids(prepareSvg(us, ':r0:'));
+    expect(b.length).toBeGreaterThan(0);
     expect(b.some((id) => a.has(id))).toBe(false);
   });
 

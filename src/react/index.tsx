@@ -18,7 +18,7 @@ import {
   type PennantCode,
 } from '../index.ts';
 import { loadMarkup, peekMarkup, subscribeMarkup } from '../internal/cache.ts';
-import { prepareSvg, svgCode, toIdPrefix } from '../internal/svg.ts';
+import { prepareSvg, svgCode } from '../internal/svg.ts';
 
 /** Pennant height: a number of CSS pixels or any CSS length (`"2rem"`). */
 export type PennantSize = number | string;
@@ -41,8 +41,11 @@ interface SharedProps {
 }
 
 export interface PennantProps extends BaseAttributes, SharedProps {
-  /** Flag code (any casing). Unknown codes throw a `RangeError`, like `toPennantCode`. */
-  code: PennantCode;
+  /**
+   * Flag code, lowercase or uppercase (`"ar"`, `"AR"`, `"gb-eng"`, `"GB-ENG"`);
+   * normalised with `toPennantCode`. Unknown codes throw a `RangeError`.
+   */
+  code: PennantCode | Uppercase<PennantCode>;
   /** `inline` (default) lazy-loads and inlines the SVG; `img` renders an `<img>` tag. */
   mode?: 'inline' | 'img';
   /** `img` mode: base URL where the package's `svg/` folder is served (see `pennantUrl`). */
@@ -94,7 +97,7 @@ export const Pennant = forwardRef<HTMLElement, PennantProps>(function Pennant(
   const normalized = toPennantCode(code);
   const label = title ?? getPennantName(normalized, locale);
   const inline = mode !== 'img';
-  const idPrefix = toIdPrefix(useId());
+  const scope = useId();
 
   const svg = useSyncExternalStore(
     subscribeMarkup,
@@ -108,7 +111,7 @@ export const Pennant = forwardRef<HTMLElement, PennantProps>(function Pennant(
     if (inline) loadMarkup(normalized).catch(noop);
   }, [inline, normalized]);
 
-  const html = useMemo(() => (svg === undefined ? '' : prepareSvg(svg, idPrefix)), [svg, idPrefix]);
+  const html = useMemo(() => (svg === undefined ? '' : prepareSvg(svg, scope)), [svg, scope]);
 
   if (!inline) {
     const intrinsic = typeof size === 'number' ? size / PENNANT_HEIGHT : 1;
@@ -147,11 +150,11 @@ export const PennantSvg = forwardRef<HTMLSpanElement, PennantSvgProps>(function 
   { svg, size, title, locale, style, ...rest },
   ref,
 ) {
-  const idPrefix = toIdPrefix(useId());
+  const scope = useId();
   const code = svgCode(svg);
   const known = code !== undefined && isPennantCode(code) ? code : undefined;
   const label = title ?? (known === undefined ? '' : getPennantName(known, locale));
-  const html = useMemo(() => prepareSvg(svg, idPrefix), [svg, idPrefix]);
+  const html = useMemo(() => prepareSvg(svg, scope), [svg, scope]);
   return (
     <span
       ref={ref}

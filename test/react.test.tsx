@@ -77,7 +77,7 @@ describe('<Pennant> inline mode', () => {
   });
 
   it('accepts any casing and localises the default name', () => {
-    render(<Pennant code={'AR' as 'ar'} locale="es" data-testid="p" />);
+    render(<Pennant code="AR" locale="es" data-testid="p" />);
     expect(screen.getByTestId('p').getAttribute('aria-label')).toBe('Argentina');
     expect(screen.getByTestId('p').dataset.pennant).toBe('ar');
     cleanup();
@@ -216,6 +216,13 @@ describe('<Pennant> inline mode', () => {
     await waitFor(() => expect(screen.getByTestId('p').querySelector('svg')).not.toBeNull());
   });
 
+  it('accepts uppercase multi-part codes', () => {
+    render(<Pennant code="GB-ENG" mode="img" />);
+    expect(screen.getByRole('img', { name: 'England' }).getAttribute('src')).toBe(
+      core.pennantUrl('gb-eng'),
+    );
+  });
+
   it('throws a RangeError for unknown codes', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
     expect(() => render(<Pennant code={'zz' as 'ar'} />)).toThrow(RangeError);
@@ -245,7 +252,7 @@ describe('<Pennant mode="img">', () => {
     render(<Pennant code="ar" mode="img" />);
     const img = screen.getByRole('img', { name: 'Argentina' }) as HTMLImageElement;
     expect(img.tagName).toBe('IMG');
-    expect(img.getAttribute('src')).toBe('https://cdn.jsdelivr.net/npm/pennants/svg/ar.svg');
+    expect(img.getAttribute('src')).toBe(core.pennantUrl('ar'));
     expect(img.getAttribute('alt')).toBe('Argentina');
     expect(img.getAttribute('loading')).toBe('lazy');
     expect(img.getAttribute('decoding')).toBe('async');

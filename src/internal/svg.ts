@@ -16,31 +16,35 @@ export function svgCode(svg: string): string | undefined {
 }
 
 /**
- * Turns an arbitrary unique token (e.g. React's `useId()` output such as
- * `:r1:` or `«r1»`) into a valid id prefix. The result never starts with
- * `pn-`, so it cannot collide with a pennant's own namespace.
+ * Id prefix for one inlined instance: `pn<scope>-<code>-`. The scope (e.g.
+ * React's `useId()` output such as `:r1:`, `«r1»` or `_R_1_`) is reduced to
+ * `[A-Za-z0-9_]`, so the first `-` always separates scope from code and two
+ * different (scope, code) pairs can never yield the same prefix. Keeping the
+ * code matters because separate React roots (islands, several
+ * `renderToString` calls) restart the `useId` sequence.
  */
-export function toIdPrefix(token: string): string {
-  return `pn${token.replace(/[^\w-]/g, '')}-`;
+export function scopedIdPrefix(scope: string, code: string): string {
+  return `pn${scope.replace(/\W/g, '')}-${code}-`;
 }
 
 /**
  * Prepares pennant markup for inlining:
  * - the root `<svg>` fills its container (`width/height="100%"`) and is
  *   hidden from assistive tech (the wrapper carries the accessible name);
- * - when `idPrefix` is given, the `pn-<code>-` id namespace (ids and every
- *   `url(#…)` / `href="#…"` reference) is rewritten to `idPrefix`, so two
- *   identical pennants on one page never share ids.
+ * - when `scope` is given, the `pn-<code>-` id namespace (ids and every
+ *   `url(#…)` / `href="#…"` reference) is rewritten to
+ *   `scopedIdPrefix(scope, code)`, so two identical pennants on one page
+ *   never share ids.
  */
-export function prepareSvg(svg: string, idPrefix?: string): string {
+export function prepareSvg(svg: string, scope?: string): string {
   let out = svg.replace(
     ROOT_TAG,
     (_match, lead: string, attrs: string) =>
       `${lead}<svg${attrs.replace(SIZE_ATTRS, '')} width="100%" height="100%" aria-hidden="true" focusable="false">`,
   );
-  const code = idPrefix === undefined ? undefined : svgCode(svg);
-  if (code !== undefined && idPrefix !== undefined) {
-    out = out.split(`pn-${code}-`).join(idPrefix);
+  const code = scope === undefined ? undefined : svgCode(svg);
+  if (code !== undefined && scope !== undefined) {
+    out = out.split(`pn-${code}-`).join(scopedIdPrefix(scope, code));
   }
   return out;
 }
