@@ -16,7 +16,11 @@ La regla está en `pennants/css/theme.css` (unos 110 bytes) y ya viene incluida 
 import 'pennants/css/theme.css';
 ```
 
-Después define las propiedades en cualquier elemento ancestro. Sin esa hoja de estilos, la
+`<pennant-flag>` lleva la misma regla en su propia hoja de estilos del shadow root (exportada
+como `PENNANT_ELEMENT_CSS`), así que no necesita ningún import.
+
+Después define las propiedades en cualquier elemento ancestro; las custom properties se heredan
+dentro del shadow root del elemento. Sin esa hoja de estilos, la
 barra mantiene el dorado por defecto, así que nada se rompe. Como es una regla de CSS normal,
 funciona con una Content Security Policy estricta (`style-src 'self'`).
 
@@ -38,15 +42,13 @@ funciona con una Content Security Policy estricta (`style-src 'self'`).
 
 ## Qué formatos se pueden personalizar
 
-El SVG inline en tu documento, con la hoja de estilos del tema cargada: módulos por bandera
-insertados en el DOM, `loadPennant`, `<Pennant>` (modo inline) y `<PennantSvg>`.
+- El SVG inline en tu documento, con la hoja de estilos del tema cargada: módulos por bandera
+  insertados en el DOM, `loadPennant`, `fetchPennant`, `<Pennant>` (modos inline y fetch) y
+  `<PennantSvg>`.
+- `<pennant-flag>`, sin ninguna hoja de estilos extra.
 
-No se pueden personalizar:
-
-- los archivos cargados como imagen (`<img>`, PNG, fondos CSS, el sprite usado con `<use>`
-  desde otro archivo): son documentos aislados y siempre usan el dorado por defecto;
-- `<pennant-flag>` en la versión 0.1.0: la regla del tema de tu documento no llega dentro de su
-  shadow root.
+Los archivos cargados como imagen (`<img>`, PNG, fondos CSS, el sprite usado con `<use>` desde
+otro archivo) son documentos aislados y siempre usan el dorado por defecto.
 
 ## Tamaño
 

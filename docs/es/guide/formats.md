@@ -13,10 +13,10 @@ de la librería sola.
 | Sprite SVG `<use href>`       | 0 de JS; un archivo de 1,2 MB (≈260 kB con brotli)         | Sí                                         | No                | No, un archivo para todas | Un archivo, caché HTTP             |
 | Módulo JS `pennants/flags/ar` | ≈1,0 kB por bandera                                        | Sí                                         | Sí                | No, va en el bundle       | Parte de tu bundle                 |
 | `loadPennant(código)`         | ≈5,1 kB (mapa de carga) + un chunk por bandera mostrada    | Cliente (asíncrono)                        | Sí                | Sí                        | Chunks, caché HTTP                 |
-| Modo fetch ⁴                  | <Size probe="fetch" /> + una petición por bandera mostrada | Cliente (asíncrono)                        | Sí                | Sí                        | Caché HTTP / CDN                   |
+| Modo fetch ³                  | <Size probe="fetch" /> + una petición por bandera mostrada | Cliente (asíncrono)                        | Sí                | Sí                        | Caché HTTP / CDN                   |
 | React `<Pennant>`             | ≈6,9 kB + un chunk por bandera mostrada                    | Caja en el servidor, bandera en el cliente | Sí                | Sí                        | Chunks                             |
 | React `<PennantSvg svg={ar}>` | ≈8,0 kB con `ar` incluida ²                                | Sí, con el SVG completo                    | Sí                | No                        | Parte de tu bundle                 |
-| `<pennant-flag>`              | ≈7,0 kB + un chunk por bandera mostrada                    | Solo cliente                               | No ³              | Sí                        | Chunks                             |
+| `<pennant-flag>`              | ≈7,0 kB + un chunk por bandera mostrada                    | Solo cliente                               | Sí                | Sí                        | Chunks                             |
 
 ¹ Con `assetsInlineLimit` configurado como en las preguntas frecuentes, o 1,9 kB con
 `pennants/css/cdn` (banderas desde jsDelivr); ver
@@ -26,10 +26,7 @@ banderas y el CSS pesa 52 kB con gzip. Next.js y Angular generan archivos por de
 ² En un Server Component de Next.js, `<PennantSvg>` no agrega JavaScript al cliente: se
 renderiza a HTML.
 
-³ La regla del tema no llega dentro del shadow root del elemento en la versión 0.1.0. Mira
-[Personalización](./theming).
-
-⁴ `fetchPennant` de `pennants/fetch`, `<Pennant mode="fetch">` o `<pennant-flag>` con el
+³ `fetchPennant` de `pennants/fetch`, `<Pennant mode="fetch">` o `<pennant-flag>` con el
 atributo `base`. Con CSP, necesita `connect-src` para ese dominio.
 
 ## Decisiones rápidas
@@ -43,7 +40,7 @@ atributo `base`. Con CSP, necesita `connect-src` para ese dominio.
   `loadPennant`, `<Pennant>` o `<pennant-flag>`. Para el bundle más chico, usa el modo fetch:
   sin mapa de carga, las banderas se descargan como archivos SVG desde el CDN o tu servidor.
 - **Quieres cambiar el color de la barra:** SVG inline (módulos, `loadPennant`, React) con
-  `pennants/css/theme.css`. Mira [Personalización](./theming).
+  `pennants/css/theme.css`, o `<pennant-flag>`. Mira [Personalización](./theming).
 - **Email, apps nativas, imágenes Open Graph:** PNG.
 - **Cientos de banderas a la vez en una página:** el sprite o las clases CSS.
 

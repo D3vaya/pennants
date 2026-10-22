@@ -16,7 +16,11 @@ modules, `loadPennant`, React), import it once:
 import 'pennants/css/theme.css';
 ```
 
-Then set the properties on any ancestor. Without the stylesheet the stops keep their default
+`<pennant-flag>` carries the same rule in its own shadow stylesheet (exported as
+`PENNANT_ELEMENT_CSS`), so it needs no import.
+
+Then set the properties on any ancestor; custom properties inherit into the element's shadow
+root. Without the stylesheet the stops keep their default
 gold, so nothing breaks. Because theming is a plain stylesheet rule, it works under a strict
 Content Security Policy (`style-src 'self'`).
 
@@ -38,15 +42,13 @@ Content Security Policy (`style-src 'self'`).
 
 ## Which formats can be themed
 
-Inline SVG in your document, with the theme stylesheet loaded: per-flag modules inserted into
-the DOM, `loadPennant`, `<Pennant>` (inline mode) and `<PennantSvg>`.
+- Inline SVG in your document, with the theme stylesheet loaded: per-flag modules inserted into
+  the DOM, `loadPennant`, `fetchPennant`, `<Pennant>` (inline and fetch modes) and
+  `<PennantSvg>`.
+- `<pennant-flag>`, with no extra stylesheet.
 
-Not themeable:
-
-- files loaded as images (`<img>`, PNG, CSS backgrounds, the sprite through `<use>` from another
-  file): they are isolated documents and always use the default gold;
-- `<pennant-flag>` in 0.1.0: the theme rule in your document does not reach inside its shadow
-  root.
+Files loaded as images (`<img>`, PNG, CSS backgrounds, the sprite through `<use>` from another
+file) are isolated documents and always use the default gold.
 
 ## Size
 

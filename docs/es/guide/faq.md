@@ -15,20 +15,19 @@ degradado.
 
 ## Content Security Policy {#csp}
 
-| Formato                            | Necesita                                                                         |
-| ---------------------------------- | -------------------------------------------------------------------------------- |
-| `<img>`, PNG, clases CSS           | `img-src` con tu dominio o `https://cdn.jsdelivr.net`                            |
-| `toDataUri(svg)` en `<img>` o CSS  | `img-src data:`                                                                  |
-| Chunks diferidos                   | `script-src` de tu propio origen (son parte de tu bundle)                        |
-| Modo fetch                         | `connect-src` para el dominio de `base` (por defecto `https://cdn.jsdelivr.net`) |
-| SVG inline, React, personalización | nada extra: funciona con `style-src 'self'`                                      |
-| `<pennant-flag>`                   | ver abajo                                                                        |
+| Formato                                           | Necesita                                                                         |
+| ------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `<img>`, PNG, clases CSS                          | `img-src` con tu dominio o `https://cdn.jsdelivr.net`                            |
+| `toDataUri(svg)` en `<img>` o CSS                 | `img-src data:`                                                                  |
+| Chunks diferidos                                  | `script-src` de tu propio origen (son parte de tu bundle)                        |
+| Modo fetch                                        | `connect-src` para el dominio de `base` (por defecto `https://cdn.jsdelivr.net`) |
+| SVG inline, React, Web Component, personalización | nada extra: funciona con `style-src 'self'`                                      |
 
-El SVG inline no usa estilos inline: los colores de la barra son atributos de presentación y la
-personalización es una regla de `pennants/css/theme.css`. En la versión 0.1.0, `<pennant-flag>`
-agrega un elemento `<style>` a su shadow root, que una política `style-src` sin
-`'unsafe-inline'` bloquea; el elemento pierde entonces su tamaño. Con una política de estilos
-estricta, usa React, SVG inline, los formatos de imagen o las clases CSS.
+Ningún formato necesita `'unsafe-inline'`. El SVG inline no usa estilos inline: los colores de
+la barra son atributos de presentación y la personalización es una regla de
+`pennants/css/theme.css`. `<pennant-flag>` aplica sus estilos con una hoja de estilos
+construible (`adoptedStyleSheets`), que la CSP no restringe; solo en navegadores sin esa API
+recurre a un elemento `<style>`.
 
 ## SSR e hidratación {#ssr-e-hidratacion}
 

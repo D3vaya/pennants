@@ -15,7 +15,9 @@ const presets = [
 ];
 const light = ref(defaults.light);
 const dark = ref(defaults.dark);
-const flags = ['ar', 'uy', 'gr', 'fi', 'ca', 'kr'];
+const flags = ['ar', 'uy', 'gr', 'fi'];
+// Two more through the Web Component: its shadow stylesheet maps the same properties.
+const elementFlags = ['ca', 'kr'];
 // Inline SVG, themed by the .pn-bar-l/.pn-bar-d rule from the site's pennants CSS.
 const markup = ref<string[]>([]);
 onMounted(async () => {
@@ -37,6 +39,7 @@ function apply(preset: { light: string; dark: string }) {
   <div class="playground">
     <div class="flags" :style="{ '--pennant-bar-light': light, '--pennant-bar-dark': dark }">
       <span v-for="(svg, i) in markup" :key="flags[i]" class="flag" v-html="svg" />
+      <pennant-flag v-for="code in elementFlags" :key="code" :code="code" size="72" />
     </div>
     <div class="controls">
       <label>{{ t.light }} <input v-model="light" type="color" /></label>
