@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as fetchEntry from '../src/fetch.ts';
-import ar from '../src/generated/flags/ar.ts';
-import { codes, fetchPennant as fromRoot, loadPennant, pennantUrl } from '../src/index.ts';
+import { readFileSync } from 'node:fs';
+import art from '../src/generated/art/1x1/ar.ts';
+import { SHAPES, codes, fetchPennant as fromRoot, pennantUrl, renderFlag } from '../src/index.ts';
 import { clearFetchCache, fetchPennant } from '../src/internal/fetch.ts';
 
+const ar = renderFlag(art);
 const respond = (body: string, status = 200): Response => new Response(body, { status });
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -76,14 +78,22 @@ describe('fetchPennant', () => {
     await expect(fetchPennant('ar')).rejects.toThrow(TypeError);
   });
 
-  it('accepts every generated pennant', async () => {
-    const byUrl = new Map(codes.map((code) => [pennantUrl(code, { base: '' }), code]));
+  it('fetches the shape folder', async () => {
+    await fetchPennant('ar', { shape: 'circle', base: '/b' });
+    expect(fetchMock).toHaveBeenCalledWith('/b/svg/circle/ar.svg');
+    await expect(fetchPennant('ar', { shape: 'hex' as 'rect' })).rejects.toThrow(RangeError);
+  });
+
+  it('accepts every static asset of every shape', async () => {
+    const root = new URL('../', import.meta.url);
     fetchMock.mockImplementation(async (url) =>
-      respond(await loadPennant(byUrl.get(String(url)) ?? '')),
+      respond(readFileSync(new URL(String(url).slice(1), root), 'utf8')),
     );
-    for (const code of codes) {
-      await expect(fetchPennant(code, { base: '' })).resolves.toMatch(/^<svg/);
+    for (const shape of SHAPES) {
+      for (const code of codes) {
+        await expect(fetchPennant(code, { base: '', shape })).resolves.toMatch(/^<svg/);
+      }
     }
-    expect(fetchMock).toHaveBeenCalledTimes(codes.length);
+    expect(fetchMock).toHaveBeenCalledTimes(codes.length * SHAPES.length);
   });
 });

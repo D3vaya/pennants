@@ -1,6 +1,7 @@
 import { getPennantName, isPennantCode, type PennantCode } from '../internal/core.ts';
-import { loadMarkup, peekMarkup } from '../internal/cache.ts';
-import { prepareSvg } from '../internal/svg.ts';
+import { loadCachedFlag, peekFlag, type CachedFlag } from '../internal/cache.ts';
+import { inlineFlag } from '../internal/svg.ts';
+import { isShape, type PennantShape } from '../shapes.ts';
 
 /** `detail` of the `pennant-load` event, fired once the flag is rendered. */
 export interface PennantLoadDetail {
@@ -33,6 +34,8 @@ declare global {
  */
 export const PENNANT_ELEMENT_CSS =
   ':host{display:inline-block;height:var(--pennant-size,1em);aspect-ratio:66/72}' +
+  ':host([shape=rect]){aspect-ratio:4/3}' +
+  ':host([shape=square]),:host([shape=circle]){aspect-ratio:1}' +
   ':host([hidden]){display:none}' +
   'span,svg{display:block;width:100%;height:100%}' +
   '.pn-bar-l{stop-color:var(--pennant-bar-light,#d5b97a)}' +
@@ -59,7 +62,7 @@ function applyStyles(root: ShadowRoot): void {
   root.prepend(style);
 }
 
-const PROPS = ['code', 'size', 'label', 'base'] as const;
+const PROPS = ['code', 'size', 'label', 'base', 'shape'] as const;
 
 // Import-safe outside the browser (Node/SSR): there is no HTMLElement at
 // module load there, and the class is simply never constructed.
@@ -87,7 +90,7 @@ export interface DefinePennantElementOptions {
  * fetched from `<base>/svg/<code>.svg` instead of the bundled chunks.
  */
 export class PennantElement extends Base {
-  /** Attributes the element reacts to: `code`, `size`, `label`, `base`. */
+  /** Attributes the element reacts to: `code`, `size`, `label`, `base`, `shape`. */
   static readonly observedAttributes: readonly string[] = PROPS;
   /** Fetch base used when the element has no `base` attribute (set by `definePennantElement`). */
   static defaultBase: string | undefined;
@@ -136,6 +139,15 @@ export class PennantElement extends Base {
     this.#reflect('label', value);
   }
 
+  /** Flag shape: `pennant` (default), `rect`, `square` or `circle`. Reflects the `shape` attribute. */
+  get shape(): PennantShape | null {
+    return this.getAttribute('shape') as PennantShape | null;
+  }
+  /** Sets the `shape` attribute; `null` returns to `pennant`. Unknown shapes fire `pennant-error`. */
+  set shape(value: PennantShape | null) {
+    this.#reflect('shape', value);
+  }
+
   /** Fetch-mode base URL (see `pennantUrl`). Reflects the `base` attribute. */
   get base(): string | null {
     return this.getAttribute('base');
@@ -150,9 +162,9 @@ export class PennantElement extends Base {
     // Properties set before the element was upgraded shadow the accessors.
     for (const prop of PROPS) {
       if (Object.prototype.hasOwnProperty.call(this, prop)) {
-        const value = (this as Record<string, unknown>)[prop] as string | null;
+        const value: unknown = Reflect.get(this, prop);
         Reflect.deleteProperty(this, prop);
-        this[prop] = value;
+        Reflect.set(this, prop, value); // goes through the accessor now
       }
     }
     this.#applySize();
@@ -172,8 +184,8 @@ export class PennantElement extends Base {
       this.#applySize();
       return;
     }
-    if (name !== 'base') this.#applyA11y();
-    if ((name === 'code' || name === 'base') && this.isConnected) this.#load();
+    if (name === 'code' || name === 'label') this.#applyA11y();
+    if (name !== 'label' && this.isConnected) this.#load();
   }
 
   #reflect(name: string, value: string | number | null): void {
@@ -222,15 +234,22 @@ export class PennantElement extends Base {
     return this.base ?? (this.constructor as typeof PennantElement).defaultBase;
   }
 
-  /** Identity of what is displayed: source + normalised code. */
-  #key(code: string | undefined): string | undefined {
-    return code === undefined ? undefined : `${this.#source() ?? ''}\n${code}`;
+  #shapeName(): string {
+    return this.shape ?? 'pennant';
   }
 
-  #show(code: string | undefined, svg?: string): void {
-    if (code !== undefined && code === this.#shown) return;
-    this.#content.innerHTML = svg === undefined ? '' : prepareSvg(svg);
-    this.#shown = code;
+  /** Identity of what is displayed: source + shape + normalised code. */
+  #key(code: string | undefined): string | undefined {
+    return code === undefined
+      ? undefined
+      : `${this.#source() ?? ''}\n${this.#shapeName()}\n${code}`;
+  }
+
+  #show(key: string | undefined, flag?: CachedFlag, shape?: PennantShape): void {
+    if (key !== undefined && key === this.#shown) return;
+    this.#content.innerHTML =
+      flag === undefined || shape === undefined ? '' : inlineFlag(flag, shape);
+    this.#shown = key;
   }
 
   #load(): void {
@@ -247,12 +266,19 @@ export class PennantElement extends Base {
     const code = raw.trim().toLowerCase();
     const source = this.#source();
     const key = this.#key(code);
-    const cached = peekMarkup(code, source);
-    if (cached !== undefined) this.#show(key, cached);
-    loadMarkup(code, source).then(
-      (svg) => {
+    const shape = this.#shapeName();
+    let request: Promise<CachedFlag>;
+    if (isShape(shape)) {
+      const cached = peekFlag(code, shape, source);
+      if (cached !== undefined) this.#show(key, cached, shape);
+      request = loadCachedFlag(code, shape, source);
+    } else {
+      request = Promise.reject(new RangeError(`Unknown pennant shape "${shape}"`));
+    }
+    request.then(
+      (flag) => {
         if (token !== this.#token) return;
-        this.#show(key, svg);
+        this.#show(key, flag, shape as PennantShape);
         this.dispatchEvent(
           new CustomEvent<PennantLoadDetail>('pennant-load', {
             detail: { code: code as PennantCode },

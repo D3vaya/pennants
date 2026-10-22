@@ -1,12 +1,23 @@
 import { describe, expect, it } from 'vitest';
+import ar43 from '../src/generated/art/4x3/ar.ts';
+import ar from '../src/generated/art/1x1/ar.ts';
+import { composeFlag } from '../src/shapes.ts';
 import {
   PENNANT_ASPECT_RATIO,
   codes,
   getPennantName,
   isoCodes,
   isPennantCode,
+  SHAPES,
+  SHAPE_ART,
+  SHAPE_SIZE,
+  isShape,
+  loadArt,
+  loadFlag,
   loadPennant,
   pennantUrl,
+  renderFlag,
+  toShape,
   toDataUri,
   toEmoji,
   toPennantCode,
@@ -39,15 +50,46 @@ describe('isPennantCode / toPennantCode', () => {
   });
 });
 
-describe('loadPennant', () => {
+describe('loadPennant / loadFlag / loadArt / renderFlag', () => {
   it('loads the SVG of a single flag lazily', async () => {
     const svg = await loadPennant('AR');
     expect(svg).toMatch(/^<svg /);
     expect(svg).toContain('pn-ar-clip');
+    expect(svg).toBe(composeFlag(ar, 'pennant'));
   });
 
-  it('rejects unknown codes', async () => {
+  it('loads each shape from its art set', async () => {
+    expect(await loadFlag('ar')).toBe(await loadPennant('ar'));
+    expect(await loadFlag('ar', { shape: 'rect' })).toBe(composeFlag(ar43, 'rect'));
+    for (const shape of ['square', 'circle'] as const) {
+      expect(await loadFlag('ar', { shape })).toBe(composeFlag(ar, shape));
+    }
+  });
+
+  it('loads raw artwork per set', async () => {
+    await expect(loadArt('ar')).resolves.toEqual(ar);
+    await expect(loadArt('AR', { set: '4x3' })).resolves.toEqual(ar43);
+    await expect(loadArt('zz', { set: '4x3' })).rejects.toThrow(RangeError);
+  });
+
+  it('renders static art synchronously', () => {
+    expect(renderFlag(ar)).toBe(composeFlag(ar, 'pennant'));
+    expect(renderFlag(ar43, { shape: 'rect' })).toBe(composeFlag(ar43, 'rect'));
+    expect(() => renderFlag(ar, { shape: 'hex' as 'rect' })).toThrow(RangeError);
+  });
+
+  it('rejects unknown codes and shapes', async () => {
     await expect(loadPennant('zz')).rejects.toThrow(RangeError);
+    await expect(loadFlag('ar', { shape: 'hex' as 'rect' })).rejects.toThrow(RangeError);
+  });
+
+  it('re-exports the shape metadata', () => {
+    expect(SHAPES).toEqual(['pennant', 'rect', 'square', 'circle']);
+    expect(SHAPE_ART.rect).toBe('4x3');
+    expect(SHAPE_SIZE.circle).toEqual({ width: 48, height: 48 });
+    expect(isShape('circle')).toBe(true);
+    expect(toShape('square')).toBe('square');
+    expect(() => toShape('hex')).toThrow(RangeError);
   });
 });
 
@@ -89,20 +131,30 @@ describe('toDataUri', () => {
 
 describe('pennantUrl', () => {
   it('defaults to the jsDelivr SVG', () => {
-    expect(pennantUrl('AR')).toBe('https://cdn.jsdelivr.net/npm/pennants@0.0.0-test/svg/ar.svg');
+    expect(pennantUrl('AR')).toBe(
+      'https://cdn.jsdelivr.net/npm/pennants@0.0.0-test/svg/pennant/ar.svg',
+    );
   });
 
   it('supports custom bases and PNG densities', () => {
     expect(pennantUrl('ar', { base: '/assets/', format: 'png', scale: 2 })).toBe(
-      '/assets/png/2x/ar.png',
+      '/assets/png/pennant/2x/ar.png',
     );
     expect(pennantUrl('ar', { format: 'png' })).toBe(
-      'https://cdn.jsdelivr.net/npm/pennants@0.0.0-test/png/1x/ar.png',
+      'https://cdn.jsdelivr.net/npm/pennants@0.0.0-test/png/pennant/1x/ar.png',
     );
   });
 
-  it('validates the code', () => {
+  it('selects the shape folder', () => {
+    expect(pennantUrl('ar', { shape: 'circle', base: '' })).toBe('/svg/circle/ar.svg');
+    expect(pennantUrl('gb-eng', { shape: 'rect', format: 'png', base: '/a' })).toBe(
+      '/a/png/rect/1x/gb-eng.png',
+    );
+  });
+
+  it('validates the code and shape', () => {
     expect(() => pennantUrl('../../etc')).toThrow(RangeError);
+    expect(() => pennantUrl('ar', { shape: '../x' as 'rect' })).toThrow(RangeError);
   });
 });
 

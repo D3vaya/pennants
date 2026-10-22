@@ -1,24 +1,26 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import ar from '../src/generated/flags/ar.ts';
-import br from '../src/generated/flags/br.ts';
+import ar from '../src/generated/art/1x1/ar.ts';
+import br from '../src/generated/art/1x1/br.ts';
+import { renderFlag } from '../src/index.ts';
+import type { FlagArt } from '../src/shapes.ts';
 import * as load from '../src/internal/load.ts';
 import type * as Load from '../src/internal/load.ts';
-import { clearMarkupCache } from '../src/internal/cache.ts';
+import { clearFlagCache } from '../src/internal/cache.ts';
 import { clearFetchCache } from '../src/internal/fetch.ts';
 import { PENNANT_ELEMENT_CSS, PennantElement, definePennantElement } from '../src/element/index.ts';
 import type { PennantErrorDetail, PennantLoadDetail } from '../src/element/index.ts';
 
 vi.mock('../src/internal/load.ts', async (importOriginal) => {
   const actual = await importOriginal<typeof Load>();
-  return { ...actual, loadPennant: vi.fn(actual.loadPennant) };
+  return { ...actual, loadArt: vi.fn(actual.loadArt) };
 });
 
-const loadPennant = vi.mocked(load.loadPennant);
+const loadArt = vi.mocked(load.loadArt);
 
-function deferred(): { promise: Promise<string>; resolve: (v: string) => void } {
-  let resolve!: (v: string) => void;
-  const promise = new Promise<string>((res) => {
+function deferred(): { promise: Promise<FlagArt>; resolve: (v: FlagArt) => void } {
+  let resolve!: (v: FlagArt) => void;
+  const promise = new Promise<FlagArt>((res) => {
     resolve = res;
   });
   return { promise, resolve };
@@ -47,8 +49,8 @@ const content = (el: PennantElement): HTMLElement => {
 definePennantElement();
 
 beforeEach(() => {
-  clearMarkupCache();
-  loadPennant.mockReset();
+  clearFlagCache();
+  loadArt.mockReset();
 });
 afterEach(() => {
   document.body.replaceChildren();
@@ -83,11 +85,11 @@ describe('<pennant-flag>', () => {
   it('lazy-loads on connect and fires pennant-load', async () => {
     const el = create({ code: 'AR' });
     await flush();
-    expect(loadPennant).not.toHaveBeenCalled(); // not connected yet
+    expect(loadArt).not.toHaveBeenCalled(); // not connected yet
     const loaded = nextEvent<PennantLoadDetail>(el, 'pennant-load');
     document.body.append(el);
     expect(await loaded).toEqual({ code: 'ar' });
-    expect(loadPennant).toHaveBeenCalledWith('ar');
+    expect(loadArt).toHaveBeenCalledWith('ar', { set: '1x1' });
     const svg = content(el).querySelector('svg');
     expect(svg?.getAttribute('width')).toBe('100%');
     expect(svg?.getAttribute('aria-hidden')).toBe('true');
@@ -138,7 +140,7 @@ describe('<pennant-flag>', () => {
   });
 
   it('is hidden after a failed load without a label, and named again once loaded', async () => {
-    loadPennant.mockImplementationOnce(() => Promise.reject(new Error('offline')));
+    loadArt.mockImplementationOnce(() => Promise.reject(new Error('offline')));
     const el = create({ code: 'ar' });
     const failed = nextEvent(el, 'pennant-error');
     document.body.append(el);
@@ -155,7 +157,7 @@ describe('<pennant-flag>', () => {
   });
 
   it('keeps an explicit label after a failed load', async () => {
-    loadPennant.mockImplementationOnce(() => Promise.reject(new Error('offline')));
+    loadArt.mockImplementationOnce(() => Promise.reject(new Error('offline')));
     const el = create({ code: 'ar', label: 'Home' });
     const failed = nextEvent(el, 'pennant-error');
     document.body.append(el);
@@ -232,7 +234,7 @@ describe('<pennant-flag>', () => {
   it('reloads when code changes and ignores stale results', async () => {
     const slow = deferred();
     const fast = deferred();
-    loadPennant.mockImplementation((code) => (code === 'ar' ? slow.promise : fast.promise));
+    loadArt.mockImplementation((code) => (code === 'ar' ? slow.promise : fast.promise));
     const el = create({ code: 'ar' });
     const events: string[] = [];
     el.addEventListener('pennant-load', (e) => events.push(e.detail.code));
@@ -253,7 +255,7 @@ describe('<pennant-flag>', () => {
     document.body.append(el);
     await nextEvent(el, 'pennant-load');
     const pending = deferred();
-    loadPennant.mockImplementation(() => pending.promise);
+    loadArt.mockImplementation(() => pending.promise);
     el.code = 'br';
     expect(content(el).innerHTML).toContain('#74acdf');
     pending.resolve(br);
@@ -268,12 +270,12 @@ describe('<pennant-flag>', () => {
     const second = create({ code: 'ar' });
     document.body.append(second);
     expect(content(second).querySelector('svg')).not.toBeNull();
-    expect(loadPennant).toHaveBeenCalledTimes(1);
+    expect(loadArt).toHaveBeenCalledTimes(1);
   });
 
   it('ignores loads that finish while detached and resumes on reconnect', async () => {
     const pending = deferred();
-    loadPennant.mockImplementationOnce(() => pending.promise);
+    loadArt.mockImplementationOnce(() => pending.promise);
     const el = create({ code: 'ar' });
     const listener = vi.fn();
     el.addEventListener('pennant-load', listener);
@@ -326,7 +328,7 @@ describe('<pennant-flag>', () => {
   });
 
   it('fires pennant-error when the chunk fails to load', async () => {
-    loadPennant.mockImplementationOnce(() => Promise.reject(new Error('offline')));
+    loadArt.mockImplementationOnce(() => Promise.reject(new Error('offline')));
     const el = create({ code: 'ar' });
     const failed = nextEvent<PennantErrorDetail>(el, 'pennant-error');
     document.body.append(el);
@@ -335,16 +337,14 @@ describe('<pennant-flag>', () => {
 
   it('ignores errors of stale loads', async () => {
     let reject!: (e: unknown) => void;
-    loadPennant.mockImplementationOnce(
-      () => new Promise<string>((_resolve, rej) => (reject = rej)),
-    );
+    loadArt.mockImplementationOnce(() => new Promise<FlagArt>((_resolve, rej) => (reject = rej)));
     const el = create({ code: 'ar' });
     const listener = vi.fn();
     el.addEventListener('pennant-error', listener);
     document.body.append(el);
     el.code = 'br';
     const loaded = nextEvent(el, 'pennant-load');
-    await vi.waitFor(() => expect(loadPennant).toHaveBeenCalledWith('ar'));
+    await vi.waitFor(() => expect(loadArt).toHaveBeenCalledWith('ar', { set: '1x1' }));
     reject(new Error('late'));
     await loaded;
     expect(listener).not.toHaveBeenCalled();
@@ -362,9 +362,9 @@ describe('<pennant-flag>', () => {
   it('skips work when an attribute is set to the same value', () => {
     const el = create({ code: 'ar' });
     document.body.append(el);
-    loadPennant.mockClear();
+    loadArt.mockClear();
     el.setAttribute('code', 'ar');
-    expect(loadPennant).not.toHaveBeenCalled();
+    expect(loadArt).not.toHaveBeenCalled();
   });
 
   it('renders nothing without a code', () => {
@@ -380,7 +380,7 @@ describe('<pennant-flag> fetch mode', () => {
     clearFetchCache();
     fetchMock.mockReset();
     fetchMock.mockImplementation(
-      async (url) => new Response(String(url).endsWith('/br.svg') ? br : ar),
+      async (url) => new Response(renderFlag(String(url).endsWith('/br.svg') ? br : ar)),
     );
     vi.stubGlobal('fetch', fetchMock);
   });
@@ -393,8 +393,8 @@ describe('<pennant-flag> fetch mode', () => {
     const loaded = nextEvent<PennantLoadDetail>(el, 'pennant-load');
     document.body.append(el);
     expect(await loaded).toEqual({ code: 'ar' });
-    expect(fetchMock).toHaveBeenCalledWith('/assets/svg/ar.svg');
-    expect(loadPennant).not.toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalledWith('/assets/svg/pennant/ar.svg');
+    expect(loadArt).not.toHaveBeenCalled();
     expect(content(el).querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
   });
 
@@ -407,7 +407,7 @@ describe('<pennant-flag> fetch mode', () => {
     el.base = '/cdn';
     expect(el.getAttribute('base')).toBe('/cdn');
     await loaded;
-    expect(fetchMock).toHaveBeenCalledWith('/cdn/svg/ar.svg');
+    expect(fetchMock).toHaveBeenCalledWith('/cdn/svg/pennant/ar.svg');
     expect(el.getAttribute('aria-label')).toBe('Home');
     el.base = null;
     expect(el.hasAttribute('base')).toBe(false);
@@ -424,7 +424,7 @@ describe('<pennant-flag> fetch mode', () => {
     const loaded = nextEvent(el, 'pennant-load');
     document.body.append(el);
     await loaded;
-    expect(fetchMock).toHaveBeenCalledWith('/static/svg/br.svg');
+    expect(fetchMock).toHaveBeenCalledWith('/static/svg/pennant/br.svg');
     expect(content(el).innerHTML).toContain('#229e45');
     // A per-element attribute wins over the tag default.
     const other = document.createElement('cdn-flag') as PennantElement;
@@ -433,7 +433,7 @@ describe('<pennant-flag> fetch mode', () => {
     const otherLoaded = nextEvent(other, 'pennant-load');
     document.body.append(other);
     await otherLoaded;
-    expect(fetchMock).toHaveBeenCalledWith('/mine/svg/ar.svg');
+    expect(fetchMock).toHaveBeenCalledWith('/mine/svg/pennant/ar.svg');
   });
 
   it('fires pennant-error for invalid responses', async () => {
@@ -443,5 +443,59 @@ describe('<pennant-flag> fetch mode', () => {
     document.body.append(el);
     expect((await failed).error).toBeInstanceOf(TypeError);
     expect(el.getAttribute('aria-hidden')).toBe('true');
+  });
+});
+
+describe('<pennant-flag shape>', () => {
+  it('reflects shape, sets the aspect ratio rule and loads the matching art set', async () => {
+    const el = create({ code: 'ar', shape: 'rect' });
+    expect(el.shape).toBe('rect');
+    const loaded = nextEvent(el, 'pennant-load');
+    document.body.append(el);
+    await loaded;
+    expect(loadArt).toHaveBeenCalledWith('ar', { set: '4x3' });
+    expect(content(el).querySelector('svg')?.getAttribute('viewBox')).toBe('0 0 64 48');
+    expect(PENNANT_ELEMENT_CSS).toContain(':host([shape=rect]){aspect-ratio:4/3}');
+    expect(PENNANT_ELEMENT_CSS).toContain(
+      ':host([shape=square]),:host([shape=circle]){aspect-ratio:1}',
+    );
+  });
+
+  it('re-renders when the shape changes, reusing cached 1x1 art', async () => {
+    const el = create({ code: 'ar' });
+    document.body.append(el);
+    await nextEvent(el, 'pennant-load');
+    const loaded = nextEvent(el, 'pennant-load');
+    el.shape = 'circle';
+    expect(content(el).querySelector('svg')?.getAttribute('viewBox')).toBe('0 0 48 48'); // cached art
+    await loaded;
+    expect(loadArt).toHaveBeenCalledTimes(1);
+    expect(el.getAttribute('aria-label')).toBe('Argentina');
+    el.shape = null;
+    expect(el.hasAttribute('shape')).toBe(false);
+    expect(content(el).querySelector('svg')?.getAttribute('viewBox')).toBe('0 0 66 72');
+  });
+
+  it('fires pennant-error for unknown shapes', async () => {
+    const el = create({ code: 'ar', shape: 'hex' });
+    const failed = nextEvent<PennantErrorDetail>(el, 'pennant-error');
+    document.body.append(el);
+    expect((await failed).error).toBeInstanceOf(RangeError);
+    expect(content(el).innerHTML).toBe('');
+    expect(loadArt).not.toHaveBeenCalled();
+  });
+
+  it('fetches the shape folder in fetch mode', async () => {
+    const fetchMock = vi.fn<typeof fetch>(
+      async () => new Response(renderFlag(ar, { shape: 'square' })),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    clearFetchCache();
+    const el = create({ code: 'ar', shape: 'square', base: '/s' });
+    const loaded = nextEvent(el, 'pennant-load');
+    document.body.append(el);
+    await loaded;
+    expect(fetchMock).toHaveBeenCalledWith('/s/svg/square/ar.svg');
+    vi.unstubAllGlobals();
   });
 });

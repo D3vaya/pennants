@@ -38,7 +38,10 @@ afterAll(() => {
 
 interface Bundle {
   files: number;
+  /** Every emitted chunk. */
   code: string;
+  /** The entry chunk only (what the page downloads eagerly). */
+  entry: string;
 }
 
 async function withEsbuild(source: string): Promise<Bundle> {
@@ -55,6 +58,7 @@ async function withEsbuild(source: string): Promise<Bundle> {
   return {
     files: result.outputFiles.filter((file) => file.path.endsWith('.js')).length,
     code: result.outputFiles.map((file) => file.text).join('\n'),
+    entry: result.outputFiles.find((file) => file.path.endsWith('stdin.js'))?.text ?? '',
   };
 }
 
@@ -70,7 +74,11 @@ async function withRolldown(source: string): Promise<Bundle> {
     output: { format: 'esm' },
   });
   const chunks = result.output.filter((item) => item.type === 'chunk');
-  return { files: chunks.length, code: chunks.map((chunk) => chunk.code).join('\n') };
+  return {
+    files: chunks.length,
+    code: chunks.map((chunk) => chunk.code).join('\n'),
+    entry: chunks.find((chunk) => chunk.isEntry)?.code ?? '',
+  };
 }
 
 const use = (name: string, file: string): string =>
@@ -97,7 +105,7 @@ const noLoader = async (bundle: (source: string) => Promise<Bundle>, source: str
   const { files, code } = await bundle(source);
   expect(files).toBe(1);
   expect(code).not.toMatch(/import\(/);
-  expect(code).not.toMatch(/flags\//); // loader-map entries look like import("./flags/ar.js")
+  expect(code).not.toMatch(/\/(flags|art)\//); // loader-map entries look like import("./art/1x1/ar.js")
 };
 
 describe('tree-shaking with rolldown (Vite 8)', () => {
@@ -107,10 +115,11 @@ describe('tree-shaking with rolldown (Vite 8)', () => {
   );
 
   it('the element keeps the loader map out of the entry chunk (loaded only in bundled mode)', async () => {
-    const { files, code } = await withRolldown(use('definePennantElement', 'element/index.js'));
+    const { files, entry } = await withRolldown(use('definePennantElement', 'element/index.js'));
     expect(files).toBeGreaterThan(200);
-    const entry = code.split('\n').filter((line) => line.includes('import("./flags/'));
-    expect(entry).toEqual([]); // the map lives in its own lazily imported chunk
+    // Only the lazy imports of the two per-set loader chunks, never the 271-entry maps.
+    expect(entry.match(/import\(/g)?.length ?? 0).toBeLessThanOrEqual(2);
+    expect(entry).not.toMatch(/\bgb-eng\b.*import\(/);
   });
 });
 
@@ -124,7 +133,7 @@ describe.each([
       const { files, code } = await bundle(source);
       expect(files).toBe(1);
       expect(code).not.toMatch(/import\(/);
-      expect(code).not.toMatch(/flags\//); // loader-map entries look like import("./flags/ar.js")
+      expect(code).not.toMatch(/\/(flags|art)\//); // loader-map entries look like import("./art/1x1/ar.js")
     },
   );
 

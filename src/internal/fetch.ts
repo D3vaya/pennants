@@ -1,3 +1,4 @@
+import type { PennantShape } from '../shapes.ts';
 import { pennantUrl } from './core.ts';
 
 /** Options of {@link fetchPennant}. */
@@ -7,6 +8,8 @@ export interface FetchPennantOptions {
    * Defaults to the version-pinned jsDelivr CDN.
    */
   base?: string;
+  /** Flag shape, `pennant` by default: fetches `<base>/svg/<shape>/<code>.svg`. */
+  shape?: PennantShape;
 }
 
 /** Markup that could run script once inlined: never valid in a pennant. */
@@ -34,17 +37,17 @@ function request(url: string): Promise<string> {
 }
 
 /**
- * Fetches the SVG markup of one pennant from static assets (`<base>/svg/<code>.svg`)
- * instead of bundling it. Requests are cached and de-duplicated per URL. The
+ * Fetches the SVG markup of one flag from static assets
+ * (`<base>/svg/<shape>/<code>.svg`) instead of bundling it. Requests are cached and de-duplicated per URL. The
  * response must be a successful, script-free `<svg>…</svg>` document, so a
  * misconfigured `base` cannot inject arbitrary HTML. Rejects with a
- * `RangeError` for unknown codes.
+ * `RangeError` for unknown codes or shapes.
  */
 export async function fetchPennant(
   code: string,
   options: FetchPennantOptions = {},
 ): Promise<string> {
-  return request(pennantUrl(code, options.base === undefined ? {} : { base: options.base }));
+  return request(pennantUrl(code, { ...options, format: 'svg' }));
 }
 
 /** Test helper: forgets every cached response. */

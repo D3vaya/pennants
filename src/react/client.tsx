@@ -1,16 +1,16 @@
 'use client';
 import { forwardRef, useEffect, useId, useMemo, useSyncExternalStore, type Ref } from 'react';
+import { SHAPE_SIZE } from '../shapes.ts';
 import {
   DEFAULT_CDN_BASE,
-  PENNANT_HEIGHT,
-  PENNANT_WIDTH,
   getPennantName,
   pennantUrl,
   toPennantCode,
+  toShape,
   type PennantCode,
 } from '../internal/core.ts';
-import { loadMarkup, peekMarkup, subscribeMarkup } from '../internal/cache.ts';
-import { prepareSvg } from '../internal/svg.ts';
+import { loadCachedFlag, peekFlag, subscribeFlags } from '../internal/cache.ts';
+import { inlineFlag } from '../internal/svg.ts';
 import {
   a11yProps,
   frameStyle,
@@ -27,10 +27,10 @@ export interface PennantProps extends PennantHtmlAttributes, PennantCommonProps 
    */
   code: PennantCode | Uppercase<PennantCode>;
   /**
-   * - `inline` (default): lazy-loads the flag's bundled chunk and inlines the SVG;
-   * - `fetch`: fetches `<base>/svg/<code>.svg` at runtime and inlines it (no
-   *   bundled flag data at all);
-   * - `img`: renders an `<img>` pointing at `<base>/svg/<code>.svg`.
+   * - `inline` (default): lazy-loads the flag's bundled artwork chunk and inlines the SVG;
+   * - `fetch`: fetches `<base>/svg/<shape>/<code>.svg` at runtime and inlines it
+   *   (no bundled flag data at all);
+   * - `img`: renders an `<img>` pointing at `<base>/svg/<shape>/<code>.svg`.
    */
   mode?: 'inline' | 'fetch' | 'img';
   /** `fetch`/`img` modes: where the package's `svg/` folder is served. Default: versioned jsDelivr CDN. */
@@ -45,46 +45,67 @@ const noop = (): void => {};
 const serverSnapshot = (): undefined => undefined;
 
 /**
- * Renders a pennant on the client. Inline/fetch modes keep the box reserved
+ * Renders a flag (any shape) on the client. Unknown codes or shapes throw a
+ * `RangeError`. Inline/fetch modes keep the box reserved
  * while loading; img mode points at the static SVG asset.
  */
 export const Pennant = /* @__PURE__ */ forwardRef<HTMLElement, PennantProps>(function Pennant(
-  { code, mode = 'inline', base, size, title, locale, style, loading, decoding, ...rest },
+  {
+    code,
+    shape = 'pennant',
+    mode = 'inline',
+    base,
+    size,
+    title,
+    locale,
+    style,
+    loading,
+    decoding,
+    ...rest
+  },
   ref,
 ) {
   const normalized = toPennantCode(code);
+  const validShape = toShape(shape);
   const label = title ?? getPennantName(normalized, locale);
   const inline = mode !== 'img';
   const source = mode === 'fetch' ? (base ?? DEFAULT_CDN_BASE) : undefined;
   const scope = useId();
 
-  const svg = useSyncExternalStore(
-    subscribeMarkup,
-    () => (inline ? peekMarkup(normalized, source) : undefined),
+  const flag = useSyncExternalStore(
+    subscribeFlags,
+    () => (inline ? peekFlag(normalized, validShape, source) : undefined),
     serverSnapshot,
   );
 
   useEffect(() => {
     // Stale results are harmless: they only fill the cache, while rendering
-    // always reads the markup of the current `code`/source.
-    if (inline) loadMarkup(normalized, source).catch(noop);
-  }, [inline, normalized, source]);
+    // always reads the flag of the current code/shape/source.
+    if (inline) loadCachedFlag(normalized, validShape, source).catch(noop);
+  }, [inline, normalized, validShape, source]);
 
-  const html = useMemo(() => (svg === undefined ? '' : prepareSvg(svg, scope)), [svg, scope]);
+  const html = useMemo(
+    () => (flag === undefined ? '' : inlineFlag(flag, validShape, scope)),
+    [flag, validShape, scope],
+  );
 
   if (!inline) {
-    const intrinsic = typeof size === 'number' ? size / PENNANT_HEIGHT : 1;
+    const { width, height } = SHAPE_SIZE[validShape];
+    const intrinsic = typeof size === 'number' ? size / height : 1;
     return (
       <img
         ref={ref as Ref<HTMLImageElement>}
         {...rest}
-        src={pennantUrl(normalized, base === undefined ? {} : { base })}
+        src={pennantUrl(
+          normalized,
+          base === undefined ? { shape: validShape } : { base, shape: validShape },
+        )}
         alt={label}
-        width={round(PENNANT_WIDTH * intrinsic)}
-        height={round(PENNANT_HEIGHT * intrinsic)}
+        width={round(width * intrinsic)}
+        height={round(height * intrinsic)}
         loading={loading ?? 'lazy'}
         decoding={decoding ?? 'async'}
-        style={frameStyle(size, style)}
+        style={frameStyle(size, validShape, style)}
       />
     );
   }
@@ -95,7 +116,8 @@ export const Pennant = /* @__PURE__ */ forwardRef<HTMLElement, PennantProps>(fun
       {...rest}
       {...a11yProps(label)}
       data-pennant={normalized}
-      style={frameStyle(size, style)}
+      data-shape={validShape}
+      style={frameStyle(size, validShape, style)}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

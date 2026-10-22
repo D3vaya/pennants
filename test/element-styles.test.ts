@@ -33,9 +33,10 @@ describe('<pennant-flag> CSP-safe styles', () => {
     expect(sheet).toBeInstanceOf(CSSStyleSheet);
     expect(b.shadowRoot?.adoptedStyleSheets).toEqual([sheet]); // shared instance
     const rules = [...(sheet?.cssRules ?? [])].map((rule) => rule.cssText.replace(/\s+/g, ''));
-    expect(rules.join('')).toBe(
-      PENNANT_ELEMENT_CSS.replace(/\s+/g, '').replace(/;}/g, '}').replace(/}/g, ';}'),
-    );
+    // Every rule of the source text was parsed (serialisation may quote attribute values).
+    expect(rules).toHaveLength(PENNANT_ELEMENT_CSS.split('}').length - 1);
+    expect(rules.join('').replace(/"/g, '')).toContain(':host([shape=rect]){aspect-ratio:4/3;}');
+    expect(rules.join('')).toContain('.pn-bar-l{stop-color:var(--pennant-bar-light,#d5b97a);}');
   });
 
   it('includes the bar theming rule so ancestor --pennant-bar-* vars recolour the bar', async () => {

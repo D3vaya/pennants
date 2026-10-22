@@ -1,42 +1,47 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import ar from '../src/generated/flags/ar.ts';
+import ar from '../src/generated/art/1x1/ar.ts';
+import ar43 from '../src/generated/art/4x3/ar.ts';
 import type * as CacheModule from '../src/internal/cache.ts';
 
 afterEach(() => {
-  vi.doUnmock('../src/internal/load.ts');
+  vi.doUnmock('../src/internal/load-1x1.ts');
   vi.doUnmock('../src/internal/fetch.ts');
   vi.resetModules();
 });
 
 const freshCache = (): Promise<typeof CacheModule> => import('../src/internal/cache.ts');
 
-describe('markup cache', () => {
-  it('loads bundled flags lazily and caches them by code', async () => {
+describe('flag cache', () => {
+  it('caches bundled art once per set, shared by the shapes drawn from it', async () => {
     const cache = await freshCache();
-    expect(cache.peekMarkup('ar')).toBeUndefined();
-    await expect(cache.loadMarkup(' AR ')).resolves.toBe(ar);
-    expect(cache.peekMarkup('ar')).toBe(ar);
-    expect(cache.peekMarkup('ar', '/base')).toBeUndefined(); // sources are separate
+    expect(cache.peekFlag('ar', 'pennant')).toBeUndefined();
+    await expect(cache.loadCachedFlag(' AR ', 'circle')).resolves.toEqual(ar);
+    expect(cache.peekFlag('ar', 'pennant')).toEqual(ar);
+    expect(cache.peekFlag('ar', 'square')).toEqual(ar);
+    expect(cache.peekFlag('ar', 'rect')).toBeUndefined();
+    await expect(cache.loadCachedFlag('ar', 'rect')).resolves.toEqual(ar43);
+    expect(cache.peekFlag('ar', 'pennant', '/base')).toBeUndefined(); // sources are separate
   });
 
-  it('uses fetchPennant when a base is given', async () => {
+  it('uses fetchPennant with base + shape when a base is given', async () => {
     const fetchPennant = vi.fn(async () => '<svg>fetched</svg>');
     vi.doMock('../src/internal/fetch.ts', () => ({ fetchPennant }));
     const cache = await freshCache();
-    await expect(cache.loadMarkup('AR', '/base')).resolves.toBe('<svg>fetched</svg>');
-    expect(fetchPennant).toHaveBeenCalledWith('ar', { base: '/base' });
-    expect(cache.peekMarkup('ar', '/base')).toBe('<svg>fetched</svg>');
-    expect(cache.peekMarkup('ar')).toBeUndefined();
+    await expect(cache.loadCachedFlag('AR', 'circle', '/base')).resolves.toBe('<svg>fetched</svg>');
+    expect(fetchPennant).toHaveBeenCalledWith('ar', { base: '/base', shape: 'circle' });
+    expect(cache.peekFlag('ar', 'circle', '/base')).toBe('<svg>fetched</svg>');
+    expect(cache.peekFlag('ar', 'square', '/base')).toBeUndefined(); // fetched per shape
+    expect(cache.peekFlag('ar', 'circle')).toBeUndefined();
   });
 
   it('notifies subscribers and supports unsubscribing', async () => {
     const cache = await freshCache();
     const listener = vi.fn();
-    const unsubscribe = cache.subscribeMarkup(listener);
-    await cache.loadMarkup('ar');
+    const unsubscribe = cache.subscribeFlags(listener);
+    await cache.loadCachedFlag('ar', 'pennant');
     expect(listener).toHaveBeenCalledTimes(1);
     unsubscribe();
-    await cache.loadMarkup('br');
+    await cache.loadCachedFlag('br', 'pennant');
     expect(listener).toHaveBeenCalledTimes(1);
   });
 
@@ -50,29 +55,31 @@ describe('markup cache', () => {
       .mockImplementation(async () => '<svg>new</svg>');
     vi.doMock('../src/internal/fetch.ts', () => ({ fetchPennant }));
     const cache = await freshCache();
-    const stale = cache.loadMarkup('ar', '/b');
-    cache.clearMarkupCache();
-    const failing = cache.loadMarkup('ar', '/b');
-    cache.clearMarkupCache();
-    const fresh = cache.loadMarkup('ar', '/b'); // not de-duplicated with the stale ones
+    const stale = cache.loadCachedFlag('ar', 'pennant', '/b');
+    cache.clearFlagCache();
+    const failing = cache.loadCachedFlag('ar', 'pennant', '/b');
+    cache.clearFlagCache();
+    const fresh = cache.loadCachedFlag('ar', 'pennant', '/b'); // not de-duplicated with stale ones
     resolve('<svg>old</svg>');
     reject(new Error('late'));
     await expect(stale).resolves.toBe('<svg>old</svg>');
     await expect(failing).rejects.toThrow('late');
     await expect(fresh).resolves.toBe('<svg>new</svg>');
-    expect(cache.peekMarkup('ar', '/b')).toBe('<svg>new</svg>');
+    expect(cache.peekFlag('ar', 'pennant', '/b')).toBe('<svg>new</svg>');
   });
 
-  it('retries importing the loader map after a failure', async () => {
+  it('retries after the art chunk failed to load', async () => {
     let fail = true;
-    vi.doMock('../src/internal/load.ts', () => {
+    vi.doMock('../src/internal/load-1x1.ts', () => {
       if (fail) throw new Error('chunk failed');
-      return { loadPennant: async () => '<svg>ok</svg>' };
+      return { loadArt1x1: async () => ar };
     });
     const cache = await freshCache();
-    await expect(cache.loadMarkup('ar')).rejects.toThrow(/chunk failed|error when mocking/);
+    await expect(cache.loadCachedFlag('ar', 'pennant')).rejects.toThrow(
+      /chunk failed|error when mocking/,
+    );
     fail = false;
-    vi.resetModules(); // a real browser retries the dynamic import; emulate it
-    await expect(cache.loadMarkup('ar')).resolves.toBe('<svg>ok</svg>');
+    vi.resetModules(); // a browser retries a failed dynamic import; emulate it
+    await expect(cache.loadCachedFlag('ar', 'pennant')).resolves.toEqual(ar);
   });
 });

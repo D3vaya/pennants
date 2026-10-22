@@ -3,6 +3,9 @@
  * inlining into a document. Pure string functions: safe on the server.
  */
 
+import { composeFlag, type PennantShape } from '../shapes.ts';
+import type { CachedFlag } from './cache.ts';
+
 const ROOT_TAG = /^(\s*)<svg\b([^>]*)>/;
 const SIZE_ATTRS = /\s(?:width|height|aria-hidden|focusable)="[^"]*"/g;
 const NAMESPACE = /\bid="pn-([a-z0-9-]+?)-clip"/;
@@ -47,4 +50,15 @@ export function prepareSvg(svg: string, scope?: string): string {
     out = out.split(`pn-${code}-`).join(scopedIdPrefix(scope, code));
   }
   return out;
+}
+
+/**
+ * Inline markup for a cached flag: composes bundled artwork in `shape` (or
+ * takes fetched markup as is), makes it fluid and, when `scope` is given,
+ * gives its ids a per-instance namespace.
+ */
+export function inlineFlag(flag: CachedFlag, shape: PennantShape, scope?: string): string {
+  if (typeof flag === 'string') return prepareSvg(flag, scope);
+  const prefix = scope === undefined ? undefined : scopedIdPrefix(scope, flag.code);
+  return prepareSvg(composeFlag(flag, shape, prefix));
 }

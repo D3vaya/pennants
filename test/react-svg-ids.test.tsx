@@ -1,8 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import ar from '../src/generated/flags/ar.ts';
-import gbEng from '../src/generated/flags/gb-eng.ts';
-import us from '../src/generated/flags/us.ts';
-import { prepareSvg, svgCode, scopedIdPrefix } from '../src/internal/svg.ts';
+import arArt from '../src/generated/art/1x1/ar.ts';
+import gbEngArt from '../src/generated/art/1x1/gb-eng.ts';
+import usArt from '../src/generated/art/1x1/us.ts';
+import { renderFlag } from '../src/index.ts';
+import { inlineFlag, prepareSvg, scopedIdPrefix, svgCode } from '../src/internal/svg.ts';
+
+const ar = renderFlag(arArt);
+const gbEng = renderFlag(gbEngArt);
+const us = renderFlag(usArt);
 
 const ids = (svg: string): string[] => [...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1] ?? '');
 
@@ -88,5 +93,26 @@ describe('prepareSvg', () => {
 
   it('ignores the prefix for foreign markup', () => {
     expect(prepareSvg('<svg><g id="a"/></svg>', 'p-')).toContain('id="a"');
+  });
+});
+
+describe('inlineFlag', () => {
+  it('composes art in the shape with a scoped namespace', () => {
+    const out = inlineFlag(arArt, 'circle', ':r3:');
+    expect(out).toMatch(
+      /^<svg [^>]*viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true"/,
+    );
+    expect(out).toContain('id="pnr3-ar-clip"');
+    expect(out).not.toContain('pn-ar-');
+  });
+
+  it('keeps the default namespace without a scope (shadow DOM)', () => {
+    expect(inlineFlag(arArt, 'pennant')).toContain('id="pn-ar-clip"');
+  });
+
+  it('rewrites fetched markup', () => {
+    const out = inlineFlag(renderFlag(arArt, { shape: 'square' }), 'square', ':r4:');
+    expect(out).toContain('id="pnr4-ar-clip"');
+    expect(out).toContain('aria-hidden="true"');
   });
 });

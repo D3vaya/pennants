@@ -4,8 +4,18 @@
  */
 import { codes, isoCodes, type PennantCode } from '../generated/codes.ts';
 import { extraNames } from '../generated/names.ts';
+import { isShape, type PennantShape } from '../shapes.ts';
 
 export { codes, isoCodes, type PennantCode };
+export {
+  SHAPES,
+  SHAPE_ART,
+  SHAPE_SIZE,
+  isShape,
+  type ArtSet,
+  type FlagArt,
+  type PennantShape,
+} from '../shapes.ts';
 
 /** Intrinsic width of every pennant, in CSS pixels (SVG `viewBox` units). */
 export const PENNANT_WIDTH = 66;
@@ -78,23 +88,36 @@ export function toDataUri(svg: string): string {
 export interface PennantUrlOptions {
   /** Base URL where the package's `svg/` (or `png/`) folder is served. */
   base?: string;
-  /** Asset format: `svg` (default, `<base>/svg/…`) or `png` (`<base>/png/<scale>x/…`). */
+  /** Flag shape, `pennant` by default. Selects the `<shape>/` folder. */
+  shape?: PennantShape;
+  /**
+   * Asset format: `svg` (default, `<base>/svg/<shape>/<code>.svg`) or `png`
+   * (`<base>/png/<shape>/<scale>x/<code>.png`).
+   */
   format?: 'svg' | 'png';
   /** PNG density folder, only used when `format` is `png`. */
   scale?: 1 | 2;
 }
 
+/** Validates a shape name, throwing a `RangeError` for anything else. */
+export function toShape(value: unknown): PennantShape {
+  if (!isShape(value)) throw new RangeError(`Unknown pennant shape "${String(value)}"`);
+  return value;
+}
+
 /**
- * Builds the URL of a static pennant asset. Defaults to the jsDelivr CDN,
+ * Builds the URL of a static flag asset. Defaults to the jsDelivr CDN,
  * pinned to this package version, so it works without bundler configuration.
+ * Throws a `RangeError` for unknown codes or shapes.
  */
 export function pennantUrl(code: string, options: PennantUrlOptions = {}): string {
-  const { base = DEFAULT_CDN_BASE, format = 'svg', scale = 1 } = options;
+  const { base = DEFAULT_CDN_BASE, format = 'svg', scale = 1, shape = 'pennant' } = options;
   const root = base.replace(/\/+$/, '');
   const normalized = toPennantCode(code);
+  const folder = toShape(shape);
   return format === 'png'
-    ? `${root}/png/${scale}x/${normalized}.png`
-    : `${root}/svg/${normalized}.svg`;
+    ? `${root}/png/${folder}/${scale}x/${normalized}.png`
+    : `${root}/svg/${folder}/${normalized}.svg`;
 }
 
 /** Emoji flags that exist for non-ISO two-letter codes. */

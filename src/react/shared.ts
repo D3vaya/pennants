@@ -1,5 +1,5 @@
 import type { CSSProperties, HTMLAttributes } from 'react';
-import { PENNANT_HEIGHT, PENNANT_WIDTH } from '../internal/core.ts';
+import { SHAPE_SIZE, type PennantShape } from '../shapes.ts';
 
 /** Pennant height: a number of CSS pixels or any CSS length (`"2rem"`). */
 export type PennantSize = number | string;
@@ -21,6 +21,8 @@ export interface PennantCommonProps {
   title?: string;
   /** Locale used for the default `title` (via `Intl.DisplayNames`). Default `en`. */
   locale?: string;
+  /** Flag shape: `pennant` (default), `rect` (4:3), `square` or `circle`. */
+  shape?: PennantShape;
 }
 
 /** @internal */
@@ -28,30 +30,33 @@ export const round = (value: number): number => Math.round(value * 1000) / 1000;
 
 /** CSS box of a pennant, as returned by {@link pennantBox}. */
 export interface PennantBox {
-  /** CSS width, derived from the height with the 66:72 ratio (`"29.333px"`, `"calc(2rem * 66 / 72)"`). */
+  /** CSS width, derived from the height with the shape's ratio (`"29.333px"`, `"calc(2rem * 66 / 72)"`). */
   width: string;
   /** CSS height: `"<n>px"` for numbers, the given length for strings, `"1em"` by default. */
   height: string;
 }
 
 /**
- * Box size for a given `size` prop: explicit height, width derived from 66:72.
- * Handy to reserve space for a pennant outside the components.
+ * Box size for a given `size` prop: explicit height, width derived from the
+ * shape's aspect ratio (66:72 pennant, 4:3 rect, 1:1 square/circle).
+ * Handy to reserve space for a flag outside the components.
  */
-export function pennantBox(size?: PennantSize): PennantBox {
+export function pennantBox(size?: PennantSize, shape: PennantShape = 'pennant'): PennantBox {
+  const { width, height } = SHAPE_SIZE[shape];
   if (typeof size === 'number') {
-    return { width: `${round((size * PENNANT_WIDTH) / PENNANT_HEIGHT)}px`, height: `${size}px` };
+    return { width: `${round((size * width) / height)}px`, height: `${size}px` };
   }
-  const height = size ?? '1em';
-  return { width: `calc(${height} * ${PENNANT_WIDTH} / ${PENNANT_HEIGHT})`, height };
+  const css = size ?? '1em';
+  return { width: width === height ? css : `calc(${css} * ${width} / ${height})`, height: css };
 }
 
 /** @internal */
 export function frameStyle(
   size: PennantSize | undefined,
+  shape: PennantShape,
   style: CSSProperties | undefined,
 ): CSSProperties {
-  return { display: 'inline-block', ...pennantBox(size), ...style };
+  return { display: 'inline-block', ...pennantBox(size, shape), ...style };
 }
 
 /** @internal */

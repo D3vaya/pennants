@@ -1,60 +1,65 @@
+import { SHAPE_ART, type FlagArt, type PennantShape } from '../shapes.ts';
 import { fetchPennant } from './fetch.ts';
-import type * as LoadModule from './load.ts';
+import { loadArt } from './load.ts';
 
 /**
- * Shared, observable cache of loaded pennant markup. Lets every renderer
- * show an already-loaded flag synchronously (no flash on remount) and
- * de-duplicates concurrent requests for the same flag.
+ * Shared, observable cache of loaded flags. Lets every renderer show an
+ * already-loaded flag synchronously (no flash on remount) and de-duplicates
+ * concurrent requests.
  *
  * Two sources:
- * - bundled (`base === undefined`): the per-flag chunks of `loadPennant`.
- *   The loader map is itself imported lazily, so apps that only fetch never
- *   download it;
- * - fetch (`base` is a string): `fetchPennant(code, { base })`.
+ * - bundled (`base === undefined`): artwork from the lazily imported per-set
+ *   loader map. Art is cached once per set (`1x1`/`4x3`), so a flag drawn as
+ *   pennant, square and circle is downloaded once; composition per shape is
+ *   left to the renderer;
+ * - fetch (`base` is a string): the complete framed SVG from
+ *   `fetchPennant(code, { base, shape })`, cached per base + shape.
+ *
+ * `shape` must already be validated by the caller.
  */
 
-const markup = new Map<string, string>();
-const pending = new Map<string, Promise<string>>();
+/** Bundled artwork, or a complete framed SVG fetched from static assets. */
+export type CachedFlag = FlagArt | string;
+
+const flags = new Map<string, CachedFlag>();
+const pending = new Map<string, Promise<CachedFlag>>();
 const listeners = new Set<() => void>();
 let generation = 0;
 
-const keyOf = (code: string, base: string | undefined): string => {
-  const normalized = code.trim().toLowerCase();
-  return base === undefined ? normalized : `${base}\n${normalized}`;
-};
+const normalize = (code: string): string => code.trim().toLowerCase();
 
-let loader: Promise<typeof LoadModule> | undefined;
+const keyOf = (code: string, shape: PennantShape, base: string | undefined): string =>
+  base === undefined ? `${SHAPE_ART[shape]}\n${code}` : `${base}\n${shape}\n${code}`;
 
-async function bundled(code: string): Promise<string> {
-  loader ??= import('./load.ts').catch((error: unknown) => {
-    loader = undefined; // e.g. a chunk failed to download: retry next time
-    throw error;
-  });
-  const { loadPennant } = await loader;
-  return loadPennant(code);
+/** Synchronously returns the cached flag, if it was already loaded. */
+export function peekFlag(code: string, shape: PennantShape, base?: string): CachedFlag | undefined {
+  return flags.get(keyOf(normalize(code), shape, base));
 }
 
-/** Synchronously returns cached markup, if this flag was already loaded. */
-export function peekMarkup(code: string, base?: string): string | undefined {
-  return markup.get(keyOf(code, base));
-}
-
-/** Loads (once) and caches a flag's markup. Rejects for unknown codes. */
-export function loadMarkup(code: string, base?: string): Promise<string> {
-  const key = keyOf(code, base);
-  const hit = markup.get(key);
+/** Loads (once) and caches a flag. Rejects for unknown codes. */
+export function loadCachedFlag(
+  code: string,
+  shape: PennantShape,
+  base?: string,
+): Promise<CachedFlag> {
+  const normalized = normalize(code);
+  const key = keyOf(normalized, shape, base);
+  const hit = flags.get(key);
   if (hit !== undefined) return Promise.resolve(hit);
   let request = pending.get(key);
   if (!request) {
-    const normalized = code.trim().toLowerCase();
     const current = generation;
-    request = (base === undefined ? bundled(normalized) : fetchPennant(normalized, { base })).then(
-      (svg) => {
-        if (current !== generation) return svg; // cache was cleared meanwhile
+    const load: Promise<CachedFlag> =
+      base === undefined
+        ? loadArt(normalized, { set: SHAPE_ART[shape] })
+        : fetchPennant(normalized, { base, shape });
+    request = load.then(
+      (flag) => {
+        if (current !== generation) return flag; // cache was cleared meanwhile
         pending.delete(key);
-        markup.set(key, svg);
+        flags.set(key, flag);
         for (const listener of listeners) listener();
-        return svg;
+        return flag;
       },
       (error: unknown) => {
         if (current === generation) pending.delete(key);
@@ -67,7 +72,7 @@ export function loadMarkup(code: string, base?: string): Promise<string> {
 }
 
 /** Subscribes to cache updates; returns the unsubscribe function. */
-export function subscribeMarkup(listener: () => void): () => void {
+export function subscribeFlags(listener: () => void): () => void {
   listeners.add(listener);
   return () => {
     listeners.delete(listener);
@@ -75,8 +80,8 @@ export function subscribeMarkup(listener: () => void): () => void {
 }
 
 /** Test helper: forgets every cached flag. */
-export function clearMarkupCache(): void {
+export function clearFlagCache(): void {
   generation++;
-  markup.clear();
+  flags.clear();
   pending.clear();
 }
