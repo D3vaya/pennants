@@ -5,7 +5,7 @@ import type * as CacheModule from '../src/internal/cache.ts';
 
 afterEach(() => {
   vi.doUnmock('../src/internal/load-1x1.ts');
-  vi.doUnmock('../src/internal/fetch.ts');
+  vi.doUnmock('../src/internal/fetch-lazy.ts');
   vi.resetModules();
 });
 
@@ -25,7 +25,7 @@ describe('flag cache', () => {
 
   it('uses fetchPennant with base + shape when a base is given', async () => {
     const fetchPennant = vi.fn(async () => '<svg>fetched</svg>');
-    vi.doMock('../src/internal/fetch.ts', () => ({ fetchPennant }));
+    vi.doMock('../src/internal/fetch-lazy.ts', () => ({ fetchPennant }));
     const cache = await freshCache();
     await expect(cache.loadCachedFlag('AR', 'circle', '/base')).resolves.toBe('<svg>fetched</svg>');
     expect(fetchPennant).toHaveBeenCalledWith('ar', { base: '/base', shape: 'circle' });
@@ -53,7 +53,7 @@ describe('flag cache', () => {
       .mockImplementationOnce(() => new Promise((res) => (resolve = res)))
       .mockImplementationOnce(() => new Promise((_res, rej) => (reject = rej)))
       .mockImplementation(async () => '<svg>new</svg>');
-    vi.doMock('../src/internal/fetch.ts', () => ({ fetchPennant }));
+    vi.doMock('../src/internal/fetch-lazy.ts', () => ({ fetchPennant }));
     const cache = await freshCache();
     const stale = cache.loadCachedFlag('ar', 'pennant', '/b');
     cache.clearFlagCache();

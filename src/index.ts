@@ -7,4 +7,5 @@ export {
   type FlagOptions,
   type LoadArtOptions,
 } from './internal/load.ts';
-export { fetchPennant, type FetchPennantOptions } from './internal/fetch.ts';
+export { fetchPennant } from './internal/fetch-lazy.ts';
+export type { FetchPennantOptions } from './internal/fetch.ts';

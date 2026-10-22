@@ -5,7 +5,8 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import art from '../src/generated/art/1x1/ar.ts';
 import { SHAPES, codes, fetchPennant as fromRoot, pennantUrl, renderFlag } from '../src/index.ts';
-import { clearFetchCache, fetchPennant } from '../src/internal/fetch.ts';
+import { fetchPennant as lazyFetchPennant } from '../src/internal/fetch-lazy.ts';
+import { clearFetchCache } from '../src/internal/fetch.ts';
 import { sanitizeSvg } from '../src/internal/sanitize.ts';
 
 const ar = renderFlag(art);
@@ -22,14 +23,20 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('fetchPennant', () => {
-  it('is exported from pennants/fetch and the root entry', () => {
-    expect(fetchEntry.fetchPennant).toBe(fetchPennant);
-    expect(fromRoot).toBe(fetchPennant);
+describe('entries', () => {
+  it('root exports the lazy-sanitizer variant, pennants/fetch the static one', () => {
+    expect(fromRoot).toBe(lazyFetchPennant);
+    expect(fetchEntry.fetchPennant).not.toBe(lazyFetchPennant);
     expect(fetchEntry.pennantUrl).toBe(pennantUrl);
     expect(pennantUrl('ar').startsWith(fetchEntry.DEFAULT_CDN_BASE)).toBe(true);
   });
+});
 
+// Same sanitizer, same results: every behaviour is checked for both variants.
+describe.each([
+  ['root (lazy sanitizer)', lazyFetchPennant],
+  ['pennants/fetch (static sanitizer)', fetchEntry.fetchPennant],
+])('fetchPennant from %s', (_entry, fetchPennant) => {
   it('fetches from the versioned CDN by default', async () => {
     await expect(fetchPennant('AR')).resolves.toBe(ar.trim());
     expect(fetchMock).toHaveBeenCalledWith(pennantUrl('ar'));

@@ -102,15 +102,16 @@ const BARRELS = {
 };
 
 /**
- * Asserts no loader map / art chunks. `fetchPennant` legitimately lazy-loads
- * exactly one chunk: the SVG sanitizer (only fetched in fetch mode).
+ * Asserts no loader map / art chunks. The root `fetchPennant` legitimately
+ * lazy-loads exactly one chunk, the SVG sanitizer; `pennants/fetch` bundles
+ * it statically (one file, no lazy-chunk helper).
  */
 const noLoader = async (bundle: (source: string) => Promise<Bundle>, source: string) => {
   const { files, code } = await bundle(source);
-  const lazy = source.includes('fetchPennant') ? 1 : 0;
+  const lazy = source.includes('fetchPennant') && !source.includes('/fetch.js') ? 1 : 0;
+  expect(code).toContain(source.includes('fetchPennant') ? 'XMLSerializer' : '');
   expect(files).toBe(1 + lazy);
   expect(code.match(/import\(/g)?.length ?? 0).toBe(lazy);
-  if (lazy) expect(code).toContain('XMLSerializer');
   expect(code).not.toMatch(/\/(flags|art)\//); // loader-map entries look like import("./art/1x1/ar.js")
 };
 

@@ -1,5 +1,5 @@
 import { SHAPE_ART, type FlagArt, type PennantShape } from '../shapes.ts';
-import { fetchPennant } from './fetch.ts';
+import { fetchPennant } from './fetch-lazy.ts';
 import { loadArt } from './load.ts';
 
 /**
