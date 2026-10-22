@@ -95,7 +95,7 @@ const EXAMPLES: Example[] = [
       {
         dir: 'build',
         ext: '.html',
-        includes: ['pn-ar-clip', 'class="pn pn-de', '<pennant-flag code="br"'],
+        includes: ['id="pn-ar-circle-clip"', 'class="pn pn-de', '<pennant-flag code="br"'],
       },
     ],
   },
@@ -113,7 +113,7 @@ const EXAMPLES: Example[] = [
         dir: 'dist',
         ext: '.html',
         includes: [
-          'pn-ar-clip',
+          'id="pn-ar-square-clip"',
           'class="pn pn-de',
           'data-pennant="br"',
           'data-shape="circle"',
