@@ -9,6 +9,8 @@
  *   node scripts/bundle-budget.ts --update     # rewrite budgets from this run (+5%)
  *   node scripts/bundle-budget.ts --keep       # keep the temp dir
  *   node scripts/bundle-budget.ts --json out.json  # also write the measurements as JSON
+ *   node scripts/bundle-budget.ts --check-snapshot docs/data/bundle-sizes.json
+ *     # also fail when that committed snapshot drifted from this run (> 2% and > 50 B)
  */
 import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
@@ -172,11 +174,16 @@ const PROBES: Probe[] = [
 
 const argv = process.argv.slice(2);
 const args = new Set(argv);
-const jsonIndex = argv.indexOf('--json');
-const jsonPath = jsonIndex === -1 ? undefined : argv[jsonIndex + 1];
-if (jsonIndex !== -1 && (jsonPath === undefined || jsonPath.startsWith('--'))) {
-  throw new Error('--json needs a file path');
+/** Value of a `--flag <path>` option, if given. */
+function pathOption(flag: string): string | undefined {
+  const index = argv.indexOf(flag);
+  if (index === -1) return undefined;
+  const value = argv[index + 1];
+  if (value === undefined || value.startsWith('--')) throw new Error(`${flag} needs a file path`);
+  return value;
 }
+const jsonPath = pathOption('--json');
+const snapshotPath = pathOption('--check-snapshot');
 
 interface Triple {
   min: number;
@@ -387,6 +394,45 @@ if (jsonPath !== undefined) {
   const snapshot = { vite: vite.version, generated: new Date().toISOString(), probes: records };
   await writeFile(resolve(jsonPath), `${JSON.stringify(snapshot, null, 2)}\n`);
   console.info(`\nMeasurements written to ${resolve(jsonPath)}`);
+}
+
+if (snapshotPath !== undefined) {
+  const committed = JSON.parse(await readFile(resolve(snapshotPath), 'utf8')) as {
+    probes: Record<string, ProbeRecord>;
+  };
+  const drift: string[] = [];
+  const names = new Set([...Object.keys(committed.probes), ...Object.keys(records)]);
+  for (const name of names) {
+    const was = committed.probes[name];
+    const now = records[name];
+    if (was === undefined || now === undefined) {
+      drift.push(
+        `${name}: ${was === undefined ? 'missing from the snapshot' : 'no longer measured'}`,
+      );
+      continue;
+    }
+    if (was.lazyFiles !== now.lazyFiles) {
+      drift.push(`${name}.lazyFiles: ${was.lazyFiles} -> ${now.lazyFiles}`);
+    }
+    for (const part of ['entry', 'css'] as const) {
+      for (const metric of ['min', 'gzip', 'brotli'] as const) {
+        const before = was[part]?.[metric] ?? 0;
+        const after = now[part]?.[metric] ?? 0;
+        if (Math.abs(after - before) > Math.max(50, before * 0.02)) {
+          drift.push(`${name}.${part}.${metric}: ${before} -> ${after}`);
+        }
+      }
+    }
+  }
+  if (drift.length > 0) {
+    console.error(
+      `\n${snapshotPath} is stale; regenerate it with\n` +
+        `  node scripts/bundle-budget.ts --json ${snapshotPath}\n${drift.join('\n')}`,
+    );
+    process.exitCode = 1;
+  } else {
+    console.info(`\n${snapshotPath} matches this run.`);
+  }
 }
 
 if (args.has('--update')) {
