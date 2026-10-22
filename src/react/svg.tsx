@@ -1,13 +1,9 @@
 import { forwardRef, useId, useMemo } from 'react';
 import { getPennantName, isPennantCode, toShape } from '../internal/core.ts';
-import { inlineFlag } from '../internal/svg.ts';
+import { inlineParts } from '../internal/svg.ts';
+import { renderFrame } from './frame.tsx';
 import type { FlagArt } from '../shapes.ts';
-import {
-  a11yProps,
-  frameStyle,
-  type PennantCommonProps,
-  type PennantHtmlAttributes,
-} from './shared.ts';
+import type { PennantCommonProps, PennantHtmlAttributes } from './shared.ts';
 
 /** Props of {@link PennantSvg}: shared props plus statically imported artwork. */
 export interface PennantSvgProps extends PennantHtmlAttributes, PennantCommonProps {
@@ -30,17 +26,16 @@ export const PennantSvg = /* @__PURE__ */ forwardRef<HTMLSpanElement, PennantSvg
     const validShape = toShape(shape);
     const known = isPennantCode(art.code) ? art.code : undefined;
     const label = title ?? (known === undefined ? '' : getPennantName(known, locale));
-    const html = useMemo(() => inlineFlag(art, validShape, scope), [art, validShape, scope]);
-    return (
-      <span
-        ref={ref}
-        {...rest}
-        {...a11yProps(label)}
-        data-pennant={known}
-        data-shape={validShape}
-        style={frameStyle(size, validShape, style)}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
-    );
+    const parts = useMemo(() => inlineParts(art, validShape, scope), [art, validShape, scope]);
+    return renderFrame({
+      frameRef: ref,
+      rest,
+      label,
+      code: known,
+      shape: validShape,
+      size,
+      style,
+      parts,
+    });
   },
 );

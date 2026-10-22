@@ -19,15 +19,16 @@ export function svgCode(svg: string): string | undefined {
 }
 
 /**
- * Id prefix for one inlined instance: `pn<scope>-<code>-`. The scope (e.g.
- * React's `useId()` output such as `:r1:`, `«r1»` or `_R_1_`) is reduced to
- * `[A-Za-z0-9_]`, so the first `-` always separates scope from code and two
- * different (scope, code) pairs can never yield the same prefix. Keeping the
- * code matters because separate React roots (islands, several
- * `renderToString` calls) restart the `useId` sequence.
+ * Id prefix for one inlined instance: `pn<scope>-<namespace>-`, where the
+ * namespace is the flag code plus, for non-pennant shapes, the shape
+ * (`ar`, `ar-circle`). The scope (e.g. React's `useId()` output such as
+ * `:r1:`, `«r1»` or `_R_1_`) is reduced to `[A-Za-z0-9_]`, so the first `-`
+ * always separates scope from namespace and two different pairs never yield
+ * the same prefix. Keeping code and shape matters because separate React
+ * roots (islands, several `renderToString` calls) restart the `useId` sequence.
  */
-export function scopedIdPrefix(scope: string, code: string): string {
-  return `pn${scope.replace(/\W/g, '')}-${code}-`;
+export function scopedIdPrefix(scope: string, namespace: string): string {
+  return `pn${scope.replace(/\W/g, '')}-${namespace}-`;
 }
 
 /**
@@ -59,6 +60,36 @@ export function prepareSvg(svg: string, scope?: string): string {
  */
 export function inlineFlag(flag: CachedFlag, shape: PennantShape, scope?: string): string {
   if (typeof flag === 'string') return prepareSvg(flag, scope);
-  const prefix = scope === undefined ? undefined : scopedIdPrefix(scope, flag.code);
+  // The shape is part of the namespace: the same flag in two shapes (or in
+  // two React roots whose useId sequences coincide) never shares ids.
+  const namespace = shape === 'pennant' ? flag.code : `${flag.code}-${shape}`;
+  const prefix = scope === undefined ? undefined : scopedIdPrefix(scope, namespace);
   return prepareSvg(composeFlag(flag, shape, prefix));
+}
+
+/** Root `viewBox` and inner markup of an SVG document. */
+export interface SvgParts {
+  viewBox: string;
+  inner: string;
+}
+
+const DOCUMENT = /^\s*<svg\b([^>]*)>([\s\S]*)<\/svg>\s*$/;
+const VIEW_BOX = /\bviewBox="([^"]*)"/;
+
+/** Splits SVG markup into its root `viewBox` and children markup. */
+export function splitSvg(markup: string): SvgParts {
+  const match = DOCUMENT.exec(markup);
+  return {
+    viewBox: VIEW_BOX.exec(match?.[1] ?? '')?.[1] ?? '',
+    inner: match?.[2] ?? '',
+  };
+}
+
+/**
+ * Like {@link inlineFlag}, but returns the parts a framework renders itself:
+ * the root element's attributes stay under the framework's control (sizing via
+ * presentation attributes, no inline `style`), only the children are raw HTML.
+ */
+export function inlineParts(flag: CachedFlag, shape: PennantShape, scope?: string): SvgParts {
+  return splitSvg(inlineFlag(flag, shape, scope));
 }

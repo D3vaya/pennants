@@ -64,14 +64,18 @@ describe('<Pennant> inline mode', () => {
     render(<Pennant code="ar" size={32} data-testid="p" />);
     const el = screen.getByTestId('p');
     expect(el.tagName).toBe('SPAN');
-    expect(el.innerHTML).toBe('');
-    expect(el.style.display).toBe('inline-block');
-    expect(el.style.height).toBe('32px');
-    expect(el.style.width).toBe('29.333px');
-    await waitFor(() => expect(el.querySelector('svg')).not.toBeNull());
+    expect(el.querySelector('svg')?.innerHTML).toBe('');
+    expect(el.hasAttribute('style')).toBe(false); // CSP-safe: sized by svg attributes
+    const placeholder = el.querySelector('svg');
+    expect(placeholder?.getAttribute('viewBox')).toBe('0 0 66 72');
+    expect(placeholder?.getAttribute('height')).toBe('32');
+    expect(placeholder?.getAttribute('width')).toBe('29.333');
+    await waitFor(() => expect(el.querySelector('clipPath')).not.toBeNull());
     const svg = el.querySelector('svg');
-    expect(svg?.getAttribute('width')).toBe('100%');
+    expect(svg?.getAttribute('width')).toBe('29.333');
     expect(svg?.getAttribute('aria-hidden')).toBe('true');
+    expect(svg?.getAttribute('focusable')).toBe('false');
+    expect(el.querySelectorAll('svg svg')).toHaveLength(1); // the art viewport, not a nested document
     expect(loadArt).toHaveBeenCalledWith('ar', { set: '1x1' });
   });
 
@@ -120,15 +124,16 @@ describe('<Pennant> inline mode', () => {
     expect(el?.className).toBe('flag');
     expect(el?.style.verticalAlign).toBe('middle');
     expect(el?.style.display).toBe('block');
-    expect(el?.style.height).toBe('3rem');
+    expect(el?.querySelector('svg')?.getAttribute('height')).toBe('3rem');
+    expect(el?.querySelector('svg')?.getAttribute('width')).toBe('2.75rem');
   });
 
   it('renders synchronously (no flash) once a flag is cached', async () => {
     const first = render(<Pennant code="ar" data-testid="p" />);
-    await waitFor(() => expect(screen.getByTestId('p').querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(screen.getByTestId('p').querySelector('clipPath')).not.toBeNull());
     first.unmount();
     render(<Pennant code="ar" data-testid="p" />);
-    expect(screen.getByTestId('p').querySelector('svg')).not.toBeNull();
+    expect(screen.getByTestId('p').querySelector('clipPath')).not.toBeNull();
     expect(loadArt).toHaveBeenCalledTimes(1);
   });
 
@@ -139,7 +144,7 @@ describe('<Pennant> inline mode', () => {
         <Pennant code="ar" data-testid="b" />
       </>,
     );
-    await waitFor(() => expect(screen.getByTestId('b').querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(screen.getByTestId('b').querySelector('clipPath')).not.toBeNull());
     expect(loadArt).toHaveBeenCalledTimes(1);
   });
 
@@ -152,7 +157,7 @@ describe('<Pennant> inline mode', () => {
     );
     const a = screen.getByTestId('a');
     const b = screen.getByTestId('b');
-    await waitFor(() => expect(b.querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(b.querySelector('clipPath')).not.toBeNull());
     const idsA = ids(a);
     const idsB = ids(b);
     expect(idsA.length).toBeGreaterThan(2);
@@ -183,11 +188,11 @@ describe('<Pennant> inline mode', () => {
   it('clears the previous flag when the code changes to an unloaded one', async () => {
     const { rerender } = render(<Pennant code="ar" data-testid="p" />);
     const el = screen.getByTestId('p');
-    await waitFor(() => expect(el.querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(el.querySelector('clipPath')).not.toBeNull());
     const pending = deferred();
     loadArt.mockImplementation(() => pending.promise);
     rerender(<Pennant code="br" data-testid="p" />);
-    expect(el.innerHTML).toBe('');
+    expect(el.querySelector('svg')?.innerHTML).toBe('');
     await act(async () => pending.resolve(br));
     await waitFor(() => expect(el.innerHTML).toContain('#229e45'));
   });
@@ -206,10 +211,10 @@ describe('<Pennant> inline mode', () => {
     loadArt.mockImplementationOnce(() => Promise.reject(new Error('offline')));
     const first = render(<Pennant code="ar" data-testid="p" />);
     await act(async () => {});
-    expect(screen.getByTestId('p').innerHTML).toBe('');
+    expect(screen.getByTestId('p').querySelector('svg')?.innerHTML).toBe('');
     first.unmount();
     render(<Pennant code="ar" data-testid="p" />);
-    await waitFor(() => expect(screen.getByTestId('p').querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(screen.getByTestId('p').querySelector('clipPath')).not.toBeNull());
     expect(loadArt).toHaveBeenCalledTimes(2);
   });
 
@@ -219,7 +224,7 @@ describe('<Pennant> inline mode', () => {
         <Pennant code="ar" data-testid="p" />
       </StrictMode>,
     );
-    await waitFor(() => expect(screen.getByTestId('p').querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(screen.getByTestId('p').querySelector('clipPath')).not.toBeNull());
   });
 
   it('accepts uppercase multi-part codes', () => {
@@ -246,7 +251,7 @@ describe('<Pennant> inline mode', () => {
     await act(async () => {
       root = hydrateRoot(container, <Pennant code="ar" data-testid="p" />);
     });
-    await waitFor(() => expect(container.querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(container.querySelector('clipPath')).not.toBeNull());
     expect(error).not.toHaveBeenCalled();
     act(() => root?.unmount());
     container.remove();
@@ -286,7 +291,7 @@ describe('<Pennant mode="img">', () => {
     expect(img.getAttribute('src')).toBe('/assets/pennants/svg/pennant/gb-eng.svg');
     expect(img.getAttribute('width')).toBe('33');
     expect(img.getAttribute('height')).toBe('36');
-    expect(img.style.width).toBe('33px');
+    expect(img.hasAttribute('style')).toBe(false); // numeric sizes need no style
     expect(img.getAttribute('loading')).toBe('eager');
     expect(img.getAttribute('decoding')).toBe('sync');
     expect(img.className).toBe('f');
@@ -302,11 +307,11 @@ describe('<PennantSvg>', () => {
   it('renders statically imported markup synchronously', () => {
     render(<PennantSvg art={ar} size={48} data-testid="p" />);
     const el = screen.getByTestId('p');
-    expect(el.querySelector('svg')).not.toBeNull();
+    expect(el.querySelector('clipPath')).not.toBeNull();
     expect(el.getAttribute('role')).toBe('img');
     expect(el.getAttribute('aria-label')).toBe('Argentina');
     expect(el.dataset.pennant).toBe('ar');
-    expect(el.style.height).toBe('48px');
+    expect(el.querySelector('svg')?.getAttribute('height')).toBe('48');
   });
 
   it('server-renders with scoped ids', () => {
@@ -359,10 +364,10 @@ describe('<Pennant mode="fetch">', () => {
       </>,
     );
     const a = screen.getByTestId('a');
-    expect(a.innerHTML).toBe('');
-    expect(a.style.height).toBe('20px');
+    expect(a.querySelector('svg')?.innerHTML).toBe('');
+    expect(a.querySelector('svg')?.getAttribute('height')).toBe('20');
     expect(a.getAttribute('aria-label')).toBe('Argentina');
-    await waitFor(() => expect(screen.getByTestId('b').querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(screen.getByTestId('b').querySelector('clipPath')).not.toBeNull());
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith('/assets/svg/pennant/ar.svg');
     expect(loadArt).not.toHaveBeenCalled();
@@ -373,14 +378,14 @@ describe('<Pennant mode="fetch">', () => {
 
   it('defaults to the versioned CDN', async () => {
     render(<Pennant code="ar" mode="fetch" data-testid="p" />);
-    await waitFor(() => expect(screen.getByTestId('p').querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(screen.getByTestId('p').querySelector('clipPath')).not.toBeNull());
     expect(fetchMock).toHaveBeenCalledWith(`${core.DEFAULT_CDN_BASE}/svg/pennant/ar.svg`);
   });
 
   it('keeps fetch and bundled caches apart', async () => {
     await loadCachedFlag('ar', 'pennant');
     render(<Pennant code="ar" mode="fetch" base="/x" data-testid="p" />);
-    expect(screen.getByTestId('p').innerHTML).toBe('');
+    expect(screen.getByTestId('p').querySelector('svg')?.innerHTML).toBe('');
     await waitFor(() => expect(fetchMock).toHaveBeenCalledWith('/x/svg/pennant/ar.svg'));
   });
 
@@ -396,7 +401,7 @@ describe('<Pennant mode="fetch">', () => {
     render(<Pennant code="ar" mode="fetch" base="/bad" data-testid="p" />);
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     await act(async () => {});
-    expect(screen.getByTestId('p').innerHTML).toBe('');
+    expect(screen.getByTestId('p').querySelector('svg')?.innerHTML).toBe('');
   });
 });
 
@@ -418,7 +423,7 @@ describe('shapes', () => {
       </>,
     );
     for (const id of ['rect', 'circle', 'square', 'pennant']) {
-      await waitFor(() => expect(screen.getByTestId(id).querySelector('svg')).not.toBeNull());
+      await waitFor(() => expect(screen.getByTestId(id).querySelector('clipPath')).not.toBeNull());
     }
     expect(loadArt).toHaveBeenCalledTimes(2);
     expect(loadArt).toHaveBeenCalledWith('ar', { set: '4x3' });
@@ -456,7 +461,7 @@ describe('shapes', () => {
     vi.stubGlobal('fetch', fetchMock);
     clearFetchCache();
     render(<Pennant code="ar" mode="fetch" base="/a" shape="circle" data-testid="p" />);
-    await waitFor(() => expect(screen.getByTestId('p').querySelector('svg')).not.toBeNull());
+    await waitFor(() => expect(screen.getByTestId('p').querySelector('clipPath')).not.toBeNull());
     expect(fetchMock).toHaveBeenCalledWith('/a/svg/circle/ar.svg');
     vi.unstubAllGlobals();
   });
@@ -470,7 +475,7 @@ describe('shapes', () => {
   it('PennantSvg composes the art in any shape', () => {
     render(<PennantSvg art={ar43} shape="rect" size={30} data-testid="p" />);
     const el = screen.getByTestId('p');
-    expect(el.style.width).toBe('40px');
+    expect(el.querySelector('svg')?.getAttribute('width')).toBe('40');
     expect(el.querySelector('svg')?.getAttribute('viewBox')).toBe('0 0 64 48');
     expect(el.dataset.shape).toBe('rect');
     expect(el.innerHTML).not.toContain('pn-ar-');

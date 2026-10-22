@@ -10,14 +10,9 @@ import {
   type PennantCode,
 } from '../internal/core.ts';
 import { loadCachedFlag, peekFlag, subscribeFlags } from '../internal/cache.ts';
-import { inlineFlag } from '../internal/svg.ts';
-import {
-  a11yProps,
-  frameStyle,
-  round,
-  type PennantHtmlAttributes,
-  type PennantCommonProps,
-} from './shared.ts';
+import { inlineParts, type SvgParts } from '../internal/svg.ts';
+import { renderFrame } from './frame.tsx';
+import { imgStyle, round, type PennantHtmlAttributes, type PennantCommonProps } from './shared.ts';
 
 /** Props of {@link Pennant}. Other HTML attributes and `ref` are forwarded. */
 export interface PennantProps extends PennantHtmlAttributes, PennantCommonProps {
@@ -84,10 +79,12 @@ export const Pennant = /* @__PURE__ */ forwardRef<HTMLElement, PennantProps>(fun
     if (inline) loadCachedFlag(normalized, validShape, source).catch(noop);
   }, [inline, normalized, validShape, source]);
 
-  const html = useMemo(
-    () => (flag === undefined ? '' : inlineFlag(flag, validShape, scope)),
-    [flag, validShape, scope],
-  );
+  const parts = useMemo((): SvgParts => {
+    if (flag !== undefined) return inlineParts(flag, validShape, scope);
+    // Empty placeholder with the final viewBox: reserves the box while loading.
+    const { width, height } = SHAPE_SIZE[validShape];
+    return { viewBox: `0 0 ${width} ${height}`, inner: '' };
+  }, [flag, validShape, scope]);
 
   if (!inline) {
     const { width, height } = SHAPE_SIZE[validShape];
@@ -105,20 +102,19 @@ export const Pennant = /* @__PURE__ */ forwardRef<HTMLElement, PennantProps>(fun
         height={round(height * intrinsic)}
         loading={loading ?? 'lazy'}
         decoding={decoding ?? 'async'}
-        style={frameStyle(size, validShape, style)}
+        style={imgStyle(size, validShape, style)}
       />
     );
   }
 
-  return (
-    <span
-      ref={ref as Ref<HTMLSpanElement>}
-      {...rest}
-      {...a11yProps(label)}
-      data-pennant={normalized}
-      data-shape={validShape}
-      style={frameStyle(size, validShape, style)}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
+  return renderFrame({
+    frameRef: ref as Ref<HTMLSpanElement>,
+    rest,
+    label,
+    code: normalized,
+    shape: validShape,
+    size,
+    style,
+    parts,
+  });
 });

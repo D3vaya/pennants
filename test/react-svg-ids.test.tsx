@@ -3,7 +3,7 @@ import arArt from '../src/generated/art/1x1/ar.ts';
 import gbEngArt from '../src/generated/art/1x1/gb-eng.ts';
 import usArt from '../src/generated/art/1x1/us.ts';
 import { renderFlag } from '../src/index.ts';
-import { inlineFlag, prepareSvg, scopedIdPrefix, svgCode } from '../src/internal/svg.ts';
+import { inlineFlag, prepareSvg, scopedIdPrefix, splitSvg, svgCode } from '../src/internal/svg.ts';
 
 const ar = renderFlag(arArt);
 const gbEng = renderFlag(gbEngArt);
@@ -102,7 +102,7 @@ describe('inlineFlag', () => {
     expect(out).toMatch(
       /^<svg [^>]*viewBox="0 0 48 48" width="100%" height="100%" aria-hidden="true"/,
     );
-    expect(out).toContain('id="pnr3-ar-clip"');
+    expect(out).toContain('id="pnr3-ar-circle-clip"');
     expect(out).not.toContain('pn-ar-');
   });
 
@@ -112,7 +112,21 @@ describe('inlineFlag', () => {
 
   it('rewrites fetched markup', () => {
     const out = inlineFlag(renderFlag(arArt, { shape: 'square' }), 'square', ':r4:');
-    expect(out).toContain('id="pnr4-ar-clip"');
+    expect(out).toContain('id="pnr4-ar-square-clip"');
     expect(out).toContain('aria-hidden="true"');
+  });
+});
+
+describe('splitSvg', () => {
+  it('splits the root viewBox from the children', () => {
+    expect(splitSvg('<svg viewBox="0 0 1 2"><g/></svg>')).toEqual({
+      viewBox: '0 0 1 2',
+      inner: '<g/>',
+    });
+  });
+
+  it('tolerates markup without a viewBox or root svg', () => {
+    expect(splitSvg('<svg><g/></svg>')).toEqual({ viewBox: '', inner: '<g/>' });
+    expect(splitSvg('<div></div>')).toEqual({ viewBox: '', inner: '' });
   });
 });

@@ -50,13 +50,35 @@ export function pennantBox(size?: PennantSize, shape: PennantShape = 'pennant'):
   return { width: width === height ? css : `calc(${css} * ${width} / ${height})`, height: css };
 }
 
-/** @internal */
-export function frameStyle(
+/**
+ * @internal Width/height presentation attributes for the inner `<svg>`:
+ * CSP-safe sizing (no `style` attribute). Numbers are pixels; simple CSS
+ * lengths (`2rem`, `1.5em`) get a derived width; other values (`calc()`,
+ * `%`) set the height only and let the `viewBox` ratio derive the width.
+ */
+export function svgSize(
+  size: PennantSize | undefined,
+  shape: PennantShape,
+): { width?: string; height: string } {
+  const { width, height } = SHAPE_SIZE[shape];
+  if (typeof size === 'number') {
+    return { width: String(round((size * width) / height)), height: String(size) };
+  }
+  const css = size ?? '1em';
+  const length = /^(\d*\.?\d+)([a-z]*)$/i.exec(css.trim());
+  return length
+    ? { width: `${round((Number(length[1]) * width) / height)}${String(length[2])}`, height: css }
+    : { height: css };
+}
+
+/** @internal `style` for `<img>` sizes that HTML attributes cannot express (non-numeric). */
+export function imgStyle(
   size: PennantSize | undefined,
   shape: PennantShape,
   style: CSSProperties | undefined,
-): CSSProperties {
-  return { display: 'inline-block', ...pennantBox(size, shape), ...style };
+): CSSProperties | undefined {
+  if (typeof size === 'number') return style;
+  return { ...pennantBox(size, shape), ...style };
 }
 
 /** @internal */
