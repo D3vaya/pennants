@@ -1,23 +1,39 @@
 # pennants
 
-Country flags in pennant (banderín) style: a golden hanging bar over a flag cut into a pointed
-pennant. 271 flags (249 ISO 3166-1 countries plus regions and organizations) shipped as SVG,
-PNG, CSS classes, an SVG sprite, tree-shakable ES modules, a React component and a Web Component.
+[![npm](https://img.shields.io/npm/v/pennants)](https://www.npmjs.com/package/pennants)
+[![core size](https://img.shields.io/bundlejs/size/pennants?exports=getPennantName&label=core)](https://bundlejs.com/?q=pennants&treeshake=[{getPennantName}])
+[![CI](https://github.com/d3vaya/pennants/actions/workflows/ci.yml/badge.svg)](https://github.com/d3vaya/pennants/actions/workflows/ci.yml)
+[![license](https://img.shields.io/npm/l/pennants)](LICENSE)
 
-The flag artwork comes from [flag-icons](https://github.com/lipis/flag-icons) (MIT); `pennants`
-wraps it in the pennant frame and adds a typed JavaScript API.
+Country flags in pennant style. 271 flags (249 ISO 3166-1 countries plus regions and
+organizations) as SVG, PNG, CSS classes, an SVG sprite, tree-shakable ES modules, a React
+component and a Web Component. Typed, lazy, about half a kilobyte per flag.
 
-- Every pennant is 66 × 72 (aspect ratio 11:12).
-- ESM only, TypeScript types included, zero runtime dependencies.
-- Node.js >= 20.19 for tooling; any modern browser at runtime.
+![Two strings of pennant flags](https://raw.githubusercontent.com/d3vaya/pennants/main/docs/public/preview.png)
 
-## Install
+**[Documentation](https://d3vaya.github.io/pennants/)** ·
+**[Gallery](https://d3vaya.github.io/pennants/gallery)** ·
+[Which format?](https://d3vaya.github.io/pennants/guide/formats) ·
+[API](https://d3vaya.github.io/pennants/api/) ·
+[Español](https://d3vaya.github.io/pennants/es/)
 
 ```sh
 npm install pennants
 ```
 
-Or use the CDN without installing:
+## Quick start
+
+**CSS classes**: no JavaScript, images load per used class.
+
+```js
+import 'pennants/css';
+```
+
+```html
+<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+```
+
+**Image or CDN**: zero bundle cost.
 
 ```html
 <img
@@ -28,225 +44,86 @@ Or use the CDN without installing:
 />
 ```
 
-Always pin a version in CDN URLs.
-
-## Usage
-
-### Static files
-
-| Path                         | Content                              |
-| ---------------------------- | ------------------------------------ |
-| `pennants/svg/<code>.svg`    | Standalone SVG                       |
-| `pennants/png/1x/<code>.png` | PNG, 66 × 72                         |
-| `pennants/png/2x/<code>.png` | PNG, 132 × 144                       |
-| `pennants/sprite`            | SVG sprite (`sprite/pennants.svg`)   |
-| `pennants/css`               | CSS classes (`css/pennants.min.css`) |
-
-```js
-import arUrl from 'pennants/svg/ar.svg'; // your bundler turns this into a URL
-```
-
-### CSS classes
-
-```js
-import 'pennants/css';
-```
-
-```html
-<span class="pn pn-ar"></span> <span class="pn pn-ar pn-2x"></span>
-```
-
-`.pn` is `1em` high and keeps the 11:12 ratio, so it scales with `font-size`. Size helpers:
-`.pn-lg`, `.pn-2x`, `.pn-3x`, `.pn-4x`. Add `role="img"` and `aria-label` when the flag carries
-meaning; otherwise add `aria-hidden="true"`.
-
-### SVG sprite
-
-```html
-<svg width="33" height="36" role="img" aria-label="Argentina">
-  <use href="/assets/pennants.svg#pn-ar" />
-</svg>
-```
-
-Copy `node_modules/pennants/sprite/pennants.svg` to your public folder. Symbol ids are
-`pn-<code>`.
-
-### Per-flag modules
-
-Each flag is its own module that exports the SVG markup as a string. Bundlers only include the
-flags you import.
+**One module per flag**: the SVG markup as a string, tree-shaken.
 
 ```js
 import ar from 'pennants/flags/ar';
-
-element.innerHTML = ar;
 ```
 
-Only insert markup that comes from `pennants/flags/*` or `loadPennant` this way (and through
-`<PennantSvg>`). Never pass user-provided strings to `innerHTML` or `PennantSvg`: they are not
-sanitized.
-
-### Core API
+**Lazy, by code**: each flag is its own chunk.
 
 ```js
-import { isPennantCode, toPennantCode, loadPennant, getPennantName, pennantUrl } from 'pennants';
+import { loadPennant, getPennantName } from 'pennants';
 
-isPennantCode('ar'); // true
-isPennantCode('AR'); // false: exact lowercase match
-const code = toPennantCode(' AR '); // 'ar' (normalize user input; throws RangeError if unknown)
-
-const svg = await loadPennant(code); // fetches only this flag's chunk
-
-getPennantName('ar'); // 'Argentina'
-getPennantName('ar', 'es'); // 'Argentina'
+const svg = await loadPennant('ar');
 getPennantName('de', 'es'); // 'Alemania'
-pennantUrl('ar'); // 'https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/ar.svg'
-pennantUrl('ar', { format: 'png', scale: 2 }); // '.../png/2x/ar.png'
 ```
 
-| Export                            | Description                                                                                                           |
-| --------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `codes`                           | All supported codes, lowercase (`readonly PennantCode[]`).                                                            |
-| `isoCodes`                        | The ISO 3166-1 alpha-2 subset.                                                                                        |
-| `type PennantCode`                | Union of every supported code.                                                                                        |
-| `isPennantCode(value)`            | Type guard. Exact lowercase match; use `toPennantCode` for user input.                                                |
-| `toPennantCode(value)`            | Trims and lowercases; throws `RangeError` on unknown codes.                                                           |
-| `loadPennant(code)`               | `Promise<string>` with the SVG markup. Each flag is a separate lazy chunk.                                            |
-| `getPennantName(code, locale?)`   | Localized name via `Intl.DisplayNames`; falls back to English (`eu`, `gb-eng`, ...). Default `'en'`.                  |
-| `toDataUri(svg)`                  | Encodes markup as a `data:image/svg+xml` URI.                                                                         |
-| `pennantUrl(code, options?)`      | URL of a static asset. Options: `base` (default `DEFAULT_CDN_BASE`), `format` (`'svg'` \| `'png'`), `scale` (1 \| 2). |
-| `toEmoji(code)`                   | Emoji flag for ISO codes plus `eu` and `un`; `''` when none exists (`xx`, `gb-eng`).                                  |
-| `PENNANT_WIDTH`, `PENNANT_HEIGHT` | `66`, `72`.                                                                                                           |
-| `PENNANT_ASPECT_RATIO`            | `66 / 72`.                                                                                                            |
-| `DEFAULT_CDN_BASE`                | `https://cdn.jsdelivr.net/npm/pennants@<installed version>`, so URLs match the installed assets.                      |
-
-To serve assets yourself, copy `svg/` (and `png/`) to your public folder and pass
-`pennantUrl(code, { base: '/assets/pennants' })`.
-
-### React
-
-React >= 18 is an optional peer dependency.
+**React**: accessible name by default, SSR-safe.
 
 ```jsx
-import { Pennant, PennantSvg } from 'pennants/react';
-import ar from 'pennants/flags/ar';
+import { Pennant } from 'pennants/react';
 
-<Pennant code="ar" size={32} />                       // inline SVG, chunk loaded lazily
-<Pennant code="ar" size={32} mode="img" base="/assets/pennants" /> // <img> to a static file
-<PennantSvg svg={ar} size="2rem" />                   // inline SVG, bundled and SSR-ready
+<Pennant code="ar" size={32} />;
 ```
 
-| Prop       | Components   | Description                                                                                                         |
-| ---------- | ------------ | ------------------------------------------------------------------------------------------------------------------- |
-| `code`     | `Pennant`    | Flag code, lowercase or uppercase (`ar`, `GB-ENG`). Unknown codes throw a `RangeError` during render.               |
-| `svg`      | `PennantSvg` | Markup from `pennants/flags/*`. Must be trusted (see above).                                                        |
-| `size`     | both         | Height as px number or CSS length. Width follows 66:72. Default `1em`.                                              |
-| `title`    | both         | Accessible name. Defaults to `getPennantName(code, locale)`. `""` makes it decorative (`aria-hidden`, empty `alt`). |
-| `locale`   | both         | Locale for the default name. Default `'en'`.                                                                        |
-| `mode`     | `Pennant`    | `'inline'` (default) or `'img'`.                                                                                    |
-| `base`     | `Pennant`    | `img` mode: where `svg/` is served (see `pennantUrl`). Default `DEFAULT_CDN_BASE`.                                  |
-| `loading`  | `Pennant`    | `img` mode: `'lazy'` (default) or `'eager'`.                                                                        |
-| `decoding` | `Pennant`    | `img` mode: `'async'` (default), `'sync'` or `'auto'`.                                                              |
-
-Other HTML attributes (`className`, `style`, `data-*`, ...) and `ref` are forwarded. Inline
-output is a `<span data-pennant="<code>">` wrapping the SVG; the box is reserved while the chunk
-loads, and SVG ids are made unique per instance. `pennantBox(size)` returns the
-`{ width, height }` used for the box, for custom wrappers.
-
-### Web Component
-
-```js
-import 'pennants/element/register';
-```
+**Web Component**: no framework.
 
 ```html
+<script type="module">
+  import 'pennants/element/register';
+</script>
 <pennant-flag code="ar" size="32"></pennant-flag>
-<pennant-flag code="ar" size="2rem" label="Argentina"></pennant-flag>
-<!-- decorative: -->
-<pennant-flag code="ar" label=""></pennant-flag>
 ```
 
-| Attribute / API       | Description                                                                                                                                                           |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `code`                | Flag code (any casing). The flag chunk is loaded lazily into a shadow root.                                                                                           |
-| `size`                | Height in px (`32`) or any CSS length. Sets `--pennant-size` inline; removing it restores your own inline value.                                                      |
-| `label`               | Accessible name. Defaults to the English flag name. `""` is decorative (`aria-hidden`). Without a name (unknown code, failed load) the element is also `aria-hidden`. |
-| `--pennant-size`      | CSS custom property for the height (default `1em`); width follows 66:72.                                                                                              |
-| `::part(svg)`         | Styles the wrapper around the inner SVG.                                                                                                                              |
-| `pennant-load` event  | Fires when the flag renders. `event.detail.code`. Bubbles.                                                                                                            |
-| `pennant-error` event | Fires on an unknown code or failed load. `event.detail.{ code, error }`. Bubbles.                                                                                     |
+Also: `pennants/png/1x/<code>.png` (66 × 72), `png/2x/` (132 × 144) and
+`pennants/sprite` (`<use href="pennants.svg#pn-ar">`).
 
-```js
-document.addEventListener('pennant-error', (event) => console.warn(event.detail.code));
-```
+## Weight
 
-`code`, `size` and `label` are also available as properties. Importing `pennants/element`
-does not register anything; call `definePennantElement` to choose the tag name. It returns the
-constructor, is idempotent, and is a no-op where `customElements` is unavailable (SSR).
+Minified and brotli-compressed, including dependencies.
 
-```js
-import { definePennantElement } from 'pennants/element';
+| Import                                     | Size    |
+| ------------------------------------------ | ------- |
+| `import { isPennantCode } from 'pennants'` | 449 B   |
+| Core API with `loadPennant`                | 1.48 kB |
+| `pennants/react`                           | 2.76 kB |
+| `pennants/element`                         | 2.98 kB |
+| One flag (`pennants/flags/ar`)             | 962 B   |
+| `pennants/css`                             | 930 B   |
 
-definePennantElement('my-flag');
-```
+The median flag is 0.5 kB with brotli. Country names come from `Intl.DisplayNames`, so no name
+data is bundled. Details: [Performance & weight](https://d3vaya.github.io/pennants/guide/performance).
 
-### Theming the bar
+## Compared with flag-icons
 
-Inline SVG (per-flag modules, `loadPennant`, `<Pennant>`, `<pennant-flag>`) reads two CSS
-custom properties for the golden bar gradient:
+The artwork is [flag-icons](https://github.com/lipis/flag-icons)' and the codes are the same:
+`fi fi-ar` becomes `pn pn-ar`.
 
-```css
-.silver {
-  --pennant-bar-light: #e6e6e6;
-  --pennant-bar-dark: #8a8a8a;
-}
-```
+|                                 | flag-icons            | pennants                               |
+| ------------------------------- | --------------------- | -------------------------------------- |
+| Shape                           | Rectangle 4:3 and 1:1 | Pennant 11:12                          |
+| SVG files and CSS classes       | Yes                   | Yes                                    |
+| PNG and SVG sprite              | No                    | Yes                                    |
+| JS module per flag, lazy loader | No                    | Yes                                    |
+| TypeScript types                | No                    | `PennantCode` union, typed API         |
+| Localized names                 | No                    | `getPennantName` (`Intl.DisplayNames`) |
+| React and Web Component         | No                    | Yes                                    |
+| Themeable bar                   | No                    | CSS custom properties                  |
 
-Defaults are `#d5b97a` and `#8e713f`. Images (`<img>`, PNG, CSS background) cannot be themed.
+See [Migrating from flag-icons](https://d3vaya.github.io/pennants/guide/migration).
 
-## Codes
+## Good to know
 
-Codes are lowercase ISO 3166-1 alpha-2 (`ar`, `de`, `jp`), plus:
-
-| Code                                        | Flag                                                                         |
-| ------------------------------------------- | ---------------------------------------------------------------------------- |
-| `gb-eng`, `gb-sct`, `gb-wls`, `gb-nir`      | England, Scotland, Wales, Northern Ireland                                   |
-| `es-ct`, `es-ga`, `es-pv`                   | Catalonia, Galicia, Basque Country                                           |
-| `sh-ac`, `sh-hl`, `sh-ta`                   | Ascension, Saint Helena, Tristan da Cunha                                    |
-| `eu`, `un`, `arab`, `asean`, `cefta`, `eac` | Organizations                                                                |
-| `ic`, `cp`, `dg`, `pc`, `xk`, `xx`          | Canary Islands, Clipperton, Diego Garcia, Pacific Community, Kosovo, unknown |
-
-The full list is exported as `codes`.
-
-## Comparison with flag-icons
-
-|                      | flag-icons            | pennants                               |
-| -------------------- | --------------------- | -------------------------------------- |
-| Shape                | Rectangle 4:3 and 1:1 | Pennant 11:12                          |
-| SVG files            | Yes                   | Yes                                    |
-| CSS classes          | Yes (`fi fi-ar`)      | Yes (`pn pn-ar`)                       |
-| PNG                  | No                    | 1x and 2x                              |
-| SVG sprite           | No                    | Yes                                    |
-| JS modules per flag  | No                    | Yes, tree-shakable                     |
-| Lazy loading API     | No                    | `loadPennant(code)`                    |
-| TypeScript types     | No                    | `PennantCode` union, typed API         |
-| Localized names      | No                    | `getPennantName` (`Intl.DisplayNames`) |
-| React component      | No                    | `pennants/react`                       |
-| Web Component        | No                    | `<pennant-flag>`                       |
-| Themeable inline SVG | No                    | CSS custom properties                  |
-
-If you need plain rectangular flags, use flag-icons directly.
-
-## Demo
-
-`demo/index.html` is a static gallery with search, size control and copyable snippets. Build
-the assets (`npm run build`) and serve the repository root, for example
-`npx serve .`, then open `/demo/`.
+- ESM only. Node.js 20.19+ (where `require()` of ESM also works). React 18+ for
+  `pennants/react`.
+- Only pass markup from `pennants/flags/*` or `loadPennant` to `innerHTML` or `<PennantSvg>`,
+  never user input.
+- Inline SVG can be themed with `--pennant-bar-light` and `--pennant-bar-dark`.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Report vulnerabilities as described in
-[SECURITY.md](SECURITY.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 
 ## License
 
@@ -255,21 +132,10 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Report vulnerabilities as described in
 
 ## En español
 
-`pennants` ofrece banderas de países con forma de banderín (barra dorada y punta), basadas en
-las banderas de flag-icons. Incluye SVG, PNG, clases CSS, sprite SVG, módulos ES por bandera,
-un componente de React y un Web Component.
-
-```sh
-npm install pennants
-```
+Banderas de países con forma de banderín, en todos los formatos: SVG, PNG, CSS, sprite, módulos
+JS, React y Web Component. Documentación completa en español:
+**[d3vaya.github.io/pennants/es/](https://d3vaya.github.io/pennants/es/)**.
 
 ```js
 import 'pennants/css'; // <span class="pn pn-ar"></span>
-import ar from 'pennants/flags/ar'; // SVG como string
-import { getPennantName } from 'pennants';
-
-getPennantName('de', 'es'); // 'Alemania'
 ```
-
-Los códigos son ISO 3166-1 alfa-2 en minúsculas (`ar`, `es`, `mx`) más regiones como `es-ct`
-o `gb-eng`. Las issues y PRs pueden escribirse en español o en inglés.

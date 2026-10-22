@@ -36,8 +36,24 @@ Flag designs come from [flag-icons](https://github.com/lipis/flag-icons). Correc
 flag's design belong upstream; once released there, bump the `flag-icons` dev dependency
 here. Changes to the pennant frame live in `scripts/lib/pennant.ts`.
 
-To preview changes, run `npm run build`, serve the repository root (`npx serve .`) and open
-`/demo/`.
+To preview changes, run `npm run build` and then `npm run docs:dev`: the docs site shows every
+flag in the gallery.
+
+## Docs site
+
+The site lives in `docs/` (VitePress). English pages are in `docs/en/`, Spanish ones in
+`docs/es/` with the same file names; update both when you change one.
+
+| Script                         | Purpose                                                           |
+| ------------------------------ | ----------------------------------------------------------------- |
+| `npm run docs:dev`             | Dev server (run `npm run build` once first)                       |
+| `npm run docs:build`           | Full build: package, assets, API pages, site; fails on dead links |
+| `npm run docs:api`             | Regenerate `docs/en/api/` from the TSDoc comments                 |
+| `node scripts/docs-preview.ts` | Re-render `docs/public/preview.png` (README image)                |
+
+The API reference is generated from TSDoc comments in `src/`; document new public exports there.
+Copied assets (`docs/public/{svg,png,css,sprite}`) and `docs/en/api/` are generated and not
+committed.
 
 ## Pull requests
 
