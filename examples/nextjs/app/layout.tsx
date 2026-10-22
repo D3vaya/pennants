@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-// Global stylesheet for the `pn pn-xx` classes.
-import 'pennants/css/pennants.min.css';
+// Global stylesheet for the `pn pn-xx` classes (pennant shape).
+import 'pennants/css';
 
 export const metadata = { title: 'pennants + Next.js' };
 

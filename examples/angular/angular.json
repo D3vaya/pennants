@@ -1,7 +1,9 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "cli": { "analytics": false },
+  "cli": {
+    "analytics": false
+  },
   "newProjectRoot": "projects",
   "projects": {
     "angular": {
@@ -14,19 +16,28 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.json",
-            "styles": ["pennants/css/pennants.min.css"]
+            "styles": ["pennants/css/pennant.min.css"]
           },
           "configurations": {
-            "production": { "outputHashing": "all" },
-            "development": { "optimization": false, "sourceMap": true }
+            "production": {
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true
+            }
           },
           "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {
-            "production": { "buildTarget": "angular:build:production" },
-            "development": { "buildTarget": "angular:build:development" }
+            "production": {
+              "buildTarget": "angular:build:production"
+            },
+            "development": {
+              "buildTarget": "angular:build:development"
+            }
           },
           "defaultConfiguration": "development"
         }

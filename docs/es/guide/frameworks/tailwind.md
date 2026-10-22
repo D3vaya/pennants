@@ -11,11 +11,11 @@ npm install pennants
 
 ## Configuración
 
-Importa la hoja de estilos en la capa `components` de Tailwind:
+Importa la hoja de una forma en la capa `components` de Tailwind:
 
 ```css [src/style.css]
 @import 'tailwindcss';
-@import 'pennants/css/pennants.min.css' layer(components);
+@import 'pennants/css' layer(components); /* o pennants/css/circle, /rect, /square */
 ```
 
 La capa importa. Sin ella, `.pn` queda como CSS sin capa, que gana a cualquier utilidad de
@@ -27,7 +27,8 @@ de tu CSS.
 
 ## Tamaño
 
-`.pn` mide `1em` de alto y `11/12em` de ancho. Dale tamaño con utilidades de font-size:
+`.pn` mide `1em` de alto, y su ancho depende de la forma (`11/12em` el banderín, `4/3em`
+rect, `1em` square y circle). Dale tamaño con utilidades de font-size:
 
 ```html
 <span class="pn pn-ar text-[32px]" role="img" aria-label="Argentina"></span>
@@ -47,11 +48,11 @@ O fija la altura y deja que el ancho la siga:
 ></span>
 ```
 
-Las utilidades `size-*` ponen el mismo valor en ancho y alto, lo que deforma la proporción
-11:12. Usa `h-*` con `w-auto aspect-[11/12]`.
+Ajusta la proporción a la forma: `aspect-[11/12]` para el banderín, `aspect-[4/3]` para
+rect y `aspect-square` para square y circle. Con square y circle también sirve `size-*`.
 
 ## Peso
 
-Las reglas de pennants suman unos 12 KB minificadas (menos de 2 KB con gzip) a tu CSS.
+Las reglas de una forma suman unos 14 KB minificadas (menos de 2 KB con gzip) a tu CSS.
 Tailwind no elimina las reglas sin usar del CSS importado, pero cada imagen se descarga solo
 cuando se usa.

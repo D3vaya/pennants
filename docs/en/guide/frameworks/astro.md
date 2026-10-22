@@ -1,7 +1,7 @@
 # Astro
 
-Astro renders pennants to static HTML with zero JavaScript. Add JavaScript only where you
-need flags that change at runtime.
+Astro renders flags to static HTML with zero JavaScript. Add JavaScript only where you need
+flags that change at runtime.
 
 [Full example](https://github.com/d3vaya/pennants/tree/main/examples/astro)
 
@@ -30,36 +30,37 @@ export default defineConfig({
 
 ```astro [src/pages/index.astro]
 ---
-import 'pennants/css/pennants.min.css';
+import 'pennants/css';
 import { Image } from 'astro:assets';
-import ar from 'pennants/flags/ar';
-import jp from 'pennants/svg/jp.svg';
+import { renderFlag } from 'pennants';
+import ar from 'pennants/art/1x1/ar';
+import jp from 'pennants/svg/circle/jp.svg';
 ---
 
 <!-- CSS classes -->
 <span class="pn pn-de pn-2x" role="img" aria-label="Germany"></span>
 
-<!-- Inline SVG in the HTML. Trusted markup from pennants/flags/* only. -->
-<span class="flag" role="img" aria-label="Argentina" set:html={ar} />
+<!-- Inline SVG in the HTML, any shape. Trusted markup composed from pennants/art/*. -->
+<span class="flag" role="img" aria-label="Argentina" set:html={renderFlag(ar, { shape: 'square' })} />
 
 <!-- Image: emitted to /_astro/ with width and height set -->
 <Image src={jp} alt="Japan" height={48} />
 
 <style>
-  .flag { display: inline-block; height: 48px; aspect-ratio: 66 / 72; }
+  .flag { display: inline-block; height: 48px; aspect-ratio: 1; }
   .flag :global(svg) { width: 100%; height: 100%; }
 </style>
 ```
 
-None of these ship any JavaScript to the browser. A per-flag module costs only its markup
-in the HTML, about 3 KB per flag before compression.
+None of these ship any JavaScript to the browser: `renderFlag` runs at build time, so a flag
+costs only its markup in the HTML.
 
 ## Islands
 
 Web Component (no framework needed). Astro bundles the `<script>`:
 
 ```astro
-<pennant-flag code="mx" size="48"></pennant-flag>
+<pennant-flag code="mx" shape="rect" size="48"></pennant-flag>
 <script>
   import 'pennants/element/register';
 </script>
@@ -72,9 +73,10 @@ Or a React island (after `npx astro add react`):
 import { Pennant } from 'pennants/react';
 ---
 
-<Pennant client:visible code="br" size={48} />
+<Pennant client:visible code="br" shape="circle" size={48} />
 ```
 
 The island is server-rendered as an empty, correctly sized box. The flag loads when the
-island hydrates. The Web Component costs about 7 KB gzip. The React island also loads
-React itself (about 65 KB gzip).
+island hydrates. The Web Component costs <Size probe="element" /> gzip. The React island
+adds <Size probe="react-pennant" /> gzip on top of React itself
+(<Size probe="react" /> gzip).

@@ -31,30 +31,32 @@ export default defineConfig({
 
 ```svelte [src/routes/+page.svelte]
 <script lang="ts">
-  import 'pennants/css/pennants.min.css';
+  import 'pennants/css';
   // Safe during SSR: registration is skipped where customElements is missing.
   import 'pennants/element/register';
-  import ar from 'pennants/flags/ar';
-  import type { PennantCode } from 'pennants';
+  import ar from 'pennants/art/1x1/ar';
+  import { renderFlag, type PennantCode, type PennantShape } from 'pennants';
 
   let code = $state<PennantCode>('br');
+  let shape = $state<PennantShape>('pennant');
 </script>
 
-<!-- In the prerendered HTML. Trusted markup from pennants/flags/* only. -->
-<span class="flag" role="img" aria-label="Argentina">{@html ar}</span>
+<!-- In the prerendered HTML. Trusted markup composed from pennants/art/*. -->
+<span class="flag" role="img" aria-label="Argentina">{@html renderFlag(ar, { shape: 'circle' })}</span>
 
 <!-- CSS classes -->
 <span class="pn pn-de pn-2x" role="img" aria-label="Germany"></span>
 
 <!-- Web Component: fetches only the selected flag -->
-<pennant-flag {code} size="48"></pennant-flag>
+<pennant-flag {code} {shape} size="48"></pennant-flag>
 <button type="button" onclick={() => (code = 'mx')}>Mexico</button>
+<button type="button" onclick={() => (shape = 'circle')}>Circle</button>
 
 <style>
   .flag {
     display: inline-block;
     height: 48px;
-    aspect-ratio: 66 / 72;
+    aspect-ratio: 1;
   }
   .flag :global(svg) {
     width: 100%;
@@ -67,7 +69,8 @@ Svelte needs no custom element configuration.
 
 ## Bundle and SSR
 
-- `{@html ar}` is server-rendered: the SVG is in the HTML, and hydration reuses it. It adds
-  about 1 KB gzip per flag to the page's JavaScript.
-- `<pennant-flag>` is rendered empty on the server and filled in the browser. It costs about
-  7 KB gzip, plus a few KB per flag shown.
+- `{@html renderFlag(...)}` is server-rendered: the SVG is in the HTML, and hydration reuses
+  it. One art module with `renderFlag` adds <Size probe="art-circle" /> gzip to the page's
+  JavaScript.
+- `<pennant-flag>` is rendered empty on the server and filled in the browser. It costs
+  <Size probe="element" /> gzip, plus a few KB per flag shown.

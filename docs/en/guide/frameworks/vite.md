@@ -11,9 +11,9 @@ npm install pennants
 
 ## Stop Vite from inlining the flags
 
-`pennants.min.css` references all 271 flag SVGs. By default, Vite inlines every asset under
-4 KiB as a data URI, which would put about 380 KB of flags into your CSS. Emit them as files
-instead:
+Each stylesheet (`pennants/css`, `pennants/css/rect`, `pennants/css/square`,
+`pennants/css/circle`) references 271 flag SVGs. By default, Vite inlines every asset under
+4 KiB as a data URI, which puts most flags into your CSS. Emit them as files instead:
 
 ```ts [vite.config.ts]
 import { defineConfig } from 'vite';
@@ -25,28 +25,37 @@ export default defineConfig({
 });
 ```
 
-| `import 'pennants/css/pennants.min.css'` | CSS (min / gzip) | Flag files                   |
-| ---------------------------------------- | ---------------- | ---------------------------- |
-| Vite default                             | 388 KB / 56 KB   | most inlined in the CSS      |
-| With `assetsInlineLimit` above           | 14.8 KB / 3.7 KB | 271 files, fetched when used |
+Or import the CDN variant (`pennants/css/cdn`, `pennants/css/circle/cdn`...). Its image
+URLs point to jsDelivr, so Vite has nothing to inline or emit.
+
+| `import 'pennants/css'`        | CSS (min / gzip / brotli)                                                                                                                                | Flag images                      |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| Vite defaults                  | <Size probe="css-default" part="css" metric="min" /> / <Size probe="css-default" part="css" /> / <Size probe="css-default" part="css" metric="brotli" /> | most inlined in the CSS          |
+| With `assetsInlineLimit` above | <Size probe="css" part="css" metric="min" /> / <Size probe="css" part="css" /> / <Size probe="css" part="css" metric="brotli" />                         | 271 files, fetched when used     |
+| `pennants/css/cdn` instead     | <Size probe="css-cdn" part="css" metric="min" /> / <Size probe="css-cdn" part="css" /> / <Size probe="css-cdn" part="css" metric="brotli" />             | from jsDelivr, fetched when used |
 
 ## Usage
 
 ```ts [src/main.ts]
-// Stylesheet for the `pn pn-xx` classes.
-import 'pennants/css/pennants.min.css';
-// One flag as an SVG string. Only the flags you import are bundled.
-import ar from 'pennants/flags/ar';
-import { getPennantName, loadPennant, toPennantCode } from 'pennants';
+// Stylesheet for the `pn pn-xx` classes (pennant shape).
+import 'pennants/css';
+// Flag artwork: only the flags you import are bundled. 1x1 art draws
+// pennant, square and circle; 4x3 art draws rect.
+import ar from 'pennants/art/1x1/ar';
+import ar4x3 from 'pennants/art/4x3/ar';
+import { getPennantName, loadFlag, renderFlag, toPennantCode } from 'pennants';
 // Static files as hashed URLs.
-import deUrl from 'pennants/svg/de.svg?url';
+import deUrl from 'pennants/svg/pennant/de.svg?url';
 import spriteUrl from 'pennants/sprite?url';
 
-document.querySelector('#inline')!.innerHTML = ar;
+// Same art, any shape (synchronous, works during SSR too).
+document.querySelector('#circle')!.innerHTML = renderFlag(ar, { shape: 'circle' });
+document.querySelector('#rect')!.innerHTML = renderFlag(ar4x3, { shape: 'rect' });
 
+// Runtime codes: loads only this flag's chunk.
 const code = toPennantCode('BR'); // 'br'; throws RangeError on unknown codes
 const lazy = document.querySelector('#lazy')!;
-lazy.innerHTML = await loadPennant(code); // fetches only this flag's chunk
+lazy.innerHTML = await loadFlag(code, { shape: 'square' });
 lazy.setAttribute('role', 'img');
 lazy.setAttribute('aria-label', getPennantName(code));
 
@@ -59,29 +68,19 @@ document.querySelector('#sprite')!.setAttribute('href', `${spriteUrl}#pn-mx`);
 <svg width="33" height="36" role="img" aria-label="Mexico"><use id="sprite" /></svg>
 ```
 
-Only insert markup from `pennants/flags/*` or `loadPennant` with `innerHTML`. Never insert
-user input this way.
+Only insert markup from `renderFlag`, `loadFlag` or `fetchPennant` with `innerHTML`. Never
+insert user input this way.
 
-::: tip TypeScript
-Write `import 'pennants/css/pennants.min.css'` rather than `import 'pennants/css'`. With
-TypeScript 6, `noUncheckedSideEffectImports` is on by default, and the short specifier
-fails with `TS2882`: it doesn't end in `.css`, so the `*.css` declarations from
-`vite/client` don't apply. Add `"types": ["vite/client"]` to your tsconfig for the `?url`
-imports.
-:::
+`pennants/sprite` contains pennants only. For the `?url` imports, add
+`"types": ["vite/client"]` to your tsconfig.
 
 ## Bundle impact
 
 Measured with Vite 8, production build, compared with an empty app:
 
-| You import                  | Entry JS (min / gzip) | Other files                   |
-| --------------------------- | --------------------- | ----------------------------- |
-| `pennants/flags/ar`         | +3.2 KB / +1.0 KB     | none                          |
-| three per-flag modules      | +8.1 KB / +2.2 KB     | none                          |
-| `getPennantName`            | +2.6 KB / +1.1 KB     | none                          |
-| `pennantUrl`                | +2.0 KB / +0.8 KB     | none                          |
-| `loadPennant`               | +15.4 KB / +5.1 KB    | one lazy chunk per flag shown |
-| `pennants/element/register` | +19.5 KB / +7.0 KB    | one lazy chunk per flag shown |
+<SizeTable :probes="['art-pennant', 'art-circle', 'art-all', 'name', 'url', 'load', 'load-shapes', 'fetch', 'element']" />
 
-Per-flag modules are the lightest way to show a few known flags. `loadPennant` and the Web
-Component cost a fixed ~5–7 KB gzip, then a few KB per flag on demand.
+Art modules are the lightest way to show a few known flags, and one art module serves every
+shape. `loadFlag` and the Web Component cost a fixed few KB, then one small chunk per flag
+on demand. `fetchPennant` from `pennants/fetch` skips bundled chunks entirely and fetches
+`svg/<shape>/<code>.svg` from the CDN (or your `base`).

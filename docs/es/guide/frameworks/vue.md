@@ -1,7 +1,7 @@
 # Vue
 
 Vue 3 con Vite. Usa el Web Component `<pennant-flag>` para banderas que se eligen en tiempo
-de ejecución, y `v-html` con un módulo por bandera para las que conoces al compilar.
+de ejecución, y `v-html` con `renderFlag` para las que conoces al compilar.
 
 [Ejemplo completo](https://github.com/d3vaya/pennants/tree/main/examples/vue)
 
@@ -44,26 +44,36 @@ createApp(App).mount('#app');
 ```vue [src/App.vue]
 <script setup lang="ts">
 import { ref } from 'vue';
-import ar from 'pennants/flags/ar';
-import type { PennantCode } from 'pennants';
+import ar from 'pennants/art/1x1/ar';
+import { renderFlag, type PennantCode, type PennantShape } from 'pennants';
 
 const code = ref<PennantCode>('br');
+const shape = ref<PennantShape>('pennant');
+// Markup de confianza compuesto desde pennants/art/*; nunca pases datos del usuario a v-html.
+const circle = renderFlag(ar, { shape: 'circle' });
 </script>
 
 <template>
   <!-- Diferido: descarga solo la bandera elegida -->
-  <pennant-flag :code="code" size="48" label="Brasil" @pennant-error="console.warn($event)" />
+  <pennant-flag
+    :code="code"
+    :shape="shape"
+    size="48"
+    label="Brasil"
+    @pennant-error="console.warn($event)"
+  />
   <button type="button" @click="code = 'mx'">México</button>
+  <button type="button" @click="shape = 'circle'">Círculo</button>
 
-  <!-- Empaquetado: solo markup de confianza de pennants/flags/* -->
-  <span class="flag" role="img" aria-label="Argentina" v-html="ar" />
+  <!-- Empaquetado -->
+  <span class="flag" role="img" aria-label="Argentina" v-html="circle" />
 </template>
 
 <style scoped>
 .flag {
   display: inline-block;
   height: 48px;
-  aspect-ratio: 66 / 72;
+  aspect-ratio: 1;
 }
 .flag :deep(svg) {
   width: 100%;
@@ -75,15 +85,16 @@ const code = ref<PennantCode>('br');
 El `label` de `<pennant-flag>` es opcional. Sin él, el nombre accesible es el nombre en
 inglés de la bandera.
 
-Para las clases `pn pn-xx`, importa `pennants/css/pennants.min.css` y añade la opción
-`assetsInlineLimit` de la [guía de Vite](./vite#evita-que-vite-incruste-las-banderas).
+Para las clases `pn pn-xx`, importa `pennants/css` (o `pennants/css/circle`...) y añade la
+opción `assetsInlineLimit` de la [guía de Vite](./vite#evita-que-vite-incruste-las-banderas).
 
 ## Bundle y SSR
 
-- `pennants/element/register` suma unos 7 KB con gzip, más unos pocos KB por cada bandera
-  que se muestra. Cada módulo por bandera suma alrededor de 1 KB con gzip.
+- `pennants/element/register` suma <Size probe="element" /> con gzip, más unos pocos KB por
+  cada bandera que se muestra. Un módulo de arte con `renderFlag` suma
+  <Size probe="art-circle" /> con gzip.
 - Nuxt / SSR: importar `pennants/element/register` en el servidor es seguro, porque el
   registro se omite donde no existe `customElements`. El servidor renderiza
   `<pennant-flag>` vacío, y la bandera aparece cuando el elemento se activa en el navegador.
-  En Nuxt, pon la misma condición en `vue.compilerOptions.isCustomElement`. `v-html` con un
-  módulo por bandera sí renderiza el SVG completo en el servidor.
+  En Nuxt, pon la misma condición en `vue.compilerOptions.isCustomElement`. `v-html` con
+  `renderFlag` sí renderiza el SVG completo en el servidor.

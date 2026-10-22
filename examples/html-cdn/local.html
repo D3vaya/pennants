@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>pennants, self-hosted</title>
     <!-- Files copied from node_modules/pennants by build.js. -->
-    <link rel="stylesheet" href="./pennants/css/pennants.min.css" />
+    <link rel="stylesheet" href="./pennants/css/pennant.min.css" />
     <script type="module" src="./pennants/dist/element/register.js"></script>
   </head>
   <body>
@@ -18,14 +18,15 @@
     </p>
 
     <h2>Image</h2>
-    <img src="./pennants/svg/jp.svg" width="33" height="36" alt="Japan" />
+    <img src="./pennants/svg/pennant/jp.svg" width="33" height="36" alt="Japan" />
 
     <h2>SVG sprite</h2>
     <svg width="33" height="36" role="img" aria-label="Mexico">
-      <use href="./pennants/sprite/pennants.svg#pn-mx" />
+      <use href="./pennants/sprite/pennant.svg#pn-mx" />
     </svg>
 
     <h2>Web Component</h2>
     <pennant-flag code="de" size="48"></pennant-flag>
+    <pennant-flag code="de" shape="circle" size="48"></pennant-flag>
   </body>
 </html>

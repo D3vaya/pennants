@@ -9,16 +9,22 @@
     <h2>CSS classes</h2>
     <span class="pn pn-ar pn-2x" role="img" aria-label="Argentina"></span>
 
-    <h2>Per-flag module (bundled)</h2>
-    <span id="inline"></span>
+    <h2>Shapes from one art module (bundled)</h2>
+    <p id="shapes"></p>
 
-    <h2>loadPennant (lazy chunk)</h2>
-    <select id="picker">
+    <h2>loadFlag (lazy chunk)</h2>
+    <select id="code">
       <option value="br">Brazil</option>
       <option value="jp">Japan</option>
       <option value="gb-eng">England</option>
     </select>
-    <span id="lazy"></span>
+    <select id="shape">
+      <option>pennant</option>
+      <option>rect</option>
+      <option>square</option>
+      <option>circle</option>
+    </select>
+    <span id="lazy" class="flag"></span>
 
     <h2>Asset URL</h2>
     <img id="img" width="33" height="36" alt="Germany" />

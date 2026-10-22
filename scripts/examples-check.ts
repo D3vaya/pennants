@@ -52,7 +52,7 @@ const EXAMPLES: Example[] = [
   {
     name: 'vite',
     expect: [
-      { dir: 'dist/assets', ext: '.js', includes: ['pn-ar-clip', '#pn-mx'] },
+      { dir: 'dist/assets', ext: '.js', includes: ['0 0 512 512', '0 0 640 480', '#pn-mx'] },
       // Flags referenced by the CSS are emitted as files, not inlined.
       { dir: 'dist/assets', ext: '.css', includes: ['.pn-ar{background-image:url(/assets/ar-'] },
       { dir: 'dist/assets', ext: '.svg', includes: ['id="pn-mx"'] },
@@ -67,6 +67,8 @@ const EXAMPLES: Example[] = [
         includes: [
           'data-pennant="ar"',
           '-ar-clip',
+          'data-shape="rect"',
+          'data-shape="circle"',
           'data-pennant="br"',
           'class="pn pn-de',
           '/_next/static/media/jp.',
@@ -76,7 +78,7 @@ const EXAMPLES: Example[] = [
   },
   {
     name: 'vue',
-    expect: [{ dir: 'dist/assets', ext: '.js', includes: ['pennant-flag', 'pn-ar-clip'] }],
+    expect: [{ dir: 'dist/assets', ext: '.js', includes: ['pennant-flag', '0 0 512 512'] }],
   },
   {
     name: 'svelte',
@@ -91,7 +93,7 @@ const EXAMPLES: Example[] = [
   {
     name: 'angular',
     expect: [
-      { dir: 'dist/angular/browser', ext: '.js', includes: ['pennant-flag', 'pn-ar-clip'] },
+      { dir: 'dist/angular/browser', ext: '.js', includes: ['pennant-flag', '0 0 512 512'] },
       { dir: 'dist/angular/browser', ext: '.css', includes: ['.pn-de{'] },
     ],
   },
@@ -101,7 +103,14 @@ const EXAMPLES: Example[] = [
       {
         dir: 'dist',
         ext: '.html',
-        includes: ['pn-ar-clip', 'class="pn pn-de', 'data-pennant="br"', '<astro-island'],
+        includes: [
+          'pn-ar-clip',
+          'class="pn pn-de',
+          'data-pennant="br"',
+          'data-shape="circle"',
+          'shape="rect"',
+          '<astro-island',
+        ],
       },
     ],
   },
@@ -200,6 +209,14 @@ const workDir = await mkdtemp(join(tmpdir(), 'pennants-examples-'));
 if (!flags.has('--no-build')) await run('npm', ['run', 'build'], root);
 const packed = await run('npm', ['pack', '--pack-destination', workDir, '--silent'], root);
 const tarball = join(workDir, packed.trim().split('\n').at(-1) ?? '');
+// Other tools may be regenerating assets in this working tree: refuse a
+// tarball that misses whole folders instead of reporting confusing errors.
+const listing = await run('tar', ['-tzf', tarball], workDir);
+for (const required of ['package/dist/index.js', 'package/css/', 'package/svg/']) {
+  if (!listing.split('\n').some((entry) => entry.startsWith(required))) {
+    throw new Error(`${tarball} lacks ${required}; was the build still running?`);
+  }
+}
 console.info(`Packed ${relative(workDir, tarball)} into ${workDir}`);
 
 const failures: string[] = [];

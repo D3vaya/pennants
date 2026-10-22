@@ -11,11 +11,11 @@ npm install pennants
 
 ## Setup
 
-Import the stylesheet into Tailwind's `components` layer:
+Import one shape's stylesheet into Tailwind's `components` layer:
 
 ```css [src/style.css]
 @import 'tailwindcss';
-@import 'pennants/css/pennants.min.css' layer(components);
+@import 'pennants/css' layer(components); /* or pennants/css/circle, /rect, /square */
 ```
 
 The layer matters. Without it, `.pn` is unlayered CSS, and unlayered CSS beats every Tailwind
@@ -27,7 +27,8 @@ your CSS.
 
 ## Sizing
 
-`.pn` is `1em` tall and `11/12em` wide. Size it with font-size utilities:
+`.pn` is `1em` tall, and its width follows the shape (`11/12em` for the pennant, `4/3em` for
+rect, `1em` for square and circle). Size it with font-size utilities:
 
 ```html
 <span class="pn pn-ar text-[32px]" role="img" aria-label="Argentina"></span>
@@ -47,11 +48,11 @@ Or set a height and let the width follow:
 ></span>
 ```
 
-`size-*` utilities set the width and height to the same value, which distorts the 11:12
-shape. Use `h-*` with `w-auto aspect-[11/12]` instead.
+Match the aspect ratio to the shape: `aspect-[11/12]` for the pennant, `aspect-[4/3]` for
+rect, `aspect-square` for square and circle. With square and circle, `size-*` works too.
 
 ## Weight
 
-The pennants rules add about 12 KB minified (under 2 KB gzip) to your CSS. Tailwind doesn't
-remove unused rules from imported CSS, but each flag image is downloaded only when it is
-used.
+The rules of one shape add about 14 KB minified (under 2 KB gzip) to your CSS. Tailwind
+doesn't remove unused rules from imported CSS, but each flag image is downloaded only when it
+is used.

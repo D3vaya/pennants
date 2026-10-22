@@ -10,59 +10,71 @@ npm install pennants
 
 ## Stylesheet
 
-Import it once in the root layout to use the `pn pn-xx` classes anywhere:
+Import one shape's stylesheet once, in the root layout, to use the `pn pn-xx` classes anywhere:
 
 ```tsx [app/layout.tsx]
-import 'pennants/css/pennants.min.css';
+import 'pennants/css'; // or 'pennants/css/circle', 'pennants/css/rect', 'pennants/css/square'
 ```
 
-Next.js emits the 271 flag SVGs as separate files under `/_next/static/media/`. The
-stylesheet is about 16 KB minified, and each flag image is downloaded only when it is used.
+Next.js emits the 271 flag SVGs as separate files under `/_next/static/media/`. Each flag image
+is downloaded only when it is used.
 
 ## Server Components: `PennantSvg`
 
-Import the flag statically and render it with `PennantSvg`. The SVG goes straight into the
-HTML, and this adds no client-side JavaScript.
+Import a flag's artwork statically and render it with `PennantSvg` in any shape. The SVG goes
+straight into the HTML, and this adds no client-side JavaScript. `pennants/react` is safe to
+import from Server Components.
 
 ```tsx [app/page.tsx]
 import Image from 'next/image';
 import { PennantSvg } from 'pennants/react';
-import ar from 'pennants/flags/ar';
-import jpUrl from 'pennants/svg/jp.svg';
+import ar from 'pennants/art/1x1/ar'; // pennant, square, circle
+import ar4x3 from 'pennants/art/4x3/ar'; // rect
+import jpUrl from 'pennants/svg/circle/jp.svg';
 
 export default function Page() {
   return (
     <main>
-      <PennantSvg svg={ar} size={48} />
+      <PennantSvg art={ar} size={48} />
+      <PennantSvg art={ar4x3} shape="rect" size={48} />
+      <PennantSvg art={ar} shape="square" size={48} />
+      <PennantSvg art={ar} shape="circle" size={48} />
+
       <span className="pn pn-de pn-2x" role="img" aria-label="Germany" />
-      <Image src={jpUrl} alt="Japan" height={48} width={44} />
+      <Image src={jpUrl} alt="Japan" height={48} width={48} />
     </main>
   );
 }
 ```
 
-`next/image` serves SVG imports as-is (no optimization). They are vector images, so they
-stay sharp at any size.
+`next/image` serves SVG imports as-is (no optimization). They are vector images, so they stay
+sharp at any size.
 
 ## Client Components: `Pennant`
 
-Use `<Pennant>` when the code is only known at runtime. It needs `'use client'`.
+Use `<Pennant>` when the code or shape is only known at runtime. It needs `'use client'`.
 
 ```tsx [app/flag-picker.tsx]
 'use client';
 
 import { useState } from 'react';
 import { Pennant } from 'pennants/react';
-import type { PennantCode } from 'pennants';
+import { SHAPES, type PennantCode, type PennantShape } from 'pennants';
 
 export function FlagPicker() {
   const [code, setCode] = useState<PennantCode>('br');
+  const [shape, setShape] = useState<PennantShape>('circle');
   return (
     <p>
-      <Pennant code={code} size={48} />
+      <Pennant code={code} shape={shape} size={48} />
       <button type="button" onClick={() => setCode('mx')}>
         Mexico
       </button>
+      {SHAPES.map((choice) => (
+        <button key={choice} type="button" onClick={() => setShape(choice)}>
+          {choice}
+        </button>
+      ))}
     </p>
   );
 }
@@ -72,7 +84,10 @@ export function FlagPicker() {
 
 - During SSR, `<Pennant>` renders an empty box of the right size (with `role="img"` and an
   `aria-label`). The SVG arrives after hydration, from a lazy chunk. For flags known at build
-  time, use `PennantSvg` with a static import instead.
-- `<Pennant mode="img" />` renders an `<img>` on the server. By default it points to jsDelivr;
-  pass `base` to serve the files yourself.
-- In client components, `<Pennant>` adds about 7 KB gzip, plus a few KB for each flag shown.
+  time, use `PennantSvg` with a static art import instead.
+- `<Pennant mode="img" />` renders an `<img>` on the server. `mode="fetch"` fetches the SVG
+  instead of bundling chunks. Both point to jsDelivr by default; pass `base` to serve the
+  files yourself.
+- In client components, `<Pennant>` adds <Size probe="react-pennant" /> gzip, plus a few KB
+  for each flag shown. `PennantSvg` with one art module adds <Size probe="react-svg" /> gzip
+  when used on the client.
