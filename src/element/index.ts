@@ -1,4 +1,4 @@
-import { getPennantName, isPennantCode, type PennantCode } from '../index.ts';
+import { getPennantName, isPennantCode, type PennantCode } from '../internal/core.ts';
 import { loadMarkup, peekMarkup } from '../internal/cache.ts';
 import { prepareSvg } from '../internal/svg.ts';
 
@@ -27,7 +27,7 @@ const STYLE =
   ':host([hidden]){display:none}' +
   'span,svg{display:block;width:100%;height:100%}';
 
-const PROPS = ['code', 'size', 'label'] as const;
+const PROPS = ['code', 'size', 'label', 'base'] as const;
 
 // Import-safe outside the browser (Node/SSR): there is no HTMLElement at
 // module load there, and the class is simply never constructed.
@@ -38,12 +38,25 @@ const normalize = (value: string | null): PennantCode | undefined => {
   return isPennantCode(code) ? code : undefined;
 };
 
+export interface DefinePennantElementOptions {
+  /**
+   * Fetch mode for every instance of this tag: load `<base>/svg/<code>.svg`
+   * with `fetchPennant` instead of the bundled flag chunks. A per-element
+   * `base` attribute takes precedence.
+   */
+  base?: string;
+}
+
 /**
  * `<pennant-flag code="ar" size="32" label="Argentina">` — lazily loads the
- * flag into its shadow root. Fires `pennant-load` / `pennant-error`.
+ * flag into its shadow root. Fires `pennant-load` / `pennant-error`. With a
+ * `base` attribute (or `definePennantElement(tag, { base })`) the flag is
+ * fetched from `<base>/svg/<code>.svg` instead of the bundled chunks.
  */
 export class PennantElement extends Base {
   static readonly observedAttributes: readonly string[] = PROPS;
+  /** Fetch base used when the element has no `base` attribute (set by `definePennantElement`). */
+  static defaultBase: string | undefined;
 
   readonly #content: HTMLSpanElement;
   #token = 0;
@@ -86,6 +99,14 @@ export class PennantElement extends Base {
     this.#reflect('label', value);
   }
 
+  /** Fetch-mode base URL (see `pennantUrl`). Reflects the `base` attribute. */
+  get base(): string | null {
+    return this.getAttribute('base');
+  }
+  set base(value: string | null) {
+    this.#reflect('base', value);
+  }
+
   connectedCallback(): void {
     // Properties set before the element was upgraded shadow the accessors.
     for (const prop of PROPS) {
@@ -97,7 +118,7 @@ export class PennantElement extends Base {
     }
     this.#applySize();
     this.#applyA11y();
-    if (this.#shown === undefined || this.#shown !== normalize(this.code)) this.#load();
+    if (this.#shown === undefined || this.#shown !== this.#key(normalize(this.code))) this.#load();
   }
 
   disconnectedCallback(): void {
@@ -110,8 +131,8 @@ export class PennantElement extends Base {
       this.#applySize();
       return;
     }
-    this.#applyA11y();
-    if (name === 'code' && this.isConnected) this.#load();
+    if (name !== 'base') this.#applyA11y();
+    if ((name === 'code' || name === 'base') && this.isConnected) this.#load();
   }
 
   #reflect(name: string, value: string | number | null): void {
@@ -156,6 +177,15 @@ export class PennantElement extends Base {
     this.setAttribute('aria-label', name);
   }
 
+  #source(): string | undefined {
+    return this.base ?? (this.constructor as typeof PennantElement).defaultBase;
+  }
+
+  /** Identity of what is displayed: source + normalised code. */
+  #key(code: string | undefined): string | undefined {
+    return code === undefined ? undefined : `${this.#source() ?? ''}\n${code}`;
+  }
+
   #show(code: string | undefined, svg?: string): void {
     if (code !== undefined && code === this.#shown) return;
     this.#content.innerHTML = svg === undefined ? '' : prepareSvg(svg);
@@ -173,16 +203,18 @@ export class PennantElement extends Base {
       this.#show(undefined);
       return;
     }
-    const key = raw.trim().toLowerCase();
-    const cached = peekMarkup(key);
+    const code = raw.trim().toLowerCase();
+    const source = this.#source();
+    const key = this.#key(code);
+    const cached = peekMarkup(code, source);
     if (cached !== undefined) this.#show(key, cached);
-    loadMarkup(key).then(
+    loadMarkup(code, source).then(
       (svg) => {
         if (token !== this.#token) return;
         this.#show(key, svg);
         this.dispatchEvent(
           new CustomEvent<PennantLoadDetail>('pennant-load', {
-            detail: { code: key as PennantCode },
+            detail: { code: code as PennantCode },
             bubbles: true,
           }),
         );
@@ -207,16 +239,25 @@ let primaryDefined = false;
 
 /**
  * Registers the element (default tag `pennant-flag`). Idempotent: returns the
- * already-registered constructor if the tag exists. No-op (returns
- * `undefined`) where `customElements` is unavailable, e.g. during SSR.
+ * already-registered constructor if the tag exists (options are then
+ * ignored). No-op (returns `undefined`) where `customElements` is
+ * unavailable, e.g. during SSR. `{ base }` switches the tag to fetch mode.
  */
-export function definePennantElement(tagName = 'pennant-flag'): typeof PennantElement | undefined {
+export function definePennantElement(
+  tagName = 'pennant-flag',
+  options: DefinePennantElementOptions = {},
+): typeof PennantElement | undefined {
   if (typeof customElements === 'undefined') return undefined;
   const existing = customElements.get(tagName);
   if (existing) return existing as typeof PennantElement;
-  // A constructor can only be registered once, so extra tag names get a subclass.
-  const ctor = primaryDefined ? class extends PennantElement {} : PennantElement;
+  // A constructor can only be registered once, so extra tag names (and
+  // fetch-mode tags) get a subclass.
+  let ctor = PennantElement;
+  if (primaryDefined || options.base !== undefined) {
+    ctor = class extends PennantElement {};
+    ctor.defaultBase = options.base;
+  }
   customElements.define(tagName, ctor);
-  primaryDefined = true;
+  if (ctor === PennantElement) primaryDefined = true;
   return ctor;
 }
