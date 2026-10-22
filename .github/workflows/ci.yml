@@ -100,9 +100,14 @@ jobs:
       - run: npm ci
 
       # Packs the library, builds Vite probes against the tarball and fails when
-      # a probe exceeds scripts/bundle-budget.json. The table goes to the run summary.
+      # a probe exceeds scripts/bundle-budget.json or drifts from the docs
+      # snapshot (docs/data/bundle-sizes.json). The table goes to the run summary.
       - name: Measure and check budgets
-        run: npm run bundle:budget >> "$GITHUB_STEP_SUMMARY"
+        run: npm run bundle:budget -- --check-snapshot docs/data/bundle-sizes.json >> "$GITHUB_STEP_SUMMARY"
+
+      # The README weight table is generated from the same snapshot.
+      - name: Check README sizes
+        run: node scripts/docs-readme-sizes.ts --check
 
   examples:
     name: Framework examples
