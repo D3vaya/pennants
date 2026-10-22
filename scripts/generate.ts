@@ -38,7 +38,7 @@ import {
   namesModule,
 } from './lib/modules.ts';
 import { cdnSvgPath, cssDeclaration, minifyCss, pennantsCss, themeCss } from './lib/css.ts';
-import { mapLimit, PNG_SCALES, renderPng } from './lib/png.ts';
+import { mapLimit, pngScales, renderPng } from './lib/png.ts';
 import { buildSprite } from './lib/sprite.ts';
 
 const limit = availableParallelism();
@@ -131,7 +131,7 @@ async function main(): Promise<void> {
       write(join(root, 'css', `${shape}.cdn.min.css`), minifyCss(cdn)),
     ]);
     for (const flag of flags) {
-      for (const scale of PNG_SCALES) pngJobs.push({ shape, ...flag, scale });
+      for (const scale of pngScales(shape)) pngJobs.push({ shape, ...flag, scale });
     }
   }
 

@@ -4,8 +4,17 @@
 import sharp, { type PngOptions } from 'sharp';
 import { SHAPE_SIZE, type PennantShape } from '../../src/shapes.ts';
 
-/** Pixel densities written to `png/<scale>x/`. */
+/** Every pixel density written to `png/<shape>/<scale>x/`. */
 export const PNG_SCALES = [1, 2] as const;
+
+/**
+ * Densities per shape. Only the signature pennant ships 2x; the other
+ * shapes stay 1x to keep the package light (users needing more can use the
+ * SVGs, which scale freely).
+ */
+export function pngScales(shape: PennantShape): readonly number[] {
+  return shape === 'pennant' ? PNG_SCALES : [1];
+}
 
 /**
  * Quantised (palette) PNG: ~half the size of truecolour output and visually

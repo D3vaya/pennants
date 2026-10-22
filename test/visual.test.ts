@@ -219,7 +219,9 @@ describe.each(['rect', 'square', 'circle'] as const)('%s frame', (shape) => {
     }
   });
 
-  // np is left out: its artwork is not rectangular and leaves transparent areas.
+  // np is left out on purpose: Nepal's flag is not rectangular, so its artwork
+  // is transparent outside the flag's own outline. That is faithful (the
+  // pennant shows the same) rather than a frame defect.
   it.each(['ar', 'gb', 'br'])('fills exactly the outline with %s', async (code) => {
     const art = await loadFlagArtwork(code, undefined, undefined, SHAPE_ART[shape]);
     const flag = await rgba(await renderPng(composeFlag(art, shape), 1, shape));

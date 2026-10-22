@@ -2,7 +2,7 @@ import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import { buildPennant } from '../scripts/lib/pennant.ts';
 import { composeFlag } from '../src/shapes.ts';
-import { mapLimit, PNG_SCALES, pngSize, renderPng } from '../scripts/lib/png.ts';
+import { mapLimit, PNG_SCALES, pngScales, pngSize, renderPng } from '../scripts/lib/png.ts';
 
 const svg = buildPennant({
   code: 'jp',
@@ -50,6 +50,17 @@ describe('renderPng', () => {
     ];
     expect(px(0, 71)[3]).toBe(0);
     expect(px(33, 40)).toEqual([188, 0, 45, 255]);
+  });
+});
+
+describe('pngScales', () => {
+  it('ships 2x only for the pennant', () => {
+    expect(pngScales('pennant')).toEqual([1, 2]);
+    expect(['rect', 'square', 'circle'].map((s) => pngScales(s as 'rect'))).toEqual([
+      [1],
+      [1],
+      [1],
+    ]);
   });
 });
 
