@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { codes, getPennantName, isoCodes, toEmoji } from 'pennants';
-import { asset, useLang } from '../shared';
+import { codes, isoCodes, toEmoji } from 'pennants';
+import { asset, siteName, useLang } from '../shared';
 
 const props = defineProps<{ kind: 'iso' | 'other' }>();
 const { lang, t } = useLang();
@@ -10,7 +10,7 @@ const iso = new Set<string>(isoCodes);
 const rows = computed(() =>
   codes
     .filter((code) => (props.kind === 'iso') === iso.has(code))
-    .map((code) => ({ code, name: getPennantName(code, lang.value), emoji: toEmoji(code) })),
+    .map((code) => ({ code, name: siteName(code, lang.value), emoji: toEmoji(code) })),
 );
 </script>
 

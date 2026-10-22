@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { getPennantName } from 'pennants';
-import { asset, useLang } from '../shared';
+import { asset, siteName, useLang } from '../shared';
 
 const { lang } = useLang();
 const samples = ['ar', 'br', 'jp', 'gb-eng', 'eu', 'za'];
@@ -16,7 +15,7 @@ const samples = ['ar', 'br', 'jp', 'gb-eng', 'eu', 'za'];
       </div>
       <figcaption>
         <code>fi-{{ code }}</code> → <code>pn-{{ code }}</code>
-        <span class="name">{{ getPennantName(code, lang) }}</span>
+        <span class="name">{{ siteName(code, lang) }}</span>
       </figcaption>
     </figure>
   </div>

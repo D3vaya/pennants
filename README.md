@@ -7,7 +7,7 @@
 
 Country flags in pennant style. 271 flags (249 ISO 3166-1 countries plus regions and
 organizations) as SVG, PNG, CSS classes, an SVG sprite, tree-shakable ES modules, a React
-component and a Web Component. Typed, lazy, about half a kilobyte per flag.
+component and a Web Component. Typed and lazy: you only ship the flags you show.
 
 ![Two strings of pennant flags](https://raw.githubusercontent.com/d3vaya/pennants/main/docs/public/preview.png)
 
@@ -26,7 +26,7 @@ npm install pennants
 **CSS classes**: no JavaScript, images load per used class.
 
 ```js
-import 'pennants/css/pennants.min.css';
+import 'pennants/css';
 ```
 
 ```html
@@ -81,25 +81,28 @@ Also: `pennants/png/1x/<code>.png` (66 × 72), `png/2x/` (132 × 144) and
 
 ## Weight
 
-What each option adds to an empty Vite 8 production app (gzip):
+Measured with Vite 8.3.5 (production build, difference against an empty app, gzip). Reproduce
+with `npm run bundle:budget`.
 
-| You use                               | Added                                |
-| ------------------------------------- | ------------------------------------ |
-| `<img>` / CDN, PNG                    | 0                                    |
-| CSS classes                           | ≈3.7 kB CSS ¹, flags load per class  |
-| One flag module (`pennants/flags/ar`) | ≈1.0 kB, ≈0.6 kB per additional flag |
-| `getPennantName`                      | ≈1.1 kB                              |
-| `loadPennant`                         | ≈5.1 kB + one chunk per flag shown   |
-| React `<Pennant>`                     | ≈6.9 kB + one chunk per flag shown   |
-| `<pennant-flag>`                      | ≈7.0 kB + one chunk per flag shown   |
+| You use                                | Added up front | Lazy files ¹ |
+| -------------------------------------- | -------------- | ------------ |
+| `<img>` / CDN, PNG                     | 0              | 0            |
+| CSS classes, `assetsInlineLimit` set ² | 3.7 kB CSS     | 0            |
+| CSS classes, `pennants/css/cdn`        | 1.9 kB CSS ³   | 0            |
+| One flag module (`pennants/flags/ar`)  | 1.0 kB JS      | 0            |
+| `getPennantName`                       | 1.1 kB JS      | 0            |
+| `loadPennant`                          | 5.1 kB JS      | 271          |
+| React `<Pennant>`                      | 6.9 kB JS      | 271          |
+| `<pennant-flag>`                       | 7.0 kB JS      | 271          |
 
-¹ Vite inlines small assets by default, which puts every flag into your CSS (56 kB gzip). Set
-`build.assetsInlineLimit` as shown in the
-[FAQ](https://d3vaya.github.io/pennants/guide/faq#bundler-asset-imports). Next.js and Angular
-do not inline.
+¹ Emitted into your build, downloaded only when that flag is shown.
+² With Vite's defaults every flag is inlined into the CSS (52 kB gzip); see the
+[FAQ](https://d3vaya.github.io/pennants/guide/faq#bundler-asset-imports). Next.js and Angular do
+not inline.
+³ Same classes, with flag URLs pointing at jsDelivr (version-pinned); bundlers leave them alone.
 
-The median flag is 0.5 kB with brotli. Country names come from `Intl.DisplayNames`, so no name
-data is bundled. Details: [Performance & weight](https://d3vaya.github.io/pennants/guide/performance).
+More numbers, including min and brotli: [Performance & weight](https://d3vaya.github.io/pennants/guide/performance)
+and the [comparison with flag-icons and country-flag-icons](https://d3vaya.github.io/pennants/guide/comparison).
 
 ## Compared with flag-icons
 
@@ -143,5 +146,5 @@ JS, React y Web Component. Documentación completa en español:
 **[d3vaya.github.io/pennants/es/](https://d3vaya.github.io/pennants/es/)**.
 
 ```js
-import 'pennants/css/pennants.min.css'; // <span class="pn pn-ar"></span>
+import 'pennants/css'; // <span class="pn pn-ar"></span>
 ```

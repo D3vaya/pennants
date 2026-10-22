@@ -6,7 +6,7 @@ titleTemplate: Banderas de países con forma de banderín
 hero:
   name: pennants
   text: Banderas de países con forma de banderín
-  tagline: 271 banderas en SVG, PNG, CSS, sprite, JS con tree-shaking, React y Web Component. Con tipos, carga diferida y alrededor de medio kilobyte por bandera.
+  tagline: '271 banderas en SVG, PNG, CSS, sprite, JS con tree-shaking, React y Web Component. Con tipos y carga diferida: solo envías las banderas que muestras.'
   actions:
     - theme: brand
       text: Empezar
@@ -22,7 +22,7 @@ features:
   - title: Todos los formatos
     details: SVG y PNG estáticos, clases CSS, un sprite SVG, un módulo ES por bandera, un componente de React y un custom element sin framework.
   - title: Pagas solo lo que muestras
-    details: Cada bandera es su propio módulo y su propio chunk diferido, de unos 0,5 kB con brotli. Los nombres salen de Intl.DisplayNames, sin datos extra.
+    details: Cada bandera es su propio módulo y su propio chunk diferido; un import estático agrega alrededor de 1 kB con gzip en una build de Vite. Los nombres salen de Intl.DisplayNames, sin datos extra.
   - title: Tipado y traducido
     details: Un tipo PennantCode con los 271 códigos y nombres en cualquier idioma gracias a Intl.DisplayNames, sin incluir datos de nombres.
   - title: Accesible por defecto
@@ -40,7 +40,7 @@ npm install pennants
 ```
 
 ```js
-import 'pennants/css/pennants.min.css';
+import 'pennants/css';
 ```
 
 ```html

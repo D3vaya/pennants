@@ -8,14 +8,14 @@ lugar de un rectángulo), el prefijo de las clases y los formatos adicionales.
 
 ## Clases
 
-| flag-icons                                   | pennants                                 | Notas                                       |
-| -------------------------------------------- | ---------------------------------------- | ------------------------------------------- |
-| `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css/pennants.min.css'` |                                             |
-| `fi fi-ar`                                   | `pn pn-ar`                               |                                             |
-| `fi fi-ar fis` (cuadrada)                    | `pn pn-ar`                               | Hay una sola forma; quita `fis`.            |
-| `fib fi-ar` (solo fondo)                     | `pn pn-ar`                               | `.pn` ya aplica `background-size: contain`. |
-| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/ar.svg`                    |                                             |
-| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/ar.svg`                    |                                             |
+| flag-icons                                   | pennants                | Notas                                       |
+| -------------------------------------------- | ----------------------- | ------------------------------------------- |
+| `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css'` |                                             |
+| `fi fi-ar`                                   | `pn pn-ar`              |                                             |
+| `fi fi-ar fis` (cuadrada)                    | `pn pn-ar`              | Hay una sola forma; quita `fis`.            |
+| `fib fi-ar` (solo fondo)                     | `pn pn-ar`              | `.pn` ya aplica `background-size: contain`. |
+| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/ar.svg`   |                                             |
+| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/ar.svg`   |                                             |
 
 En la mayoría de los proyectos basta con buscar y reemplazar:
 

@@ -1,60 +1,59 @@
 # Performance & weight
 
-Two views of the same cost: what the library code weighs on its own, and what it adds to a real
-app once a bundler has processed it.
+All numbers on this page are measured, not estimated, and you can reproduce them:
 
-## Library code
+- bundle costs with `npm run bundle:budget` (Vite probes built against the packed library),
+- file sizes and the [comparison](./comparison) with `node scripts/docs-compare.ts`.
 
-Measured on the 0.1.0 build with size-limit (minified, brotli), including every dependency of
-the import.
+## What it adds to your app
 
-| Import                                     | Size    |
-| ------------------------------------------ | ------- |
-| `import { isPennantCode } from 'pennants'` | 449 B   |
-| `pennants` core, including `loadPennant`   | 1.48 kB |
-| `pennants/react`                           | 2.76 kB |
-| `pennants/element`                         | 2.98 kB |
-| One flag module (`pennants/flags/ar`)      | 962 B   |
-| `pennants/css`                             | 930 B   |
+Vite 8.3.5 production build. Each row is the difference against an empty app (React rows
+against an empty React app: 219.5 kB min / 67.7 kB gzip). Sizes are min / gzip / brotli.
 
-## In a real app
+| You use                               | Entry JS                     | CSS                             | Lazy JS files ¹ |
+| ------------------------------------- | ---------------------------- | ------------------------------- | --------------- |
+| `pennantUrl`                          | +2.0 kB / +801 B / +586 B    |                                 | 0               |
+| `getPennantName`                      | +2.6 kB / +1.1 kB / +840 B   |                                 | 0               |
+| One flag module (`pennants/flags/ar`) | +3.2 kB / +1.0 kB / +933 B   |                                 | 0               |
+| `loadPennant`                         | +15.4 kB / +5.1 kB / +3.8 kB |                                 | 271             |
+| `pennants/element/register`           | +19.6 kB / +7.0 kB / +5.3 kB |                                 | 271             |
+| React `<Pennant>`                     | +18.5 kB / +6.9 kB / +5.0 kB |                                 | 271             |
+| React `<PennantSvg>` with one flag    | +21.8 kB / +8.0 kB / +5.9 kB |                                 | 270             |
+| CSS, `assetsInlineLimit` set ²        | +27 B                        | +14.8 kB / +3.7 kB / +2.7 kB    | 0               |
+| CSS, `pennants/css/cdn`               | +27 B                        | +23.2 kB / +1.9 kB / +1.1 kB    | 0               |
+| CSS, Vite defaults (flags inlined)    | +27 B                        | +372.4 kB / +52.0 kB / +42.9 kB | 0               |
 
-Added to an empty Vite 8 production build, raw / gzip. These include the bundler's module and
-chunk-loading code, which is why they are larger than the numbers above.
+¹ Emitted into your build, but downloaded only when that flag is shown.
+² See [FAQ: bundler asset imports](./faq#bundler-asset-imports). Next.js 16 and Angular 22 do
+not inline the flags; their CSS is 15–16 kB min.
 
-| What you use                              | Entry JS (raw / gzip) | Extra files                  |
-| ----------------------------------------- | --------------------- | ---------------------------- |
-| `pennantUrl` only                         | 2.0 / 0.8 kB          |                              |
-| `getPennantName` only                     | 2.6 / 1.1 kB          |                              |
-| One flag module (`pennants/flags/ar`)     | 3.2 / 1.0 kB          |                              |
-| Three flag modules                        | 8.1 / 2.2 kB          |                              |
-| `loadPennant`                             | 15.4 / 5.1 kB         | one chunk per flag shown     |
-| `pennants/element/register`               | 19.5 / 7.0 kB         | one chunk per flag shown     |
-| React `<Pennant>` (on top of `react-dom`) | 18.5 / 6.9 kB         | one chunk per flag shown     |
-| React `<PennantSvg svg={ar}>`             | 21.8 / 8.0 kB         |                              |
-| `pennants/css/pennants.min.css`           | CSS 14.8 / 3.7 kB ¹   | 271 SVG files, loaded on use |
+What these numbers mean in practice:
 
-¹ With `assetsInlineLimit` as in the [FAQ](./faq#bundler-asset-imports). With Vite's default
-the flags are inlined and the CSS is 388 kB raw / 56 kB gzip. Next.js 16 and Angular 22 do not
-inline: their CSS is 15–16 kB raw.
+- A static flag import costs about 1 kB gzip per flag; there is no fixed runtime cost.
+- `loadPennant` and the components carry a 271-entry loader map with hashed chunk names, about
+  5 kB gzip, before any flag is shown. For a handful of known flags, static imports are cheaper.
+- In a Next.js Server Component, `<PennantSvg>` adds no client JavaScript: it renders to HTML.
 
-In a Next.js Server Component, `<PennantSvg>` adds no client JavaScript.
+## Flag files
 
-## Flags
+| Set                            | Raw    | Brotli (sum of files) |
+| ------------------------------ | ------ | --------------------- |
+| All 271 SVGs (`svg/`)          | 1.2 MB | ≈370 kB               |
+| Median SVG                     | 1.2 kB | ≈530 B                |
+| Largest SVG (`rs`, Serbia)     | 60 kB  | ≈14 kB                |
+| Sprite (`sprite/pennants.svg`) | 1.2 MB | ≈260 kB               |
 
-- Median flag: about 1.2 kB raw, 0.5 kB with brotli. The largest, `rs` (Serbia), is 60 kB raw.
-- All 271 SVGs: 1.2 MB raw, about 370 kB with brotli.
-- PNG: about 0.9 kB per 1x file and 1.6 kB per 2x file on average.
-- Country names cost nothing: ISO names come from the runtime's `Intl.DisplayNames`. Only the
-  22 non-ISO names (`gb-eng`, `asean`, ...) are bundled.
+PNG files average about 0.9 kB (1x) and 1.6 kB (2x). Country names cost nothing: ISO names come
+from the runtime's `Intl.DisplayNames`; only the 22 non-ISO names (`gb-eng`, `asean`, ...) are
+bundled.
 
-The npm tarball is 1.5 MB (4.1 MB unpacked) because it contains every format. What reaches your
-users depends only on what you import.
+The npm tarball is about 1.6 MB because it contains every format. What reaches your users
+depends only on what you import.
 
 ## How lazy chunks work
 
-`loadPennant` holds a map of 271 dynamic `import()` calls, one per flag; that map is most of
-its 5 kB. Bundlers turn each entry into a separate chunk, so:
+`loadPennant` holds a map of 271 dynamic `import()` calls, one per flag. Bundlers turn each
+entry into a separate chunk, so:
 
 - your build output contains 271 small files, but
 - a visitor downloads only the chunks for the flags actually shown, once, and the browser
@@ -66,15 +65,12 @@ shown many times is fetched and parsed once.
 ## Keeping bundles minimal
 
 - Import what you use: `import { getPennantName } from 'pennants'` does not pull in any flag.
-- Prefer static per-flag imports for a fixed, small set of flags; prefer `loadPennant` or the
-  components when the flag is chosen at runtime.
-- Avoid `import * as flags` patterns or building an object of all flag modules: that bundles all 271.
+- For a fixed, small set of flags, use static per-flag imports. Use `loadPennant` or the
+  components when the flag is chosen at runtime and the set is large.
+- Avoid `import * as flags` or building an object of all flag modules: that bundles all 271.
 - Do not iterate `codes` and call `loadPennant` for each one to show a list; use CSS classes or
   `<img>` for long lists.
-- With Vite, SvelteKit or Astro, keep the flag SVGs referenced by the CSS from being inlined
-  (388 kB instead of 15 kB). See [FAQ: bundler asset imports](./faq#bundler-asset-imports).
-- For a handful of known flags, static per-flag imports (≈0.6–1 kB gzip each) are cheaper
-  than `loadPennant` (≈5 kB for the loader map).
+- With Vite, SvelteKit or Astro, set `assetsInlineLimit` so the CSS does not inline every flag.
 
 ## CDN or self-host?
 

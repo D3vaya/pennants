@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
-import { codes, getPennantName, isoCodes, toEmoji } from 'pennants';
+import { codes, isoCodes, toEmoji } from 'pennants';
 import CopyCode from './CopyCode.vue';
-import { asset, snippets, useLang } from '../shared';
+import { asset, siteName, snippets, useLang } from '../shared';
 
 const { lang, t } = useLang();
 const query = ref('');
@@ -13,8 +13,8 @@ const iso = new Set<string>(isoCodes);
 
 const entries = computed(() =>
   codes.map((code) => {
-    const name = getPennantName(code, lang.value);
-    const english = getPennantName(code, 'en');
+    const name = siteName(code, lang.value);
+    const english = siteName(code, 'en');
     return { code, name, search: `${code} ${name} ${english}`.toLowerCase() };
   }),
 );
@@ -36,7 +36,7 @@ const current = computed(() => {
   if (!code) return null;
   return {
     code,
-    name: getPennantName(code, lang.value),
+    name: siteName(code, lang.value),
     emoji: toEmoji(code),
     iso: iso.has(code),
     snippets: snippets(code, lang.value),

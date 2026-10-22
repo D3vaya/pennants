@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { getPennantName, loadPennant } from 'pennants';
+import { loadPennant } from 'pennants';
 import CopyCode from './CopyCode.vue';
-import { asset, snippets, useLang, type FormatId } from '../shared';
+import { asset, type FormatId, siteName, snippets, useLang } from '../shared';
 
 const { lang, t } = useLang();
 const flags = ['ar', 'jp', 'br', 'es', 'gb-eng', 'za'];
@@ -17,8 +17,7 @@ const notes: Record<'en' | 'es', Record<FormatId, string>> = {
     png: 'For email, native apps and places without SVG support.',
     sprite:
       'One file with all 271 flags (≈260 kB brotli): worth it only when you show many at once.',
-    module:
-      'Tree-shaken: only the flags you import are bundled (≈1 kB gzip for the first, ≈0.6 kB each more).',
+    module: 'Tree-shaken: only the flags you import are bundled (≈1 kB gzip each in a Vite build).',
     lazy: '≈5 kB gzip for the loader map, then one small chunk per flag, fetched on first use.',
     react: 'Lazy inline SVG or <img>, accessible name by default, SSR-safe (≈7 kB gzip).',
     element: 'Framework-free custom element with lazy loading (≈7 kB gzip).',
@@ -30,7 +29,7 @@ const notes: Record<'en' | 'es', Record<FormatId, string>> = {
     sprite:
       'Un archivo con las 271 banderas (≈260 kB con brotli): conviene solo si muestras muchas a la vez.',
     module:
-      'Tree-shaking: solo se incluyen las banderas que importas (≈1 kB con gzip la primera, ≈0,6 kB cada una más).',
+      'Tree-shaking: solo se incluyen las banderas que importas (≈1 kB con gzip cada una en una build de Vite).',
     lazy: '≈5 kB con gzip del mapa de carga y luego un chunk pequeño por bandera, al usarla por primera vez.',
     react:
       'SVG inline diferido o <img>, nombre accesible por defecto, compatible con SSR (≈7 kB con gzip).',
@@ -40,7 +39,7 @@ const notes: Record<'en' | 'es', Record<FormatId, string>> = {
 
 const all = computed(() => snippets(code.value, lang.value));
 const snippet = computed(() => all.value.find((s) => s.id === format.value) ?? all.value[0]!);
-const name = computed(() => getPennantName(code.value, lang.value));
+const name = computed(() => siteName(code.value, lang.value));
 const inline = computed(() => ['module', 'lazy', 'react'].includes(format.value));
 
 watch(

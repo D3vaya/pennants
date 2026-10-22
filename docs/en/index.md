@@ -6,7 +6,7 @@ titleTemplate: Country flags in pennant style
 hero:
   name: pennants
   text: Country flags, pennant style
-  tagline: 271 flags as SVG, PNG, CSS, sprite, tree-shakable JS, React and a Web Component. Typed, lazy, about half a kilobyte per flag.
+  tagline: 271 flags as SVG, PNG, CSS, sprite, tree-shakable JS, React and a Web Component. Typed, lazy, and you only ship the flags you show.
   actions:
     - theme: brand
       text: Get started
@@ -22,7 +22,7 @@ features:
   - title: Every format
     details: Static SVG and PNG, CSS classes, an SVG sprite, one ES module per flag, a React component and a framework-free custom element.
   - title: Pay only for what you show
-    details: Each flag is its own module and lazy chunk, about 0.5 kB with brotli. Names come from Intl.DisplayNames, so no name data ships.
+    details: Each flag is its own module and lazy chunk; a static flag import adds about 1 kB gzip in a Vite build. Names come from Intl.DisplayNames, so no name data ships.
   - title: Typed and localized
     details: A PennantCode union for all 271 codes, and names in any language through Intl.DisplayNames, with no bundled name data.
   - title: Accessible by default
@@ -40,7 +40,7 @@ npm install pennants
 ```
 
 ```js
-import 'pennants/css/pennants.min.css';
+import 'pennants/css';
 ```
 
 ```html

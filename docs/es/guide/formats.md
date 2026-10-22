@@ -11,15 +11,16 @@ de la librería sola.
 | `<img>` SVG (propio o CDN)    | 0                                                       | Sí                                         | No                | `loading="lazy"`          | Caché HTTP / CDN                   |
 | `<img>` PNG 1x / 2x           | 0                                                       | Sí                                         | No                | `loading="lazy"`          | Caché HTTP / CDN                   |
 | Sprite SVG `<use href>`       | 0 de JS; un archivo de 1,2 MB (≈260 kB con brotli)      | Sí                                         | No                | No, un archivo para todas | Un archivo, caché HTTP             |
-| Módulo JS `pennants/flags/ar` | ≈1,0 kB la primera bandera, ≈0,6 kB cada una más        | Sí                                         | Sí                | No, va en el bundle       | Parte de tu bundle                 |
+| Módulo JS `pennants/flags/ar` | ≈1,0 kB por bandera                                     | Sí                                         | Sí                | No, va en el bundle       | Parte de tu bundle                 |
 | `loadPennant(código)`         | ≈5,1 kB (mapa de carga) + un chunk por bandera mostrada | Cliente (asíncrono)                        | Sí                | Sí                        | Chunks, caché HTTP                 |
 | React `<Pennant>`             | ≈6,9 kB + un chunk por bandera mostrada                 | Caja en el servidor, bandera en el cliente | Sí                | Sí                        | Chunks                             |
 | React `<PennantSvg svg={ar}>` | ≈8,0 kB con `ar` incluida ²                             | Sí, con el SVG completo                    | Sí                | No                        | Parte de tu bundle                 |
 | `<pennant-flag>`              | ≈7,0 kB + un chunk por bandera mostrada                 | Solo cliente                               | Sí                | Sí                        | Chunks                             |
 
-¹ Con `assetsInlineLimit` configurado como en las
+¹ Con `assetsInlineLimit` configurado como en las preguntas frecuentes, o 1,9 kB con
+`pennants/css/cdn` (banderas desde jsDelivr); ver
 [preguntas frecuentes](./faq#imports-de-assets-en-el-bundler); sin eso, Vite incrusta las
-banderas y el CSS pesa unos 56 kB con gzip. Next.js y Angular generan archivos por defecto.
+banderas y el CSS pesa 52 kB con gzip. Next.js y Angular generan archivos por defecto.
 
 ² En un Server Component de Next.js, `<PennantSvg>` no agrega JavaScript al cliente: se
 renderiza a HTML.
