@@ -46,18 +46,39 @@ const NO_INLINE = `export default {
   build: { assetsInlineLimit: (file) => (file.includes('/pennants/svg/') ? false : undefined) },
 };`;
 
+const SHAPES = ['pennant', 'rect', 'square', 'circle'] as const;
+const artFor = (shape: string): string => (shape === 'rect' ? '4x3' : '1x1');
+
+const cssProbe = (shape: string, cdn: boolean): Probe => {
+  const path = `pennants/css${shape === 'pennant' ? '' : `/${shape}`}${cdn ? '/cdn' : ''}`;
+  return {
+    name: `css${shape === 'pennant' ? '' : `-${shape}`}${cdn ? '-cdn' : ''}`,
+    label: `CSS \`${path}\`${cdn ? '' : ', `assetsInlineLimit` set'}`,
+    baseline: 'empty',
+    ...(cdn ? {} : { config: NO_INLINE }),
+    main: `import '${path}';\ndocument.body.innerHTML = '<span class="pn pn-ar"></span>';`,
+  };
+};
+
 const PROBES: Probe[] = [
   { name: 'empty', label: 'Empty app (baseline)', main: `document.body.append('ready');` },
-  {
-    name: 'react',
-    label: 'Empty React app (baseline)',
-    main: react(`jsx('b', {})`, ''),
-  },
-  {
-    name: 'flag',
-    label: '`pennants/flags/ar`',
+  { name: 'react', label: 'Empty React app (baseline)', main: react(`jsx('b', {})`, '') },
+  ...SHAPES.map((shape): Probe => ({
+    name: `art-${shape}`,
+    label: `\`pennants/art/${artFor(shape)}/ar\` + \`renderFlag\` (${shape})`,
     baseline: 'empty',
-    main: `import ar from 'pennants/flags/ar';\ndocument.body.innerHTML = ar;`,
+    main:
+      `import ar from 'pennants/art/${artFor(shape)}/ar';\nimport { renderFlag } from 'pennants';\n` +
+      `document.body.innerHTML = renderFlag(ar, { shape: '${shape}' });`,
+  })),
+  {
+    name: 'art-all',
+    label: 'Both `ar` art sets + `renderFlag` (all four shapes)',
+    baseline: 'empty',
+    main:
+      `import ar from 'pennants/art/1x1/ar';\nimport ar4x3 from 'pennants/art/4x3/ar';\n` +
+      `import { renderFlag } from 'pennants';\n` +
+      `document.body.innerHTML = ['pennant', 'square', 'circle'].map((shape) => renderFlag(ar, { shape })).join('') + renderFlag(ar4x3, { shape: 'rect' });`,
   },
   {
     name: 'name',
@@ -69,7 +90,7 @@ const PROBES: Probe[] = [
     name: 'url',
     label: '`pennantUrl`',
     baseline: 'empty',
-    main: `import { pennantUrl } from 'pennants';\ndocument.body.append(pennantUrl('ar'));`,
+    main: `import { pennantUrl } from 'pennants';\ndocument.body.append(pennantUrl('ar', { shape: 'circle' }));`,
   },
   {
     name: 'load',
@@ -78,17 +99,25 @@ const PROBES: Probe[] = [
     main: `import { loadPennant } from 'pennants';\nloadPennant('ar').then((svg) => (document.body.innerHTML = svg));`,
   },
   {
-    name: 'fetch',
-    label: '`fetchPennant`',
+    name: 'load-shapes',
+    label: '`loadFlag`, circle + rect',
     baseline: 'empty',
-    optional: true,
-    main: `import { fetchPennant } from 'pennants';\nfetchPennant('ar').then((svg) => (document.body.innerHTML = svg));`,
+    main:
+      `import { loadFlag } from 'pennants';\n` +
+      `Promise.all([loadFlag('ar', { shape: 'circle' }), loadFlag('ar', { shape: 'rect' })])` +
+      `.then((svgs) => (document.body.innerHTML = svgs.join('')));`,
+  },
+  {
+    name: 'fetch',
+    label: '`fetchPennant` (`pennants/fetch`)',
+    baseline: 'empty',
+    main: `import { fetchPennant } from 'pennants/fetch';\nfetchPennant('ar', { shape: 'circle' }).then((svg) => (document.body.innerHTML = svg));`,
   },
   {
     name: 'element',
     label: '`pennants/element/register`',
     baseline: 'empty',
-    main: `import 'pennants/element/register';\ndocument.body.innerHTML = '<pennant-flag code="ar"></pennant-flag>';`,
+    main: `import 'pennants/element/register';\ndocument.body.innerHTML = '<pennant-flag code="ar" shape="circle"></pennant-flag>';`,
   },
   {
     name: 'react-pennant',
@@ -97,33 +126,38 @@ const PROBES: Probe[] = [
     main: react(`jsx(Pennant, { code: 'ar' })`, `import { Pennant } from 'pennants/react';`),
   },
   {
-    name: 'react-svg',
-    label: 'React `<PennantSvg>` + one flag',
+    name: 'react-pennant-circle',
+    label: 'React `<Pennant shape="circle">`',
     baseline: 'react',
     main: react(
-      `jsx(PennantSvg, { svg: ar })`,
-      `import { PennantSvg } from 'pennants/react';\nimport ar from 'pennants/flags/ar';`,
+      `jsx(Pennant, { code: 'ar', shape: 'circle' })`,
+      `import { Pennant } from 'pennants/react';`,
     ),
   },
   {
-    name: 'css',
-    label: 'CSS, `assetsInlineLimit` set',
-    baseline: 'empty',
-    config: NO_INLINE,
-    main: `import 'pennants/css/pennants.min.css';\ndocument.body.innerHTML = '<span class="pn pn-ar"></span>';`,
+    name: 'react-svg',
+    label: 'React `<PennantSvg>` + one art module',
+    baseline: 'react',
+    main: react(
+      `jsx(PennantSvg, { art: ar })`,
+      `import { PennantSvg } from 'pennants/react';\nimport ar from 'pennants/art/1x1/ar';`,
+    ),
   },
   {
-    name: 'css-cdn',
-    label: 'CSS, `pennants/css/cdn`',
-    baseline: 'empty',
-    optional: true,
-    main: `import 'pennants/css/cdn';\ndocument.body.innerHTML = '<span class="pn pn-ar"></span>';`,
+    name: 'react-svg-circle',
+    label: 'React `<PennantSvg shape="circle">` + one art module',
+    baseline: 'react',
+    main: react(
+      `jsx(PennantSvg, { art: ar, shape: 'circle' })`,
+      `import { PennantSvg } from 'pennants/react';\nimport ar from 'pennants/art/1x1/ar';`,
+    ),
   },
+  ...SHAPES.flatMap((shape) => [cssProbe(shape, false), cssProbe(shape, true)]),
   {
     name: 'css-default',
-    label: 'CSS, Vite defaults (inlined flags)',
+    label: 'CSS `pennants/css`, Vite defaults (inlined flags)',
     baseline: 'empty',
-    main: `import 'pennants/css/pennants.min.css';\ndocument.body.innerHTML = '<span class="pn pn-ar"></span>';`,
+    main: `import 'pennants/css';\ndocument.body.innerHTML = '<span class="pn pn-ar"></span>';`,
   },
 ];
 
@@ -232,6 +266,14 @@ const workDir = await mkdtemp(join(tmpdir(), 'pennants-budget-'));
 if (!args.has('--no-build')) await run('npm', ['run', 'build'], root);
 const packed = await run('npm', ['pack', '--pack-destination', workDir, '--silent'], root);
 const tarball = join(workDir, packed.trim().split('\n').at(-1) ?? '');
+// Other tools may be regenerating assets in this working tree: refuse a
+// tarball that misses whole folders instead of reporting confusing errors.
+const listing = await run('tar', ['-tzf', tarball], workDir);
+for (const required of ['package/dist/index.js', 'package/css/', 'package/svg/']) {
+  if (!listing.split('\n').some((entry) => entry.startsWith(required))) {
+    throw new Error(`${tarball} lacks ${required}; was the build still running?`);
+  }
+}
 await writeFile(
   join(workDir, 'package.json'),
   JSON.stringify({

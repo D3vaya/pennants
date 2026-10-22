@@ -1,62 +1,173 @@
 {
-  "flag": {
-    "jsMin": 3330,
-    "jsGzip": 1140,
-    "jsBrotli": 1040,
+  "art-pennant": {
+    "jsMin": 4740,
+    "jsGzip": 1790,
+    "jsBrotli": 1630,
+    "lazyFiles": 0
+  },
+  "art-rect": {
+    "jsMin": 4630,
+    "jsGzip": 1770,
+    "jsBrotli": 1620,
+    "lazyFiles": 0
+  },
+  "art-square": {
+    "jsMin": 4740,
+    "jsGzip": 1790,
+    "jsBrotli": 1630,
+    "lazyFiles": 0
+  },
+  "art-circle": {
+    "jsMin": 4740,
+    "jsGzip": 1790,
+    "jsBrotli": 1630,
+    "lazyFiles": 0
+  },
+  "art-all": {
+    "jsMin": 7310,
+    "jsGzip": 2110,
+    "jsBrotli": 1870,
     "lazyFiles": 0
   },
   "name": {
-    "jsMin": 2690,
-    "jsGzip": 1210,
-    "jsBrotli": 940,
+    "jsMin": 1890,
+    "jsGzip": 1150,
+    "jsBrotli": 890,
     "lazyFiles": 0
   },
   "url": {
-    "jsMin": 2130,
-    "jsGzip": 910,
-    "jsBrotli": 690,
+    "jsMin": 1680,
+    "jsGzip": 990,
+    "jsBrotli": 780,
     "lazyFiles": 0
   },
   "load": {
-    "jsMin": 16200,
-    "jsGzip": 5390,
-    "jsBrotli": 3970,
-    "lazyFiles": 271
+    "jsMin": 5250,
+    "jsGzip": 2590,
+    "jsBrotli": 2200,
+    "lazyFiles": 544
+  },
+  "load-shapes": {
+    "jsMin": 5290,
+    "jsGzip": 2610,
+    "jsBrotli": 2170,
+    "lazyFiles": 544
+  },
+  "fetch": {
+    "jsMin": 2170,
+    "jsGzip": 1260,
+    "jsBrotli": 1010,
+    "lazyFiles": 0
   },
   "element": {
-    "jsMin": 20540,
-    "jsGzip": 7380,
-    "jsBrotli": 5600,
-    "lazyFiles": 271
+    "jsMin": 12050,
+    "jsGzip": 5300,
+    "jsBrotli": 4570,
+    "lazyFiles": 544
   },
   "react-pennant": {
-    "jsMin": 19420,
-    "jsGzip": 7230,
-    "jsBrotli": 5210,
-    "lazyFiles": 271
+    "jsMin": 9220,
+    "jsGzip": 4470,
+    "jsBrotli": 3620,
+    "lazyFiles": 544
+  },
+  "react-pennant-circle": {
+    "jsMin": 9230,
+    "jsGzip": 4480,
+    "jsBrotli": 3670,
+    "lazyFiles": 544
   },
   "react-svg": {
-    "jsMin": 22930,
-    "jsGzip": 8410,
-    "jsBrotli": 6220,
-    "lazyFiles": 270
+    "jsMin": 7890,
+    "jsGzip": 3660,
+    "jsBrotli": 2920,
+    "lazyFiles": 0
+  },
+  "react-svg-circle": {
+    "jsMin": 7900,
+    "jsGzip": 3670,
+    "jsBrotli": 2890,
+    "lazyFiles": 0
   },
   "css": {
     "jsMin": 130,
     "jsGzip": 130,
     "jsBrotli": 110,
+    "cssMin": 15670,
+    "cssGzip": 3960,
+    "cssBrotli": 2910,
+    "lazyFiles": 0
+  },
+  "css-cdn": {
+    "jsMin": 130,
+    "jsGzip": 130,
+    "jsBrotli": 110,
+    "cssMin": 26770,
+    "cssGzip": 2050,
+    "cssBrotli": 1260,
+    "lazyFiles": 0
+  },
+  "css-rect": {
+    "jsMin": 130,
+    "jsGzip": 130,
+    "jsBrotli": 110,
     "cssMin": 15560,
     "cssGzip": 3910,
-    "cssBrotli": 2840,
+    "cssBrotli": 2850,
+    "lazyFiles": 0
+  },
+  "css-rect-cdn": {
+    "jsMin": 130,
+    "jsGzip": 130,
+    "jsBrotli": 110,
+    "cssMin": 25800,
+    "cssGzip": 1980,
+    "cssBrotli": 1190,
+    "lazyFiles": 0
+  },
+  "css-square": {
+    "jsMin": 130,
+    "jsGzip": 130,
+    "jsBrotli": 110,
+    "cssMin": 15550,
+    "cssGzip": 3890,
+    "cssBrotli": 2850,
+    "lazyFiles": 0
+  },
+  "css-square-cdn": {
+    "jsMin": 130,
+    "jsGzip": 130,
+    "jsBrotli": 110,
+    "cssMin": 26360,
+    "cssGzip": 1980,
+    "cssBrotli": 1180,
+    "lazyFiles": 0
+  },
+  "css-circle": {
+    "jsMin": 130,
+    "jsGzip": 130,
+    "jsBrotli": 110,
+    "cssMin": 15550,
+    "cssGzip": 3900,
+    "cssBrotli": 2870,
+    "lazyFiles": 0
+  },
+  "css-circle-cdn": {
+    "jsMin": 130,
+    "jsGzip": 130,
+    "jsBrotli": 110,
+    "cssMin": 26360,
+    "cssGzip": 1980,
+    "cssBrotli": 1190,
     "lazyFiles": 0
   },
   "css-default": {
     "jsMin": 130,
     "jsGzip": 130,
     "jsBrotli": 110,
-    "cssMin": 391050,
-    "cssGzip": 54610,
-    "cssBrotli": 45020,
+    "cssMin": 394170,
+    "cssGzip": 55680,
+    "cssBrotli": 46020,
     "lazyFiles": 0
   }
 }
