@@ -6,6 +6,7 @@ import {
   PENNANT,
   circlePath,
   composeFlag,
+  defaultIdPrefix,
   isShape,
   PENNANT_PATH,
   roundedRectPath,
@@ -81,11 +82,14 @@ describe('composeFlag', () => {
         `^<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">`,
       ),
     );
-    expect(svg).toContain(`<clipPath id="pn-ar-clip"><path d="${SHAPE_PATH[shape]}"/></clipPath>`);
+    const prefix = defaultIdPrefix('ar', shape);
+    expect(svg).toContain(
+      `<clipPath id="${prefix}clip"><path d="${SHAPE_PATH[shape]}"/></clipPath>`,
+    );
     expect(svg).toContain(
       `<path d="${SHAPE_PATH[shape]}" fill="none" stroke="#000" stroke-opacity="0.3" stroke-width="${BORDER_WIDTH[shape] * 2}"/>`,
     );
-    expect(svg).toContain('preserveAspectRatio="xMidYMid slice"><path id="pn-ar-a"');
+    expect(svg).toContain(`preserveAspectRatio="xMidYMid slice"><path id="${prefix}a"`);
     expect(svg).not.toContain('style=');
     expect(svg.endsWith('</svg>')).toBe(true);
   });
@@ -105,6 +109,24 @@ describe('composeFlag', () => {
     expect(svg).not.toContain('linearGradient');
     expect(svg).not.toContain('<rect');
     expect(svg).toContain(`<svg x="0" y="0" width="${width}" height="${height}"`);
+  });
+
+  it('namespaces ids per shape so one flag in two shapes never clashes', () => {
+    expect(SHAPES.map((shape) => defaultIdPrefix('ar', shape))).toEqual([
+      'pn-ar-',
+      'pn-ar-rect-',
+      'pn-ar-square-',
+      'pn-ar-circle-',
+    ]);
+    expect(defaultIdPrefix('gb-eng')).toBe('pn-gb-eng-');
+    const ids = SHAPES.flatMap((shape) =>
+      [...composeFlag(art, shape).matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]),
+    );
+    expect(new Set(ids).size).toBe(ids.length);
+    const circle = composeFlag(art, 'circle');
+    expect(circle).toContain('clip-path="url(#pn-ar-circle-clip)"');
+    expect(circle).toContain('href="#pn-ar-circle-a"');
+    expect(circle).not.toMatch(/pn-ar-(?!circle-)/);
   });
 
   it('rewrites every id and reference with a custom prefix', () => {

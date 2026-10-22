@@ -130,6 +130,16 @@ export const SHAPE_PATH: Readonly<Record<PennantShape, string>> = {
 const CODE_PATTERN = /^[a-z]{2,6}(-[a-z]{2,3})?$/;
 const PREFIX_PATTERN = /^[A-Za-z][\w-]*$/;
 
+/**
+ * Default id namespace of a composed flag: `pn-<code>-` for the pennant
+ * (unchanged since 0.1) and `pn-<code>-<shape>-` for the other shapes, so a
+ * flag shown in two shapes on one page never shares ids. Shape names (4–6
+ * letters) can't be mistaken for a code suffix (2–3 letters).
+ */
+export function defaultIdPrefix(code: string, shape: PennantShape = 'pennant'): string {
+  return shape === 'pennant' ? `pn-${code}-` : `pn-${code}-${shape}-`;
+}
+
 /** `true` for a valid shape name. */
 export function isShape(value: unknown): value is PennantShape {
   return (SHAPES as readonly unknown[]).includes(value);
@@ -138,9 +148,10 @@ export function isShape(value: unknown): value is PennantShape {
 /**
  * Wraps flag artwork in a shape's frame and returns a standalone SVG.
  *
- * Ids (the frame's and the artwork's) use the `pn-<code>-` prefix, so
- * different flags can be inlined in one document. Pass `idPrefix` to give
- * one instance its own namespace when the same flag appears several times.
+ * Ids (the frame's and the artwork's) use {@link defaultIdPrefix}, so
+ * different flags, and the same flag in different shapes, can be inlined in
+ * one document. Pass `idPrefix` to give one instance its own namespace when
+ * the same flag appears several times in the same shape.
  *
  * @param art - artwork from `pennants/art/<set>/<code>`; use the set given
  *   by {@link SHAPE_ART} (`4x3` for `rect`, `1x1` otherwise).
@@ -151,7 +162,7 @@ export function isShape(value: unknown): value is PennantShape {
 export function composeFlag(
   art: FlagArt,
   shape: PennantShape = 'pennant',
-  idPrefix = `pn-${art.code}-`,
+  idPrefix = defaultIdPrefix(art.code, shape),
 ): string {
   const { code, viewBox } = art;
   if (!CODE_PATTERN.test(code)) throw new Error(`Invalid flag code "${code}"`);
