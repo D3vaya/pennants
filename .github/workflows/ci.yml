@@ -25,11 +25,11 @@ jobs:
         # smoke job below, which tests the packed tarball instead.
         node: ['22', '24']
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ matrix.node }}
           cache: npm
@@ -40,7 +40,7 @@ jobs:
 
       - name: Upload coverage
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: coverage-node-${{ matrix.node }}
           path: coverage/
@@ -53,12 +53,35 @@ jobs:
 
       - name: Upload tarball
         if: matrix.node == '22'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: package-tarball
           path: pennants-*.tgz
           if-no-files-found: error
           retention-days: 7
+
+  react18:
+    name: Tests with React 18
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Swap in React 18
+        run: npm install --no-save --no-audit --no-fund react@18 react-dom@18
+
+      - run: npx vitest run
 
   smoke-node20:
     name: Smoke test packed package (Node 20.19)
@@ -66,11 +89,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '20.19'
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: package-tarball
           path: ${{ runner.temp }}/pkg
@@ -81,9 +104,9 @@ jobs:
           mkdir smoke
           cd smoke
           npm init -y > /dev/null
-          npm install --no-audit --no-fund ../pkg/pennants-*.tgz
+          npm install --no-audit --no-fund ../pkg/pennants-*.tgz react react-dom
 
-      - name: Import the public entry points
+      - name: Import entry points and SSR-render React components
         working-directory: ${{ runner.temp }}/smoke
         run: |
           cat > smoke.mjs <<'JS'
@@ -92,9 +115,13 @@ jobs:
           import { fileURLToPath } from 'node:url';
           import { codes, isPennantCode, loadPennant, getPennantName, pennantUrl } from 'pennants';
           import ar from 'pennants/flags/ar';
+          import { definePennantElement } from 'pennants/element';
+          import { Pennant, PennantSvg } from 'pennants/react';
+          import { createElement as h } from 'react';
+          import { renderToString } from 'react-dom/server';
 
           assert.ok(codes.length > 249, 'codes list');
-          assert.ok(isPennantCode('AR'));
+          assert.ok(isPennantCode('ar'));
           assert.match(ar, /^<svg/);
           assert.equal(await loadPennant('ar'), ar);
           assert.equal(getPennantName('ar'), 'Argentina');
@@ -102,6 +129,18 @@ jobs:
           for (const specifier of ['pennants/svg/ar.svg', 'pennants/sprite', 'pennants/css']) {
             assert.ok(existsSync(fileURLToPath(import.meta.resolve(specifier))), specifier);
           }
+
+          // No customElements in Node: registering is a no-op.
+          assert.equal(definePennantElement(), undefined);
+
+          const inline = renderToString(h(Pennant, { code: 'ar' }));
+          assert.match(inline, /data-pennant="ar"/);
+          assert.match(inline, /aria-label="Argentina"/);
+          assert.match(renderToString(h(Pennant, { code: 'ar', mode: 'img' })), /<img [^>]*src="[^"]*\/svg\/ar\.svg"/);
+          const bundled = renderToString(h(PennantSvg, { svg: ar }));
+          assert.match(bundled, /<svg/);
+          assert.match(bundled, /aria-label="Argentina"/);
+
           console.log(`OK on Node ${process.version}`);
           JS
           node smoke.mjs
