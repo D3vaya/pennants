@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pennants + Vite</title>
+  </head>
+  <body>
+    <h2>CSS classes</h2>
+    <span class="pn pn-ar pn-2x" role="img" aria-label="Argentina"></span>
+
+    <h2>Per-flag module (bundled)</h2>
+    <span id="inline"></span>
+
+    <h2>loadPennant (lazy chunk)</h2>
+    <select id="picker">
+      <option value="br">Brazil</option>
+      <option value="jp">Japan</option>
+      <option value="gb-eng">England</option>
+    </select>
+    <span id="lazy"></span>
+
+    <h2>Asset URL</h2>
+    <img id="img" width="33" height="36" alt="Germany" />
+
+    <h2>SVG sprite</h2>
+    <svg width="33" height="36" role="img" aria-label="Mexico"><use id="sprite" /></svg>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

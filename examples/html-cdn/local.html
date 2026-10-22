@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pennants, self-hosted</title>
+    <!-- Files copied from node_modules/pennants by build.js. -->
+    <link rel="stylesheet" href="./pennants/css/pennants.min.css" />
+    <script type="module" src="./pennants/dist/element/register.js"></script>
+  </head>
+  <body>
+    <h1>pennants, self-hosted</h1>
+
+    <h2>CSS classes</h2>
+    <p>
+      <span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+      <span class="pn pn-br pn-2x" role="img" aria-label="Brazil"></span>
+    </p>
+
+    <h2>Image</h2>
+    <img src="./pennants/svg/jp.svg" width="33" height="36" alt="Japan" />
+
+    <h2>SVG sprite</h2>
+    <svg width="33" height="36" role="img" aria-label="Mexico">
+      <use href="./pennants/sprite/pennants.svg#pn-mx" />
+    </svg>
+
+    <h2>Web Component</h2>
+    <pennant-flag code="de" size="48"></pennant-flag>
+  </body>
+</html>

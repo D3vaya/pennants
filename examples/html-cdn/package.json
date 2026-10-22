@@ -1,0 +1,12 @@
+{
+  "name": "pennants-example-html-cdn",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "start": "npm run build && npx serve dist"
+  },
+  "dependencies": {
+    "pennants": "^0.1.0"
+  }
+}

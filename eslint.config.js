@@ -12,6 +12,7 @@ export default tseslint.config(
       'sprite/',
       'src/generated/',
       'reference/',
+      'examples/',
     ],
   },
   js.configs.recommended,

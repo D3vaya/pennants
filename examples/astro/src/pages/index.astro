@@ -1,0 +1,47 @@
+---
+import 'pennants/css/pennants.min.css';
+import { Image } from 'astro:assets';
+import { Pennant } from 'pennants/react';
+import ar from 'pennants/flags/ar';
+import jp from 'pennants/svg/jp.svg';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pennants + Astro</title>
+  </head>
+  <body>
+    <h2>Zero JS: CSS classes</h2>
+    <span class="pn pn-de pn-2x" role="img" aria-label="Germany"></span>
+
+    <h2>Zero JS: inline SVG from a per-flag module</h2>
+    <!-- Trusted markup from pennants/flags/* only; never user input. -->
+    <span class="flag" role="img" aria-label="Argentina" set:html={ar} />
+
+    <h2>Zero JS: image</h2>
+    <Image src={jp} alt="Japan" height={48} />
+
+    <h2>React island (hydrated when visible)</h2>
+    <Pennant client:visible code="br" size={48} />
+
+    <h2>Web Component</h2>
+    <pennant-flag code="mx" size="48"></pennant-flag>
+    <script>
+      import 'pennants/element/register';
+    </script>
+
+    <style>
+      .flag {
+        display: inline-block;
+        height: 48px;
+        aspect-ratio: 66 / 72;
+      }
+      .flag :global(svg) {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </body>
+</html>

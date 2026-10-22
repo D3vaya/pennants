@@ -1,0 +1,57 @@
+# Tailwind CSS
+
+Tailwind CSS 4 with `@tailwindcss/vite`. Use the `pn pn-xx` classes and size them with
+utilities.
+
+[Full example](https://github.com/d3vaya/pennants/tree/main/examples/tailwind)
+
+```sh
+npm install pennants
+```
+
+## Setup
+
+Import the stylesheet into Tailwind's `components` layer:
+
+```css [src/style.css]
+@import 'tailwindcss';
+@import 'pennants/css/pennants.min.css' layer(components);
+```
+
+The layer matters. Without it, `.pn` is unlayered CSS, and unlayered CSS beats every Tailwind
+utility, so `h-12` or `w-auto` would have no effect.
+
+With Vite, add the `assetsInlineLimit` option from the
+[Vite guide](./vite#stop-vite-from-inlining-the-flags). This keeps the 271 flag SVGs out of
+your CSS.
+
+## Sizing
+
+`.pn` is `1em` tall and `11/12em` wide. Size it with font-size utilities:
+
+```html
+<span class="pn pn-ar text-[32px]" role="img" aria-label="Argentina"></span>
+<span class="pn pn-br text-5xl" role="img" aria-label="Brazil"></span>
+<!-- Follows the surrounding text -->
+<span class="text-xl"><span class="pn pn-mx" aria-hidden="true"></span> Mexico</span>
+```
+
+Or set a height and let the width follow:
+
+```html
+<span class="pn pn-jp h-12 w-auto aspect-[11/12]" role="img" aria-label="Japan"></span>
+<span
+  class="pn pn-de h-16 w-auto aspect-[11/12] drop-shadow-md transition hover:-rotate-6"
+  role="img"
+  aria-label="Germany"
+></span>
+```
+
+`size-*` utilities set the width and height to the same value, which distorts the 11:12
+shape. Use `h-*` with `w-auto aspect-[11/12]` instead.
+
+## Weight
+
+The pennants rules add about 12 KB minified (under 2 KB gzip) to your CSS. Tailwind doesn't
+remove unused rules from imported CSS, but each flag image is downloaded only when it is
+used.

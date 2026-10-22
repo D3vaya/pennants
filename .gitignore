@@ -8,3 +8,12 @@ coverage/
 src/generated/
 *.tgz
 .DS_Store
+examples/*/node_modules/
+examples/*/package-lock.json
+examples/*/dist/
+examples/*/build/
+examples/*/.next/
+examples/*/next-env.d.ts
+examples/*/.svelte-kit/
+examples/*/.astro/
+examples/*/.angular/

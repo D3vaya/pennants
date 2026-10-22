@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pennants + Tailwind CSS</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body class="flex flex-col gap-6 p-8">
+    <!-- .pn is 1em tall: size it with font-size utilities. -->
+    <p class="flex items-center gap-3">
+      <span class="pn pn-ar text-[32px]" role="img" aria-label="Argentina"></span>
+      <span class="pn pn-br text-5xl" role="img" aria-label="Brazil"></span>
+      <span class="text-xl"><span class="pn pn-mx" aria-hidden="true"></span> Mexico</span>
+    </p>
+
+    <!-- Or size by height; width follows the 11:12 ratio. -->
+    <p class="flex items-center gap-3">
+      <span class="pn pn-jp h-12 w-auto aspect-[11/12]" role="img" aria-label="Japan"></span>
+      <span
+        class="pn pn-de h-16 w-auto aspect-[11/12] drop-shadow-md transition hover:-rotate-6"
+        role="img"
+        aria-label="Germany"
+      ></span>
+    </p>
+  </body>
+</html>
