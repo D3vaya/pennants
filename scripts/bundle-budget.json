@@ -54,27 +54,27 @@
     "lazyFiles": 544
   },
   "fetch": {
-    "jsMin": 3940,
-    "jsGzip": 1980,
-    "jsBrotli": 1650,
-    "lazyFiles": 1
+    "jsMin": 4310,
+    "jsGzip": 2210,
+    "jsBrotli": 1800,
+    "lazyFiles": 0
   },
   "element": {
-    "jsMin": 12340,
-    "jsGzip": 5400,
-    "jsBrotli": 4650,
+    "jsMin": 12480,
+    "jsGzip": 5430,
+    "jsBrotli": 4670,
     "lazyFiles": 545
   },
   "react-pennant": {
-    "jsMin": 10380,
-    "jsGzip": 4900,
-    "jsBrotli": 4010,
+    "jsMin": 10510,
+    "jsGzip": 4930,
+    "jsBrotli": 4070,
     "lazyFiles": 545
   },
   "react-pennant-circle": {
-    "jsMin": 10390,
-    "jsGzip": 4900,
-    "jsBrotli": 3910,
+    "jsMin": 10530,
+    "jsGzip": 4930,
+    "jsBrotli": 4030,
     "lazyFiles": 545
   },
   "react-svg": {

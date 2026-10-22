@@ -1,6 +1,6 @@
 {
   "vite": "8.3.5",
-  "generated": "2026-10-22T21:58:36.863Z",
+  "generated": "2026-10-22T22:04:12.756Z",
   "probes": {
     "empty": {
       "label": "Empty app (baseline)",
@@ -127,20 +127,20 @@
       "label": "`fetchPennant` (`pennants/fetch`)",
       "baseline": "empty",
       "entry": {
-        "min": 3746,
-        "gzip": 1880,
-        "brotli": 1545
+        "min": 4101,
+        "gzip": 2097,
+        "brotli": 1696
       },
       "css": null,
-      "lazyFiles": 1
+      "lazyFiles": 0
     },
     "element": {
       "label": "`pennants/element/register`",
       "baseline": "empty",
       "entry": {
-        "min": 11752,
-        "gzip": 5140,
-        "brotli": 4424
+        "min": 11879,
+        "gzip": 5162,
+        "brotli": 4445
       },
       "css": null,
       "lazyFiles": 545
@@ -149,9 +149,9 @@
       "label": "React `<Pennant>`",
       "baseline": "react",
       "entry": {
-        "min": 9880,
-        "gzip": 4658,
-        "brotli": 3818
+        "min": 10007,
+        "gzip": 4689,
+        "brotli": 3875
       },
       "css": null,
       "lazyFiles": 545
@@ -160,9 +160,9 @@
       "label": "React `<Pennant shape=\"circle\">`",
       "baseline": "react",
       "entry": {
-        "min": 9895,
-        "gzip": 4664,
-        "brotli": 3723
+        "min": 10022,
+        "gzip": 4694,
+        "brotli": 3836
       },
       "css": null,
       "lazyFiles": 545
