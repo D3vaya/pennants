@@ -7,16 +7,18 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ar from '../src/generated/flags/ar.ts';
 import br from '../src/generated/flags/br.ts';
 import * as core from '../src/index.ts';
-import type * as Core from '../src/index.ts';
-import { clearMarkupCache } from '../src/internal/cache.ts';
-import { Pennant, PennantSvg, pennantBox } from '../src/react/index.tsx';
+import * as load from '../src/internal/load.ts';
+import type * as Load from '../src/internal/load.ts';
+import { clearMarkupCache, loadMarkup } from '../src/internal/cache.ts';
+import { clearFetchCache } from '../src/internal/fetch.ts';
+import { Pennant, PennantSvg, pennantBox } from '../src/react/index.ts';
 
-vi.mock('../src/index.ts', async (importOriginal) => {
-  const actual = await importOriginal<typeof Core>();
+vi.mock('../src/internal/load.ts', async (importOriginal) => {
+  const actual = await importOriginal<typeof Load>();
   return { ...actual, loadPennant: vi.fn(actual.loadPennant) };
 });
 
-const loadPennant = vi.mocked(core.loadPennant);
+const loadPennant = vi.mocked(load.loadPennant);
 
 function deferred(): {
   promise: Promise<string>;
@@ -166,10 +168,12 @@ describe('<Pennant> inline mode', () => {
     rerender(<Pennant code="br" data-testid="p" />);
     const el = screen.getByTestId('p');
     expect(el.getAttribute('aria-label')).toBe('Brazil');
+    await waitFor(() => expect(loadPennant).toHaveBeenCalledTimes(2));
     await act(async () => fast.resolve(br));
-    expect(el.querySelector('clipPath')?.id).toMatch(/clip$/);
+    await waitFor(() => expect(el.querySelector('clipPath')?.id).toMatch(/clip$/));
     expect(el.innerHTML).toContain('#229e45'); // Brazil green
     await act(async () => slow.resolve(ar));
+    await act(async () => {});
     expect(el.innerHTML).toContain('#229e45');
     expect(el.innerHTML).not.toContain('#74acdf'); // Argentina blue
   });
@@ -183,7 +187,7 @@ describe('<Pennant> inline mode', () => {
     rerender(<Pennant code="br" data-testid="p" />);
     expect(el.innerHTML).toBe('');
     await act(async () => pending.resolve(br));
-    expect(el.innerHTML).toContain('#229e45');
+    await waitFor(() => expect(el.innerHTML).toContain('#229e45'));
   });
 
   it('does not update after unmount', async () => {
@@ -231,7 +235,7 @@ describe('<Pennant> inline mode', () => {
   it('hydrates server markup without mismatch, then loads', async () => {
     const html = renderToString(<Pennant code="ar" data-testid="p" />);
     // Even with the flag cached on the client, hydration uses the server snapshot.
-    await core.loadPennant('ar').then(() => undefined);
+    await loadMarkup('ar');
     const container = document.createElement('div');
     container.innerHTML = html;
     document.body.append(container);
@@ -330,5 +334,66 @@ describe('<PennantSvg>', () => {
     cleanup();
     render(<PennantSvg svg={ar} title="Flag" />);
     expect(screen.getByRole('img', { name: 'Flag' })).toBeDefined();
+  });
+});
+
+describe('<Pennant mode="fetch">', () => {
+  const fetchMock = vi.fn<typeof fetch>();
+  beforeEach(() => {
+    clearFetchCache();
+    fetchMock.mockReset();
+    fetchMock.mockImplementation(async () => new Response(ar));
+    vi.stubGlobal('fetch', fetchMock);
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('fetches from base, inlines with scoped ids and skips the bundled loaders', async () => {
+    render(
+      <>
+        <Pennant code="ar" mode="fetch" base="/assets/" data-testid="a" size={20} />
+        <Pennant code="ar" mode="fetch" base="/assets/" data-testid="b" />
+      </>,
+    );
+    const a = screen.getByTestId('a');
+    expect(a.innerHTML).toBe('');
+    expect(a.style.height).toBe('20px');
+    expect(a.getAttribute('aria-label')).toBe('Argentina');
+    await waitFor(() => expect(screen.getByTestId('b').querySelector('svg')).not.toBeNull());
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith('/assets/svg/ar.svg');
+    expect(loadPennant).not.toHaveBeenCalled();
+    expect(a.innerHTML).not.toContain('pn-ar-');
+    const idsA = ids(a);
+    expect(idsA.some((id) => ids(screen.getByTestId('b')).includes(id))).toBe(false);
+  });
+
+  it('defaults to the versioned CDN', async () => {
+    render(<Pennant code="ar" mode="fetch" data-testid="p" />);
+    await waitFor(() => expect(screen.getByTestId('p').querySelector('svg')).not.toBeNull());
+    expect(fetchMock).toHaveBeenCalledWith(`${core.DEFAULT_CDN_BASE}/svg/ar.svg`);
+  });
+
+  it('keeps fetch and bundled caches apart', async () => {
+    await loadMarkup('ar');
+    render(<Pennant code="ar" mode="fetch" base="/x" data-testid="p" />);
+    expect(screen.getByTestId('p').innerHTML).toBe('');
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledWith('/x/svg/ar.svg'));
+  });
+
+  it('refetches when base changes', async () => {
+    const { rerender } = render(<Pennant code="ar" mode="fetch" base="/one" />);
+    rerender(<Pennant code="ar" mode="fetch" base="/two" />);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledWith('/two/svg/ar.svg'));
+    expect(fetchMock).toHaveBeenCalledWith('/one/svg/ar.svg');
+  });
+
+  it('leaves the reserved box empty when the response is not a pennant', async () => {
+    fetchMock.mockImplementation(async () => new Response('<html>oops</html>'));
+    render(<Pennant code="ar" mode="fetch" base="/bad" data-testid="p" />);
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    await act(async () => {});
+    expect(screen.getByTestId('p').innerHTML).toBe('');
   });
 });

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import ar from '../src/generated/flags/ar.ts';
 import us from '../src/generated/flags/us.ts';
 import { pennantUrl } from '../src/index.ts';
-import { Pennant, PennantSvg } from '../src/react/index.tsx';
+import { Pennant, PennantSvg } from '../src/react/index.ts';
 
 describe('React SSR', () => {
   it('renders the inline pennant as a reserved, labelled box', () => {

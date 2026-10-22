@@ -1,10 +1,8 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import ar from '../src/generated/flags/ar.ts';
+import gbEng from '../src/generated/flags/gb-eng.ts';
+import us from '../src/generated/flags/us.ts';
 import { prepareSvg, svgCode, scopedIdPrefix } from '../src/internal/svg.ts';
-
-const ar = readFileSync(new URL('../svg/ar.svg', import.meta.url), 'utf8');
-const us = readFileSync(new URL('../svg/us.svg', import.meta.url), 'utf8');
-const gbEng = readFileSync(new URL('../svg/gb-eng.svg', import.meta.url), 'utf8');
 
 const ids = (svg: string): string[] => [...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1] ?? '');
 
