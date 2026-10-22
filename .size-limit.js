@@ -39,7 +39,7 @@ export default [
   },
   {
     name: 'css',
-    path: 'css/pennants.min.css',
+    path: 'css/pennant.min.css',
     rolldown: false,
     limit: '2 kB',
   },
