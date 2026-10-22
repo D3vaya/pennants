@@ -44,6 +44,9 @@ Hay una hoja de estilos por forma, y cada una tiene su clase base: `css/pennant.
 <span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
 ```
 
+Usa una sola clase base por elemento: `pn-circle pn-ar`, no `pn pn-circle pn-ar`. Las reglas
+de distintas hojas tienen la misma especificidad, así que ganaría la última hoja cargada.
+
 ## En tu propio servidor
 
 ```sh

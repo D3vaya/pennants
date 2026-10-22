@@ -44,6 +44,9 @@ There is one stylesheet per shape, and each has its own base class: `css/pennant
 <span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
 ```
 
+Use one base class per element: `pn-circle pn-ar`, not `pn pn-circle pn-ar`. Rules from
+different stylesheets have the same specificity, so the last stylesheet loaded would win.
+
 ## Self-hosted
 
 ```sh
