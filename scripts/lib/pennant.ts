@@ -22,6 +22,9 @@ export const BODY_PATH = `M0 ${PENNANT.barHeight}H${PENNANT.width}V${PENNANT.sho
   PENNANT.width / 2
 } ${PENNANT.height}L0 ${PENNANT.shoulderY}Z`;
 
+/** Classes on the bar gradient stops, targeted by the theming stylesheet. */
+export const BAR_CLASS = { light: 'pn-bar-l', dark: 'pn-bar-d' } as const;
+
 export interface FlagArtwork {
   /** Lowercase flag code, e.g. `ar` or `gb-eng`. Used to namespace SVG ids. */
   code: string;
@@ -57,8 +60,11 @@ export function unwrapSvg(svg: string): { viewBox: string; content: string } {
  * Wraps flag artwork in the pennant frame. Ids are namespaced with the flag
  * code so several different pennants can be inlined in one document.
  *
- * The bar colors read the `--pennant-bar-light` / `--pennant-bar-dark` CSS
- * custom properties when the SVG is inlined, and fall back to gold otherwise.
+ * The bar gradient stops carry gold `stop-color` presentation attributes,
+ * which work under a strict CSP (no inline `style`). For theming, the stops
+ * also get the `pn-bar-l` / `pn-bar-d` classes: the shipped stylesheet maps
+ * them to `--pennant-bar-light` / `--pennant-bar-dark` (see `themeCss`), and
+ * stylesheet rules override presentation attributes when the SVG is inlined.
  */
 export function buildPennant({ code, viewBox, content }: FlagArtwork): string {
   assertValidCode(code);
@@ -70,8 +76,8 @@ export function buildPennant({ code, viewBox, content }: FlagArtwork): string {
     `<defs>` +
     `<clipPath id="${clipId}"><path d="${BODY_PATH}"/></clipPath>` +
     `<linearGradient id="${gradientId}" x1="0" y1="0" x2="0" y2="${barHeight}" gradientUnits="userSpaceOnUse">` +
-    `<stop offset="0" style="stop-color:var(--pennant-bar-light,${barLight})"/>` +
-    `<stop offset="1" style="stop-color:var(--pennant-bar-dark,${barDark})"/>` +
+    `<stop offset="0" class="${BAR_CLASS.light}" stop-color="${barLight}"/>` +
+    `<stop offset="1" class="${BAR_CLASS.dark}" stop-color="${barDark}"/>` +
     `</linearGradient>` +
     `</defs>` +
     `<g clip-path="url(#${clipId})">` +

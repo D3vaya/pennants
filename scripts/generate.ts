@@ -8,6 +8,7 @@
  *   src/generated/loaders.ts    lazy import map
  *   css/pennants(.min).css      flag-icons-like stylesheet
  *   css/pennants.cdn.min.css    same, with version-pinned jsDelivr SVG URLs
+ *   css/theme.css               bar theming rules only (for inlined SVGs)
  *   css/pennants.d.ts           types for side-effect CSS imports
  *   png/{1x,2x}/<code>.png      66x72 and 132x144 rasters
  *   sprite/pennants.svg         <symbol id="pn-<code>"> sprite
@@ -19,7 +20,7 @@ import { join } from 'node:path';
 import { DEFAULT_PRECISION, optimizeFlag, readFlagSources, readFlagSvg } from './lib/flags.ts';
 import { buildPennant } from './lib/pennant.ts';
 import { codesModule, flagModule, loadersModule, namesModule } from './lib/modules.ts';
-import { cdnSvgPath, cssDeclaration, minifyCss, pennantsCss } from './lib/css.ts';
+import { cdnSvgPath, cssDeclaration, minifyCss, pennantsCss, themeCss } from './lib/css.ts';
 import { mapLimit, PNG_SCALES, renderPng } from './lib/png.ts';
 import { buildSprite } from './lib/sprite.ts';
 import { pickPrecision } from './lib/precision.ts';
@@ -75,6 +76,7 @@ async function main(): Promise<void> {
       join(out.css, 'pennants.cdn.min.css'),
       minifyCss(pennantsCss(codes, { svgPath: cdnSvgPath(version) })),
     ),
+    writeFile(join(out.css, 'theme.css'), minifyCss(themeCss())),
     writeFile(join(out.css, 'pennants.d.ts'), cssDeclaration()),
     writeFile(join(out.sprite, 'pennants.svg'), buildSprite(pennants)),
   ]);

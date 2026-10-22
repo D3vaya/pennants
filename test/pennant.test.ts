@@ -76,9 +76,10 @@ describe('buildPennant', () => {
     expect(svg).toContain('stroke="#000" stroke-opacity="0.3" stroke-width="6"');
   });
 
-  it('exposes themable bar colours with gold fallbacks', () => {
-    expect(svg).toContain('var(--pennant-bar-light,#d5b97a)');
-    expect(svg).toContain('var(--pennant-bar-dark,#8e713f)');
+  it('colours the bar with CSP-safe attributes and themable classes', () => {
+    expect(svg).toContain('<stop offset="0" class="pn-bar-l" stop-color="#d5b97a"/>');
+    expect(svg).toContain('<stop offset="1" class="pn-bar-d" stop-color="#8e713f"/>');
+    expect(svg).not.toContain('style=');
   });
 
   it('refuses unsafe codes before interpolating them', () => {

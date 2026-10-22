@@ -7,6 +7,7 @@ import {
   minifyCss,
   pennantsCss,
   sizeRules,
+  themeCss,
   SIZES,
 } from '../scripts/lib/css.ts';
 
@@ -121,5 +122,18 @@ describe('cdnSvgPath', () => {
 describe('cssDeclaration', () => {
   it('is an empty ES module', () => {
     expect(cssDeclaration()).toMatch(/^\/\/[^\n]*\nexport \{\};\n$/);
+  });
+});
+
+describe('themeCss', () => {
+  it('maps the bar stop classes to custom properties with gold fallbacks', () => {
+    expect(minifyCss(themeCss())).toBe(
+      '.pn-bar-l{stop-color:var(--pennant-bar-light,#d5b97a)}' +
+        '.pn-bar-d{stop-color:var(--pennant-bar-dark,#8e713f)}\n',
+    );
+  });
+
+  it('is part of the full stylesheet', () => {
+    expect(pennantsCss([])).toContain(themeCss());
   });
 });

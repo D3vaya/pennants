@@ -6,7 +6,7 @@
  * `.pn` is 1em tall and keeps the 66:72 pennant ratio, so it scales with
  * `font-size`; `.pn-<code>` only sets the background image.
  */
-import { assertValidCode, PENNANT } from './pennant.ts';
+import { assertValidCode, BAR_CLASS, PENNANT } from './pennant.ts';
 
 /** Size helpers, font-awesome style: multiply the inherited font-size. */
 export const SIZES: Readonly<Record<string, string>> = {
@@ -46,6 +46,21 @@ export function sizeRules(): string {
     .join('');
 }
 
+/**
+ * Theming rules for *inlined* pennant SVGs (React, web component, sprite
+ * copied into the page). Stylesheet rules beat the gold `stop-color`
+ * attributes, so `--pennant-bar-light` / `--pennant-bar-dark` recolour the
+ * bar without inline styles (CSP-safe). SVGs used as images or backgrounds
+ * can't be styled from the page and always stay gold.
+ */
+export function themeCss(): string {
+  const { light, dark } = BAR_CLASS;
+  return (
+    `.${light} {\n  stop-color: var(--pennant-bar-light, ${PENNANT.barLight});\n}\n` +
+    `.${dark} {\n  stop-color: var(--pennant-bar-dark, ${PENNANT.barDark});\n}\n`
+  );
+}
+
 export function flagRule(code: string, svgPath = '../svg'): string {
   assertValidCode(code);
   return `.pn-${code} {\n  background-image: url(${svgPath}/${code}.svg);\n}\n`;
@@ -53,9 +68,12 @@ export function flagRule(code: string, svgPath = '../svg'): string {
 
 /** Full, readable stylesheet (`css/pennants.css`). */
 export function pennantsCss(codes: readonly string[], { svgPath }: CssOptions = {}): string {
-  return [HEADER + baseRule(), sizeRules(), ...codes.map((code) => flagRule(code, svgPath))].join(
-    '\n',
-  );
+  return [
+    HEADER + baseRule(),
+    sizeRules(),
+    themeCss(),
+    ...codes.map((code) => flagRule(code, svgPath)),
+  ].join('\n');
 }
 
 const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
