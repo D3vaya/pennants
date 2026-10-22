@@ -1,0 +1,38 @@
+# ¿Qué formato uso?
+
+Todos los formatos muestran el mismo dibujo. Cambian en cuánto pesan, dónde se renderizan y qué
+puedes personalizar.
+
+| Formato                       | Peso (min + brotli)                                | SSR                                        | Color de la barra | Diferido                  | Caché                              |
+| ----------------------------- | -------------------------------------------------- | ------------------------------------------ | ----------------- | ------------------------- | ---------------------------------- |
+| Clases CSS `pn pn-ar`         | 0 de JS, 930 B de CSS                              | Sí                                         | No                | Sí, por clase usada       | Un archivo por bandera, caché HTTP |
+| `<img>` SVG (propio o CDN)    | 0                                                  | Sí                                         | No                | `loading="lazy"`          | Caché HTTP / CDN                   |
+| `<img>` PNG 1x / 2x           | 0                                                  | Sí                                         | No                | `loading="lazy"`          | Caché HTTP / CDN                   |
+| Sprite SVG `<use href>`       | 0 de JS, un archivo de 1,2 MB (≈260 kB con brotli) | Sí                                         | No                | No, un archivo para todas | Un archivo, caché HTTP             |
+| Módulo JS `pennants/flags/ar` | ≈0,5 kB por bandera (`ar`: 962 B)                  | Sí                                         | Sí                | No, va en el bundle       | Parte de tu bundle                 |
+| `loadPennant(código)`         | 1,48 kB + un chunk por bandera al usarla           | Cliente (asíncrono)                        | Sí                | Sí                        | Chunks, caché HTTP                 |
+| React `<Pennant>`             | 2,76 kB + chunk al usarla                          | Caja en el servidor, bandera en el cliente | Sí                | Sí                        | Chunks                             |
+| React `<PennantSvg svg={ar}>` | 2,76 kB + las banderas importadas                  | Sí, con el SVG completo                    | Sí                | No                        | Parte de tu bundle                 |
+| `<pennant-flag>`              | 2,98 kB + chunk al usarla                          | Solo cliente                               | Sí                | Sí                        | Chunks                             |
+
+## Decisiones rápidas
+
+- **Sitio estático, pocas banderas, sin build:** `<img>` desde el CDN.
+- **Muchas banderas en HTML renderizado en el servidor** (tablas, selectores de país): clases
+  CSS. El navegador descarga solo las banderas de la página.
+- **Banderas conocidas al compilar que deben verse en el primer render con SSR:** módulos por
+  bandera; en React, `<PennantSvg svg={ar} />`.
+- **Bandera elegida en tiempo de ejecución** (perfil de usuario, datos de una API):
+  `loadPennant`, `<Pennant>` o `<pennant-flag>`.
+- **Quieres cambiar el color de la barra:** cualquier formato inline (módulos, `loadPennant`,
+  React, Web Component). Mira [Personalización](./theming).
+- **Email, apps nativas, imágenes Open Graph:** PNG.
+- **Cientos de banderas a la vez en una página:** el sprite o las clases CSS.
+
+## Sobre SSR
+
+`<Pennant>` en modo inline renderiza en el servidor una caja vacía del tamaño correcto y la
+completa después de la hidratación: no hay saltos de layout, pero la bandera no está en el HTML.
+Si necesitas que esté, usa `mode="img"` o `<PennantSvg>` con un import estático.
+`<pennant-flag>` solo se renderiza en el navegador. Más detalles en las
+[preguntas frecuentes](./faq#ssr-e-hidratacion).

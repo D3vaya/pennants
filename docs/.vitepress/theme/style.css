@@ -1,0 +1,37 @@
+:root {
+  --vp-c-brand-1: #8e713f;
+  --vp-c-brand-2: #a3854f;
+  --vp-c-brand-3: #b89a62;
+  --vp-c-brand-soft: rgb(213 185 122 / 0.22);
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(120deg, #b08a43 20%, #d5b97a 60%, #8e713f);
+  --vp-home-hero-image-background-image: none;
+  --vp-button-brand-bg: #8e713f;
+  --vp-button-brand-hover-bg: #7a6034;
+  --vp-button-brand-active-bg: #6a532c;
+}
+
+.dark {
+  --vp-c-brand-1: #d5b97a;
+  --vp-c-brand-2: #c4a865;
+  --vp-c-brand-3: #a3854f;
+  --vp-c-brand-soft: rgb(213 185 122 / 0.16);
+  --vp-button-brand-bg: #a3854f;
+  --vp-button-brand-text: #1b1b1f;
+  --vp-button-brand-hover-bg: #b89a62;
+  --vp-button-brand-hover-text: #1b1b1f;
+  --vp-button-brand-active-bg: #c4a865;
+  --vp-button-brand-active-text: #1b1b1f;
+}
+
+/* Inline pennants used in prose, e.g. <span class="pn pn-ar"></span>. */
+.vp-doc .pn {
+  vertical-align: -0.15em;
+}
+
+.VPHero .image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: none;
+}
