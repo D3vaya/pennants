@@ -2,7 +2,7 @@
 
 Angular 22, componentes standalone, builder `@angular/build:application`.
 
-[Ejemplo completo](https://github.com/d3vaya/pennants/tree/main/examples/angular)
+[Ejemplo completo](https://github.com/D3vaya/pennants/tree/main/examples/angular)
 
 ```sh
 npm install pennants

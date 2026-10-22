@@ -3,7 +3,7 @@
 Vue 3 with Vite. Use the `<pennant-flag>` Web Component for flags chosen at runtime, and
 `v-html` with `renderFlag` for flags known at build time.
 
-[Full example](https://github.com/d3vaya/pennants/tree/main/examples/vue)
+[Full example](https://github.com/D3vaya/pennants/tree/main/examples/vue)
 
 ```sh
 npm install pennants

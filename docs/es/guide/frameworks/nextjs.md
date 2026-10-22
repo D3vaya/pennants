@@ -2,7 +2,7 @@
 
 App Router, Next.js 16. Funciona con Turbopack (por defecto) y con `next build --webpack`.
 
-[Ejemplo completo](https://github.com/d3vaya/pennants/tree/main/examples/nextjs)
+[Ejemplo completo](https://github.com/D3vaya/pennants/tree/main/examples/nextjs)
 
 ```sh
 npm install pennants

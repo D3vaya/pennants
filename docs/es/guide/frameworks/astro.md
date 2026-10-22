@@ -3,7 +3,7 @@
 Astro renderiza las banderas como HTML estático, sin nada de JavaScript. Añade JavaScript
 solo donde necesites banderas que cambian en tiempo de ejecución.
 
-[Ejemplo completo](https://github.com/d3vaya/pennants/tree/main/examples/astro)
+[Ejemplo completo](https://github.com/D3vaya/pennants/tree/main/examples/astro)
 
 ```sh
 npm install pennants

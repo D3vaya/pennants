@@ -3,7 +3,7 @@
 Tailwind CSS 4 with `@tailwindcss/vite`. Use the `pn pn-xx` classes and size them with
 utilities.
 
-[Full example](https://github.com/d3vaya/pennants/tree/main/examples/tailwind)
+[Full example](https://github.com/D3vaya/pennants/tree/main/examples/tailwind)
 
 ```sh
 npm install pennants

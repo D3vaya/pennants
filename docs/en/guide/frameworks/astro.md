@@ -3,7 +3,7 @@
 Astro renders flags to static HTML with zero JavaScript. Add JavaScript only where you need
 flags that change at runtime.
 
-[Full example](https://github.com/d3vaya/pennants/tree/main/examples/astro)
+[Full example](https://github.com/D3vaya/pennants/tree/main/examples/astro)
 
 ```sh
 npm install pennants

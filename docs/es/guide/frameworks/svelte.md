@@ -3,7 +3,7 @@
 SvelteKit 3 con Svelte 5, prerenderizado con `adapter-static`. El mismo código funciona en
 una app de Vite + Svelte sin SvelteKit.
 
-[Ejemplo completo](https://github.com/d3vaya/pennants/tree/main/examples/svelte)
+[Ejemplo completo](https://github.com/D3vaya/pennants/tree/main/examples/svelte)
 
 ```sh
 npm install pennants

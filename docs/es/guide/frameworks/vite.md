@@ -3,7 +3,7 @@
 Cualquier app de Vite (vanilla, React, Vue, Svelte, Solid...) puede usar todos los formatos.
 Esta página usa TypeScript sin framework.
 
-[Ejemplo completo](https://github.com/d3vaya/pennants/tree/main/examples/vite)
+[Ejemplo completo](https://github.com/D3vaya/pennants/tree/main/examples/vite)
 
 ```sh
 npm install pennants

@@ -3,7 +3,7 @@
 No build step. Load a stylesheet and the Web Component from jsDelivr, or copy the files from
 `node_modules/pennants` to your server.
 
-[Full example](https://github.com/d3vaya/pennants/tree/main/examples/html-cdn)
+[Full example](https://github.com/D3vaya/pennants/tree/main/examples/html-cdn)
 
 ## From the CDN
 

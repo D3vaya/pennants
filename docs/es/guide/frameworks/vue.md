@@ -3,7 +3,7 @@
 Vue 3 con Vite. Usa el Web Component `<pennant-flag>` para banderas que se eligen en tiempo
 de ejecución, y `v-html` con `renderFlag` para las que conoces al compilar.
 
-[Ejemplo completo](https://github.com/d3vaya/pennants/tree/main/examples/vue)
+[Ejemplo completo](https://github.com/D3vaya/pennants/tree/main/examples/vue)
 
 ```sh
 npm install pennants
