@@ -10,10 +10,19 @@ export const PENNANT_HEIGHT = 72;
 export const PENNANT_ASPECT_RATIO = PENNANT_WIDTH / PENNANT_HEIGHT;
 
 const codeSet: ReadonlySet<string> = new Set(codes);
+const isoCodeSet: ReadonlySet<string> = new Set(isoCodes);
 
-/** Type guard for supported flag codes. Accepts any casing (`AR`, `ar`, `Gb-Eng`). */
+/** Injected at build time; versions the default CDN URL. */
+declare const __PENNANTS_VERSION__: string;
+
+export const DEFAULT_CDN_BASE = `https://cdn.jsdelivr.net/npm/pennants@${__PENNANTS_VERSION__}`;
+
+/**
+ * Exact type guard for supported flag codes (lowercase, e.g. `ar`, `gb-eng`).
+ * Use `toPennantCode` to normalise user input such as `' AR '`.
+ */
 export function isPennantCode(value: unknown): value is PennantCode {
-  return typeof value === 'string' && codeSet.has(value.toLowerCase());
+  return typeof value === 'string' && codeSet.has(value);
 }
 
 /** Normalises user input to a `PennantCode`, throwing on unknown codes. */
@@ -67,11 +76,11 @@ export interface PennantUrlOptions {
 }
 
 /**
- * Builds the URL of a static pennant asset. Defaults to the jsDelivr CDN so
- * it works without any bundler configuration.
+ * Builds the URL of a static pennant asset. Defaults to the jsDelivr CDN,
+ * pinned to this package version, so it works without bundler configuration.
  */
 export function pennantUrl(code: string, options: PennantUrlOptions = {}): string {
-  const { base = 'https://cdn.jsdelivr.net/npm/pennants', format = 'svg', scale = 1 } = options;
+  const { base = DEFAULT_CDN_BASE, format = 'svg', scale = 1 } = options;
   const root = base.replace(/\/+$/, '');
   const normalized = toPennantCode(code);
   return format === 'png'
@@ -79,13 +88,16 @@ export function pennantUrl(code: string, options: PennantUrlOptions = {}): strin
     : `${root}/svg/${normalized}.svg`;
 }
 
+/** Emoji flags that exist for non-ISO two-letter codes. */
+const EXTRA_EMOJI: ReadonlySet<string> = new Set(['eu', 'un']);
+
 /**
- * Converts an ISO 3166-1 alpha-2 code to its emoji flag (handy as a text
- * fallback). Returns an empty string for subdivision codes such as `gb-eng`.
+ * Converts a code to its emoji flag (handy as a text fallback). Returns an
+ * empty string when no emoji exists, e.g. for `gb-eng` or `xx`.
  */
 export function toEmoji(code: string): string {
   const normalized = toPennantCode(code);
-  if (!/^[a-z]{2}$/.test(normalized)) return '';
+  if (!isoCodeSet.has(normalized) && !EXTRA_EMOJI.has(normalized)) return '';
   return String.fromCodePoint(
     ...[...normalized.toUpperCase()].map((c) => 0x1f1a5 + c.charCodeAt(0)),
   );

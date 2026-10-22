@@ -1,6 +1,6 @@
 {
   "name": "pennants",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Lightweight country flags in pennant (banderín) style — SVG, PNG, CSS, sprite, JS, React and Web Component.",
   "keywords": [
     "flags",

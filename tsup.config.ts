@@ -1,5 +1,6 @@
 import { readdirSync } from 'node:fs';
 import { defineConfig } from 'tsup';
+import pkg from './package.json' with { type: 'json' };
 
 const flagEntries = Object.fromEntries(
   readdirSync('src/generated/flags')
@@ -16,7 +17,8 @@ export default defineConfig({
     ...flagEntries,
   },
   format: ['esm'],
-  target: 'es2020',
+  target: 'es2022',
+  define: { __PENNANTS_VERSION__: JSON.stringify(pkg.version) },
   dts: true,
   splitting: true,
   treeshake: true,

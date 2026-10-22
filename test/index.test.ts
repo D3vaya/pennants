@@ -25,8 +25,8 @@ describe('codes', () => {
 });
 
 describe('isPennantCode / toPennantCode', () => {
-  it.each(['ar', 'AR', 'Gb-Eng'])('accepts %s', (v) => expect(isPennantCode(v)).toBe(true));
-  it.each(['zz', '', 42, null, undefined, ' ar'])('rejects %j', (v) =>
+  it.each(['ar', 'gb-eng', 'eu'])('accepts %s', (v) => expect(isPennantCode(v)).toBe(true));
+  it.each(['zz', '', 42, null, undefined, ' ar', 'AR', 'Gb-Eng'])('rejects %j', (v) =>
     expect(isPennantCode(v)).toBe(false),
   );
 
@@ -74,7 +74,7 @@ describe('toDataUri', () => {
 
 describe('pennantUrl', () => {
   it('defaults to the jsDelivr SVG', () => {
-    expect(pennantUrl('AR')).toBe('https://cdn.jsdelivr.net/npm/pennants/svg/ar.svg');
+    expect(pennantUrl('AR')).toBe('https://cdn.jsdelivr.net/npm/pennants@0.0.0-test/svg/ar.svg');
   });
 
   it('supports custom bases and PNG densities', () => {
@@ -82,7 +82,7 @@ describe('pennantUrl', () => {
       '/assets/png/2x/ar.png',
     );
     expect(pennantUrl('ar', { format: 'png' })).toBe(
-      'https://cdn.jsdelivr.net/npm/pennants/png/1x/ar.png',
+      'https://cdn.jsdelivr.net/npm/pennants@0.0.0-test/png/1x/ar.png',
     );
   });
 
@@ -96,7 +96,12 @@ describe('toEmoji', () => {
     expect(toEmoji('ar')).toBe('🇦🇷');
   });
 
-  it('returns empty string for subdivisions', () => {
-    expect(toEmoji('gb-eng')).toBe('');
+  it('supports the EU and UN emoji', () => {
+    expect(toEmoji('EU')).toBe('🇪🇺');
+    expect(toEmoji('un')).toBe('🇺🇳');
+  });
+
+  it.each(['gb-eng', 'xx', 'asean'])('returns empty string for %s', (code) => {
+    expect(toEmoji(code)).toBe('');
   });
 });
