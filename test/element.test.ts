@@ -119,11 +119,47 @@ describe('<pennant-flag>', () => {
     expect(el.getAttribute('aria-label')).toBe('Argentina');
   });
 
-  it('has no aria-label without a valid code or label', () => {
+  it('is hidden instead of an unnamed role="img" for unknown or missing codes', () => {
     const el = create({ code: 'zz' });
     document.body.append(el);
-    expect(el.getAttribute('role')).toBe('img');
+    expect(el.hasAttribute('role')).toBe(false);
     expect(el.hasAttribute('aria-label')).toBe(false);
+    expect(el.getAttribute('aria-hidden')).toBe('true');
+    el.label = 'Unknown flag';
+    expect(el.getAttribute('role')).toBe('img');
+    expect(el.getAttribute('aria-label')).toBe('Unknown flag');
+    expect(el.hasAttribute('aria-hidden')).toBe(false);
+    el.label = null;
+    el.removeAttribute('code');
+    expect(el.hasAttribute('role')).toBe(false);
+    expect(el.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('is hidden after a failed load without a label, and named again once loaded', async () => {
+    loadPennant.mockImplementationOnce(() => Promise.reject(new Error('offline')));
+    const el = create({ code: 'ar' });
+    const failed = nextEvent(el, 'pennant-error');
+    document.body.append(el);
+    expect(el.getAttribute('aria-label')).toBe('Argentina');
+    await failed;
+    expect(el.hasAttribute('role')).toBe(false);
+    expect(el.hasAttribute('aria-label')).toBe(false);
+    expect(el.getAttribute('aria-hidden')).toBe('true');
+    el.code = 'br';
+    expect(el.getAttribute('role')).toBe('img');
+    expect(el.getAttribute('aria-label')).toBe('Brazil');
+    await nextEvent(el, 'pennant-load');
+    expect(el.getAttribute('aria-label')).toBe('Brazil');
+  });
+
+  it('keeps an explicit label after a failed load', async () => {
+    loadPennant.mockImplementationOnce(() => Promise.reject(new Error('offline')));
+    const el = create({ code: 'ar', label: 'Home' });
+    const failed = nextEvent(el, 'pennant-error');
+    document.body.append(el);
+    await failed;
+    expect(el.getAttribute('role')).toBe('img');
+    expect(el.getAttribute('aria-label')).toBe('Home');
   });
 
   it('reflects properties to attributes and back', () => {
@@ -155,6 +191,28 @@ describe('<pennant-flag>', () => {
     expect(el.style.getPropertyValue('--pennant-size')).toBe('');
     el.size = null;
     expect(el.style.getPropertyValue('--pennant-size')).toBe('');
+  });
+
+  it("never removes the user's own --pennant-size", () => {
+    const el = create();
+    el.style.setProperty('--pennant-size', '48px');
+    document.body.append(el);
+    expect(el.style.getPropertyValue('--pennant-size')).toBe('48px');
+    el.setAttribute('label', 'x'); // unrelated attribute changes keep it too
+    expect(el.style.getPropertyValue('--pennant-size')).toBe('48px');
+    el.size = 20;
+    expect(el.style.getPropertyValue('--pennant-size')).toBe('20px');
+    el.size = '2rem';
+    expect(el.style.getPropertyValue('--pennant-size')).toBe('2rem');
+    el.size = null; // restores the user's value
+    expect(el.style.getPropertyValue('--pennant-size')).toBe('48px');
+  });
+
+  it('leaves a --pennant-size the user changed after the size attribute', () => {
+    const el = create({ size: '20' });
+    el.style.setProperty('--pennant-size', '3em');
+    el.removeAttribute('size');
+    expect(el.style.getPropertyValue('--pennant-size')).toBe('3em');
   });
 
   it('upgrades properties set before definition', async () => {

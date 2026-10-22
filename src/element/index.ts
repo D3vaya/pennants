@@ -48,6 +48,9 @@ export class PennantElement extends Base {
   readonly #content: HTMLSpanElement;
   #token = 0;
   #shown: string | undefined;
+  #ownSize: string | undefined;
+  #userSize = '';
+  #failed = false;
 
   constructor() {
     super();
@@ -118,14 +121,31 @@ export class PennantElement extends Base {
 
   #applySize(): void {
     const size = this.size?.trim();
-    if (size)
-      this.style.setProperty('--pennant-size', /^\d*\.?\d+$/.test(size) ? `${size}px` : size);
-    else this.style.removeProperty('--pennant-size');
+    const current = this.style.getPropertyValue('--pennant-size');
+    if (size) {
+      if (this.#ownSize === undefined || current !== this.#ownSize) this.#userSize = current;
+      this.#ownSize = /^\d*\.?\d+$/.test(size) ? `${size}px` : size;
+      this.style.setProperty('--pennant-size', this.#ownSize);
+      return;
+    }
+    // Only undo what this element set, restoring a user's own inline
+    // `style="--pennant-size:…"`, which must survive a missing/removed `size`.
+    if (this.#ownSize !== undefined && current === this.#ownSize) {
+      if (this.#userSize) this.style.setProperty('--pennant-size', this.#userSize);
+      else this.style.removeProperty('--pennant-size');
+    }
+    this.#ownSize = undefined;
+    this.#userSize = '';
   }
 
   #applyA11y(): void {
     const { label } = this;
-    if (label === '') {
+    const code = normalize(this.code);
+    const fallback = code === undefined || this.#failed ? null : getPennantName(code);
+    const name = label === '' ? null : (label ?? fallback);
+    if (name === null) {
+      // No accessible name (decorative, missing/unknown code or failed load
+      // without a label): hide it rather than expose an unnamed role="img".
       this.removeAttribute('role');
       this.removeAttribute('aria-label');
       this.setAttribute('aria-hidden', 'true');
@@ -133,10 +153,7 @@ export class PennantElement extends Base {
     }
     this.removeAttribute('aria-hidden');
     this.setAttribute('role', 'img');
-    const code = normalize(this.code);
-    const name = label ?? (code === undefined ? null : getPennantName(code));
-    if (name === null) this.removeAttribute('aria-label');
-    else this.setAttribute('aria-label', name);
+    this.setAttribute('aria-label', name);
   }
 
   #show(code: string | undefined, svg?: string): void {
@@ -147,6 +164,10 @@ export class PennantElement extends Base {
 
   #load(): void {
     const token = ++this.#token;
+    if (this.#failed) {
+      this.#failed = false;
+      this.#applyA11y();
+    }
     const raw = this.code;
     if (raw === null) {
       this.#show(undefined);
@@ -169,6 +190,8 @@ export class PennantElement extends Base {
       (error: unknown) => {
         if (token !== this.#token) return;
         this.#show(undefined);
+        this.#failed = true;
+        this.#applyA11y();
         this.dispatchEvent(
           new CustomEvent<PennantErrorDetail>('pennant-error', {
             detail: { code: raw, error },
