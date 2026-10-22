@@ -3,7 +3,7 @@ import { computed } from 'vue';
 import { data } from '../sizes.data';
 import { formatBytes, useLang } from '../shared';
 
-// <Size probe="load" /> → "+5.1 kB"; part="css" for stylesheet probes.
+// <Size probe="load" /> renders the probe's gzip entry size; part="css" for stylesheet probes.
 const props = withDefaults(
   defineProps<{
     probe: string;

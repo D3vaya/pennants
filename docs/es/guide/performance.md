@@ -15,8 +15,8 @@ min / gzip / brotli.
 
 <SizeTable :probes="['art-pennant', 'art-rect', 'art-all', 'name', 'url', 'fetch', 'load', 'load-shapes', 'element', 'react-pennant', 'react-pennant-circle', 'react-svg', 'react-svg-circle']" />
 
-¹ Se generan en tu build, pero solo se descargan cuando se muestra esa bandera: un chunk por
-bandera y conjunto de dibujos, más los mapas de carga.
+¹ Se generan en tu build, pero solo se descargan cuando hacen falta: un chunk por bandera y
+conjunto de dibujos más los mapas de carga o, en el modo fetch, el saneador de respuestas.
 
 ### Hojas de estilos
 
@@ -33,7 +33,7 @@ En la práctica:
 - `loadFlag` y los componentes incluyen de entrada los mapas de carga (<Size probe="load" /> con
   gzip para `loadFlag`) antes de mostrar ninguna bandera. Para unas pocas banderas conocidas, los
   imports estáticos salen más baratos; el modo fetch (<Size probe="fetch" /> con gzip) no incluye
-  ningún mapa.
+  ningún mapa y descarga su chunk de saneado con la primera petición.
 - En un Server Component de Next.js, `<PennantSvg>` no agrega JavaScript al cliente: se
   renderiza a HTML.
 
