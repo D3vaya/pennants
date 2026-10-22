@@ -21,12 +21,6 @@ const reactClientBoundary: Plugin = {
   },
 };
 
-const flagEntries = Object.fromEntries(
-  readdirSync('src/generated/flags')
-    .filter((file) => file.endsWith('.ts'))
-    .map((file) => [`flags/${file.slice(0, -3)}`, `src/generated/flags/${file}`]),
-);
-
 /** `pennants/art/<set>/<code>`: one artwork module per flag and set. */
 const artEntries = Object.fromEntries(
   ['1x1', '4x3'].flatMap((set) =>
@@ -45,7 +39,6 @@ export default defineConfig({
     'react/static': 'src/react/static.ts',
     'element/index': 'src/element/index.ts',
     'element/register': 'src/element/register.ts',
-    ...flagEntries,
     ...artEntries,
   },
   format: ['esm'],

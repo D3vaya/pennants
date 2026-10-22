@@ -5,7 +5,6 @@
  *   src/generated/loaders-<set>.ts     lazy artwork import map per set
  *   src/generated/codes.ts             code list + PennantCode type
  *   src/generated/names.ts             English names of non-ISO flags
- *   src/generated/flags/*.ts, loaders.ts  framed pennant strings (legacy, until runtime moves to art)
  *   svg/<shape>/<code>.svg             standalone SVG files
  *   png/<shape>/{1x,2x}/<code>.png     rasters
  *   sprite/<shape>.svg                 <symbol id="pn-<code>"> sprites
@@ -29,14 +28,7 @@ import {
 } from '../src/shapes.ts';
 import { readFlagSources } from './lib/flags.ts';
 import { ART_SETS } from './lib/art.ts';
-import {
-  artLoadersModule,
-  artModule,
-  codesModule,
-  flagModule,
-  loadersModule,
-  namesModule,
-} from './lib/modules.ts';
+import { artLoadersModule, artModule, codesModule, namesModule } from './lib/modules.ts';
 import { cdnSvgPath, cssDeclaration, minifyCss, pennantsCss, themeCss } from './lib/css.ts';
 import { mapLimit, pngScales, renderPng } from './lib/png.ts';
 import { buildSprite } from './lib/sprite.ts';
@@ -102,14 +94,9 @@ async function main(): Promise<void> {
 
   const art = await buildAllArt(codes);
 
-  const pennants = art['1x1'].map((a) => ({ code: a.code, svg: composeFlag(a, 'pennant') }));
   await Promise.all([
     write(join(generated, 'codes.ts'), codesModule(sources)),
     write(join(generated, 'names.ts'), namesModule(sources)),
-    write(join(generated, 'loaders.ts'), loadersModule(sources)),
-    ...pennants.map(({ code, svg }) =>
-      write(join(generated, 'flags', `${code}.ts`), flagModule(svg)),
-    ),
     ...ART_SETS.flatMap((set) => [
       write(join(generated, `loaders-${set}.ts`), artLoadersModule(sources, set)),
       ...art[set].map((a) => write(join(generated, 'art', set, `${a.code}.ts`), artModule(a))),

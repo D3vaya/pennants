@@ -48,10 +48,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./flags/*": {
-      "types": "./dist/flags/*.d.ts",
-      "default": "./dist/flags/*.js"
-    },
     "./fetch": {
       "types": "./dist/fetch.d.ts",
       "default": "./dist/fetch.js"
@@ -127,7 +123,7 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "check:package": "publint && attw --pack . --profile esm-only --entrypoints . ./flags/ar ./fetch ./react ./react/static ./element ./element/register",
+    "check:package": "publint && attw --pack . --profile esm-only --entrypoints . ./art/1x1/ar ./fetch ./react ./react/static ./element ./element/register && node scripts/pack-budget.ts",
     "size": "size-limit",
     "examples:check": "node scripts/examples-check.ts",
     "bundle:budget": "node scripts/bundle-budget.ts",
