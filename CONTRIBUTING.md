@@ -54,5 +54,9 @@ To preview changes, run `npm run build`, serve the repository root (`npx serve .
 3. `git push --follow-tags`. The release workflow verifies, publishes to npm with provenance
    and creates the GitHub release.
 
+The workflow currently authenticates with the `NPM_TOKEN` repository secret. Planned follow-up:
+switch to [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC), which
+removes the long-lived token; the job already has `id-token: write`.
+
 By contributing you agree that your contributions are licensed under the MIT License and that
 you follow the [Code of Conduct](CODE_OF_CONDUCT.md).
