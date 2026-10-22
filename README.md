@@ -102,10 +102,10 @@ Generated from `npm run bundle:budget`; see the docs for min and brotli.
 | CSS classes, `pennants/css/cdn` ²               | 2.0 kB CSS     | 0            |
 | One flag, static import (`pennants/art/1x1/ar`) | 1.7 kB JS      | 0            |
 | `getPennantName`                                | 1.0 kB JS      | 0            |
-| `fetchPennant` (`pennants/fetch`)               | 1.2 kB JS      | 0            |
+| `fetchPennant` (`pennants/fetch`)               | 1.9 kB JS      | 1            |
 | `loadFlag` / `loadPennant`                      | 2.5 kB JS      | 544          |
-| React `<Pennant>`                               | 4.3 kB JS      | 544          |
-| `<pennant-flag>`                                | 5.0 kB JS      | 544          |
+| React `<Pennant>`                               | 4.7 kB JS      | 545          |
+| `<pennant-flag>`                                | 5.1 kB JS      | 545          |
 
 ¹ With Vite's defaults every flag is inlined into the CSS (53.0 kB gzip); see the
 [FAQ](https://d3vaya.github.io/pennants/guide/faq#bundler-asset-imports). Next.js and Angular do
