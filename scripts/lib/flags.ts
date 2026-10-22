@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { optimize } from 'svgo';
+import type { ArtSet } from '../../src/shapes.ts';
 import { assertValidCode, unwrapSvg, type FlagArtwork } from './pennant.ts';
 
 export interface FlagSource {
@@ -59,16 +60,21 @@ export function optimizeFlag(
   return { code, ...unwrapSvg(data) };
 }
 
-/** Raw source SVG of one flag (square 1x1 artwork). */
-export async function readFlagSvg(code: string, root = flagIconsRoot()): Promise<string> {
+/** Raw source SVG of one flag from the square (`1x1`, default) or `4x3` artwork set. */
+export async function readFlagSvg(
+  code: string,
+  root = flagIconsRoot(),
+  set: ArtSet = '1x1',
+): Promise<string> {
   assertValidCode(code);
-  return readFile(join(root, 'flags', '1x1', `${code}.svg`), 'utf8');
+  return readFile(join(root, 'flags', set, `${code}.svg`), 'utf8');
 }
 
 export async function loadFlagArtwork(
   code: string,
   root = flagIconsRoot(),
   precision = DEFAULT_PRECISION,
+  set: ArtSet = '1x1',
 ): Promise<FlagArtwork> {
-  return optimizeFlag(code, await readFlagSvg(code, root), precision);
+  return optimizeFlag(code, await readFlagSvg(code, root, set), precision);
 }
