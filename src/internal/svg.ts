@@ -3,7 +3,7 @@
  * inlining into a document. Pure string functions: safe on the server.
  */
 
-import { composeFlag, type PennantShape } from '../shapes.ts';
+import { composeFlag, defaultIdPrefix, type PennantShape } from '../shapes.ts';
 import type { CachedFlag } from './cache.ts';
 
 const ROOT_TAG = /^(\s*)<svg\b([^>]*)>/;
@@ -62,7 +62,7 @@ export function inlineFlag(flag: CachedFlag, shape: PennantShape, scope?: string
   if (typeof flag === 'string') return prepareSvg(flag, scope);
   // The shape is part of the namespace: the same flag in two shapes (or in
   // two React roots whose useId sequences coincide) never shares ids.
-  const namespace = shape === 'pennant' ? flag.code : `${flag.code}-${shape}`;
+  const namespace = defaultIdPrefix(flag.code, shape).slice('pn-'.length, -1);
   const prefix = scope === undefined ? undefined : scopedIdPrefix(scope, namespace);
   return prepareSvg(composeFlag(flag, shape, prefix));
 }
