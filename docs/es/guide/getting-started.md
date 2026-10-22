@@ -102,6 +102,22 @@ import { loadPennant, toPennantCode } from 'pennants';
 const svg = await loadPennant(toPennantCode(entradaDelUsuario)); // descarga un chunk pequeño
 ```
 
+### Modo fetch
+
+`loadPennant` incluye en el bundle un mapa de carga pequeño con un chunk por bandera. El modo
+fetch lo evita: descarga `<base>/svg/<código>.svg` en tiempo de ejecución, por defecto desde
+jsDelivr o desde tu propia copia de la carpeta `svg/`.
+
+```js
+import { fetchPennant } from 'pennants/fetch';
+
+const svg = await fetchPennant('ar'); // o fetchPennant('ar', { base: '/assets/pennants' })
+```
+
+El mismo modo existe en los componentes: `<Pennant code="ar" mode="fetch" />` y
+`<pennant-flag code="ar" base="https://cdn.jsdelivr.net/npm/pennants@0.1.0">`. Las respuestas
+se guardan en caché por URL y deben ser un documento `<svg>` sin scripts.
+
 ### React
 
 ```jsx

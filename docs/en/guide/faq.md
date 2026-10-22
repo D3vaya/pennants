@@ -14,13 +14,14 @@ yields duplicate ids. Browsers usually still render it, until the first copy is 
 
 ## Content Security Policy
 
-| Format                          | Needs                                                   |
-| ------------------------------- | ------------------------------------------------------- |
-| `<img>`, PNG, CSS classes       | `img-src` for your host or `https://cdn.jsdelivr.net`   |
-| `toDataUri(svg)` in `<img>`/CSS | `img-src data:`                                         |
-| Lazy chunks                     | `script-src` for your own origin (they are your bundle) |
-| Inline SVG, React, theming      | nothing extra: works with `style-src 'self'`            |
-| `<pennant-flag>`                | see below                                               |
+| Format                          | Needs                                                                  |
+| ------------------------------- | ---------------------------------------------------------------------- |
+| `<img>`, PNG, CSS classes       | `img-src` for your host or `https://cdn.jsdelivr.net`                  |
+| `toDataUri(svg)` in `<img>`/CSS | `img-src data:`                                                        |
+| Lazy chunks                     | `script-src` for your own origin (they are your bundle)                |
+| Fetch mode                      | `connect-src` for the `base` host (default `https://cdn.jsdelivr.net`) |
+| Inline SVG, React, theming      | nothing extra: works with `style-src 'self'`                           |
+| `<pennant-flag>`                | see below                                                              |
 
 Inline SVG uses no inline styles: the bar colors are presentation attributes and theming is a
 rule in `pennants/css/theme.css`. `<pennant-flag>` in 0.1.0 adds a `<style>` element to its
@@ -30,6 +31,10 @@ CSS classes.
 
 ## SSR and hydration
 
+- `pennants/react` is safe to import from React Server Components. `<PennantSvg>` renders on the
+  server; `<Pennant>` lives in a `'use client'` module and becomes a client reference.
+  `pennants/react/static` exports only `<PennantSvg>`, for bundlers that would otherwise emit
+  the lazy chunks anyway.
 - `<Pennant>` (inline mode) renders a correctly sized empty `<span>` on the server and loads the
   flag after hydration. No hydration mismatch, no layout shift, but no flag in the HTML.
 - For flags in the server HTML, use `mode="img"`, or `<PennantSvg svg={ar} />` with a static

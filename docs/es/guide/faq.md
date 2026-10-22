@@ -15,13 +15,14 @@ degradado.
 
 ## Content Security Policy {#csp}
 
-| Formato                            | Necesita                                                  |
-| ---------------------------------- | --------------------------------------------------------- |
-| `<img>`, PNG, clases CSS           | `img-src` con tu dominio o `https://cdn.jsdelivr.net`     |
-| `toDataUri(svg)` en `<img>` o CSS  | `img-src data:`                                           |
-| Chunks diferidos                   | `script-src` de tu propio origen (son parte de tu bundle) |
-| SVG inline, React, personalización | nada extra: funciona con `style-src 'self'`               |
-| `<pennant-flag>`                   | ver abajo                                                 |
+| Formato                            | Necesita                                                                         |
+| ---------------------------------- | -------------------------------------------------------------------------------- |
+| `<img>`, PNG, clases CSS           | `img-src` con tu dominio o `https://cdn.jsdelivr.net`                            |
+| `toDataUri(svg)` en `<img>` o CSS  | `img-src data:`                                                                  |
+| Chunks diferidos                   | `script-src` de tu propio origen (son parte de tu bundle)                        |
+| Modo fetch                         | `connect-src` para el dominio de `base` (por defecto `https://cdn.jsdelivr.net`) |
+| SVG inline, React, personalización | nada extra: funciona con `style-src 'self'`                                      |
+| `<pennant-flag>`                   | ver abajo                                                                        |
 
 El SVG inline no usa estilos inline: los colores de la barra son atributos de presentación y la
 personalización es una regla de `pennants/css/theme.css`. En la versión 0.1.0, `<pennant-flag>`
@@ -31,6 +32,10 @@ estricta, usa React, SVG inline, los formatos de imagen o las clases CSS.
 
 ## SSR e hidratación {#ssr-e-hidratacion}
 
+- `pennants/react` se puede importar desde React Server Components. `<PennantSvg>` se renderiza
+  en el servidor; `<Pennant>` vive en un módulo `'use client'` y pasa a ser una referencia de
+  cliente. `pennants/react/static` exporta solo `<PennantSvg>`, para bundlers que de otro modo
+  emitirían igual los chunks diferidos.
 - `<Pennant>` (modo inline) renderiza en el servidor un `<span>` vacío del tamaño correcto y
   carga la bandera después de hidratar. No hay error de hidratación ni salto de layout, pero la
   bandera no está en el HTML.
