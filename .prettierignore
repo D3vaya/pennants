@@ -8,6 +8,10 @@ src/generated/
 reference/
 node_modules/
 package-lock.json
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+docs/en/api/
+docs/public/
 examples/*/dist/
 examples/*/build/
 examples/*/.next/

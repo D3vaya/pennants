@@ -85,7 +85,10 @@
     "size": "size-limit",
     "examples:check": "node scripts/examples-check.ts",
     "verify": "npm run lint && npm run typecheck && npm run build && npm run coverage && npm run check:package && npm run size",
-    "prepublishOnly": "npm run verify"
+    "prepublishOnly": "npm run verify",
+    "docs:api": "typedoc --options docs/typedoc.json && node scripts/docs-api.ts",
+    "docs:dev": "node scripts/docs-assets.ts && npm run docs:api && vitepress dev docs",
+    "docs:build": "npm run build && node scripts/docs-assets.ts && npm run docs:api && vitepress build docs"
   },
   "peerDependencies": {
     "react": ">=18"
@@ -117,8 +120,11 @@
     "size-limit": "^14.3.0",
     "svgo": "^4.1.0",
     "tsup": "^9.0.0",
+    "typedoc": "0.28.20",
+    "typedoc-plugin-markdown": "4.14.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.72.0",
+    "vitepress": "1.6.4",
     "vitest": "^5.0.5"
   }
 }
