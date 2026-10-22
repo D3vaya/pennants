@@ -19,6 +19,7 @@ import {
   type PennantCommonProps,
 } from './shared.ts';
 
+/** Props of {@link Pennant}. Other HTML attributes and `ref` are forwarded. */
 export interface PennantProps extends PennantHtmlAttributes, PennantCommonProps {
   /**
    * Flag code, lowercase or uppercase (`"ar"`, `"AR"`, `"gb-eng"`, `"GB-ENG"`);

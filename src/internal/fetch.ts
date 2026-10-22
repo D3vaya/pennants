@@ -1,5 +1,6 @@
 import { pennantUrl } from './core.ts';
 
+/** Options of {@link fetchPennant}. */
 export interface FetchPennantOptions {
   /**
    * Base URL where the package's `svg/` folder is served (see `pennantUrl`).

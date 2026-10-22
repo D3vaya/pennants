@@ -7,9 +7,11 @@ import { extraNames } from '../generated/names.ts';
 
 export { codes, isoCodes, type PennantCode };
 
-/** Intrinsic size of every pennant, in CSS pixels. */
+/** Intrinsic width of every pennant, in CSS pixels (SVG `viewBox` units). */
 export const PENNANT_WIDTH = 66;
+/** Intrinsic height of every pennant, in CSS pixels (SVG `viewBox` units). */
 export const PENNANT_HEIGHT = 72;
+/** Width / height ratio of a pennant (66 / 72 ≈ 0.9167), e.g. for CSS `aspect-ratio`. */
 export const PENNANT_ASPECT_RATIO = PENNANT_WIDTH / PENNANT_HEIGHT;
 
 const codeSet: ReadonlySet<string> = /* @__PURE__ */ new Set(codes);
@@ -18,6 +20,10 @@ const isoCodeSet: ReadonlySet<string> = /* @__PURE__ */ new Set(isoCodes);
 /** Injected at build time; versions the default CDN URL. */
 declare const __PENNANTS_VERSION__: string;
 
+/**
+ * Default `base` of {@link pennantUrl} and `fetchPennant`: the jsDelivr CDN
+ * pinned to this package version, e.g. `https://cdn.jsdelivr.net/npm/pennants@0.1.0`.
+ */
 export const DEFAULT_CDN_BASE = `https://cdn.jsdelivr.net/npm/pennants@${__PENNANTS_VERSION__}`;
 
 /**
@@ -68,9 +74,11 @@ export function toDataUri(svg: string): string {
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
+/** Options of {@link pennantUrl}. */
 export interface PennantUrlOptions {
   /** Base URL where the package's `svg/` (or `png/`) folder is served. */
   base?: string;
+  /** Asset format: `svg` (default, `<base>/svg/…`) or `png` (`<base>/png/<scale>x/…`). */
   format?: 'svg' | 'png';
   /** PNG density folder, only used when `format` is `png`. */
   scale?: 1 | 2;

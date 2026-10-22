@@ -8,6 +8,7 @@ import {
   type PennantCommonProps,
 } from './shared.ts';
 
+/** Props of {@link PennantSvg}: shared props plus the trusted pennant markup. */
 export interface PennantSvgProps extends PennantHtmlAttributes, PennantCommonProps {
   /** Pennant markup, e.g. `import ar from 'pennants/flags/ar'`. Must be trusted. */
   svg: string;

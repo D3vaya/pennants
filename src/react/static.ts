@@ -7,6 +7,7 @@
 export { PennantSvg, type PennantSvgProps } from './svg.tsx';
 export {
   pennantBox,
+  type PennantBox,
   type PennantCommonProps,
   type PennantHtmlAttributes,
   type PennantSize,
