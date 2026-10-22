@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/d3vaya/pennants/security/advisories/new
+    url: https://github.com/D3vaya/pennants/security/advisories/new
     about: Report vulnerabilities privately.
   - name: Question
-    url: https://github.com/d3vaya/pennants/discussions
+    url: https://github.com/D3vaya/pennants/discussions
     about: Ask usage questions in Discussions.

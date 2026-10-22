@@ -18,11 +18,11 @@
   "author": "d3vaya",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/d3vaya/pennants.git"
+    "url": "git+https://github.com/D3vaya/pennants.git"
   },
-  "homepage": "https://github.com/d3vaya/pennants#readme",
+  "homepage": "https://d3vaya.github.io/pennants/",
   "bugs": {
-    "url": "https://github.com/d3vaya/pennants/issues"
+    "url": "https://github.com/D3vaya/pennants/issues"
   },
   "type": "module",
   "sideEffects": [

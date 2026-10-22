@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, type DefaultTheme } from 'vitepress';
 
-const repo = 'https://github.com/d3vaya/pennants';
+const repo = 'https://github.com/D3vaya/pennants';
 // GitHub Pages serves the project site under /pennants/. Override for other hosts.
 const base = process.env.DOCS_BASE ?? '/pennants/';
 const { version } = JSON.parse(

@@ -6,6 +6,6 @@ In short: be respectful, assume good faith, and keep discussion focused on the w
 Harassment and personal attacks are not tolerated.
 
 Report unacceptable behavior privately to the maintainer,
-[@d3vaya](https://github.com/d3vaya). Reports are handled confidentially.
+[@d3vaya](https://github.com/D3vaya). Reports are handled confidentially.
 Maintainers may remove comments, commits or contributions, and may ban contributors, as
 described in the Covenant's enforcement guidelines.

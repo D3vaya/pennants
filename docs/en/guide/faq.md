@@ -90,7 +90,7 @@ export default {
 Flag designs come from flag-icons. Please check the
 [flag-icons repository](https://github.com/lipis/flag-icons) first; problems with the pennant
 frame (clipping, bar, sizes) belong in the
-[pennants issue tracker](https://github.com/d3vaya/pennants/issues).
+[pennants issue tracker](https://github.com/D3vaya/pennants/issues).
 
 ## A code is missing
 

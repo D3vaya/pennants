@@ -71,4 +71,4 @@ npm run build && node scripts/docs-compare.ts
 | Emoji helper       | `toEmoji`                           | No                   | `country-flag-icons/unicode` |
 
 Feature rows reflect each package's documented API at the versions above. If something here
-is out of date, please [open an issue](https://github.com/d3vaya/pennants/issues).
+is out of date, please [open an issue](https://github.com/D3vaya/pennants/issues).

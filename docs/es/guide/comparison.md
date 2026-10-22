@@ -74,4 +74,4 @@ npm run build && node scripts/docs-compare.ts
 
 Las filas de funcionalidades reflejan la API documentada de cada paquete en las versiones
 indicadas. Si algo quedó desactualizado,
-[abre un issue](https://github.com/d3vaya/pennants/issues).
+[abre un issue](https://github.com/D3vaya/pennants/issues).

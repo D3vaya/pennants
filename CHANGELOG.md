@@ -41,5 +41,5 @@ First release.
 - Pennant bar theming with `--pennant-bar-light` / `--pennant-bar-dark` through
   `pennants/css/theme.css` (included in the pennant stylesheets), CSP-safe.
 
-[Unreleased]: https://github.com/d3vaya/pennants/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/d3vaya/pennants/releases/tag/v0.1.0
+[Unreleased]: https://github.com/D3vaya/pennants/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/D3vaya/pennants/releases/tag/v0.1.0

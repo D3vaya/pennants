@@ -96,7 +96,7 @@ export default {
 Los diseños vienen de flag-icons. Revisa primero el
 [repositorio de flag-icons](https://github.com/lipis/flag-icons); los problemas del banderín en
 sí (recorte, barra, tamaños) van en el
-[gestor de issues de pennants](https://github.com/d3vaya/pennants/issues).
+[gestor de issues de pennants](https://github.com/D3vaya/pennants/issues).
 
 ## Falta un código {#falta-un-codigo}
 

@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/pennants)](https://www.npmjs.com/package/pennants)
 [![core size](https://img.shields.io/bundlejs/size/pennants?exports=getPennantName&label=core)](https://bundlejs.com/?q=pennants&treeshake=[{getPennantName}])
-[![CI](https://github.com/d3vaya/pennants/actions/workflows/ci.yml/badge.svg)](https://github.com/d3vaya/pennants/actions/workflows/ci.yml)
+[![CI](https://github.com/D3vaya/pennants/actions/workflows/ci.yml/badge.svg)](https://github.com/D3vaya/pennants/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/pennants)](LICENSE)
 
 Every flag, every shape, one API. 271 country flags (249 ISO 3166-1 countries plus regions and
@@ -10,7 +10,7 @@ organizations) as pennants, the signature style, and as 4:3 rectangles, squares 
 SVG, PNG, CSS classes, an SVG sprite, tree-shakable ES modules, a React component and a Web
 Component. Typed and lazy: you only ship the flags you show.
 
-![A string of pennant flags above rectangle, square and circle flags](https://raw.githubusercontent.com/d3vaya/pennants/main/docs/public/preview.png)
+![A string of pennant flags above rectangle, square and circle flags](https://raw.githubusercontent.com/D3vaya/pennants/main/docs/public/preview.png)
 
 **[Documentation](https://d3vaya.github.io/pennants/)** ·
 **[Gallery](https://d3vaya.github.io/pennants/gallery)** ·

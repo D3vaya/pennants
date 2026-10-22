@@ -7,7 +7,7 @@ Only the latest minor release receives fixes.
 ## Reporting a vulnerability
 
 Do not open a public issue. Report privately through
-[GitHub Security Advisories](https://github.com/d3vaya/pennants/security/advisories/new).
+[GitHub Security Advisories](https://github.com/D3vaya/pennants/security/advisories/new).
 
 Include affected versions, a description and, if possible, a reproduction. You can expect an
 initial reply within 7 days. Once a fix is released, the advisory is published with credit to
