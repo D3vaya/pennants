@@ -111,7 +111,7 @@
     "./svg/*": "./svg/*",
     "./png/*": "./png/*",
     "./sprite": "./sprite/pennant.svg",
-    "./sprite/*": "./sprite/*",
+    "./sprite/pennant.svg": "./sprite/pennant.svg",
     "./package.json": "./package.json"
   },
   "scripts": {
