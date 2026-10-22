@@ -24,12 +24,23 @@ body:
       multiple: true
       options:
         - pennants (core API)
-        - pennants/flags/*
+        - pennants/art/*
+        - pennants/fetch
         - pennants/react
         - pennants/element
         - CSS
         - SVG / PNG / sprite files
         - Other
+  - type: dropdown
+    id: shape
+    attributes:
+      label: Shape
+      multiple: true
+      options:
+        - pennant
+        - rect
+        - square
+        - circle
   - type: input
     id: version
     attributes:

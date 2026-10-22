@@ -152,8 +152,17 @@ jobs:
           import assert from 'node:assert/strict';
           import { existsSync } from 'node:fs';
           import { fileURLToPath } from 'node:url';
-          import { codes, isPennantCode, loadPennant, getPennantName, pennantUrl } from 'pennants';
-          import ar from 'pennants/flags/ar';
+          import {
+            codes,
+            isPennantCode,
+            loadFlag,
+            loadPennant,
+            getPennantName,
+            pennantUrl,
+            renderFlag,
+          } from 'pennants';
+          import ar from 'pennants/art/1x1/ar';
+          import arWide from 'pennants/art/4x3/ar';
           import { definePennantElement } from 'pennants/element';
           import { Pennant, PennantSvg } from 'pennants/react';
           import { createElement as h } from 'react';
@@ -161,11 +170,21 @@ jobs:
 
           assert.ok(codes.length > 249, 'codes list');
           assert.ok(isPennantCode('ar'));
-          assert.match(ar, /^<svg/);
-          assert.equal(await loadPennant('ar'), ar);
+          assert.equal(ar.code, 'ar');
+          const pennant = renderFlag(ar);
+          assert.match(pennant, /^<svg/);
+          assert.equal(await loadPennant('ar'), pennant);
+          assert.equal(await loadFlag('ar', { shape: 'rect' }), renderFlag(arWide, { shape: 'rect' }));
           assert.equal(getPennantName('ar'), 'Argentina');
-          assert.match(pennantUrl('ar'), /\/svg\/ar\.svg$/);
-          for (const specifier of ['pennants/svg/ar.svg', 'pennants/sprite', 'pennants/css']) {
+          assert.match(pennantUrl('ar'), /\/svg\/pennant\/ar\.svg$/);
+          assert.match(pennantUrl('ar', { shape: 'circle' }), /\/svg\/circle\/ar\.svg$/);
+          for (const specifier of [
+            'pennants/svg/pennant/ar.svg',
+            'pennants/svg/rect/ar.svg',
+            'pennants/sprite',
+            'pennants/css',
+            'pennants/css/circle',
+          ]) {
             assert.ok(existsSync(fileURLToPath(import.meta.resolve(specifier))), specifier);
           }
 
@@ -175,8 +194,11 @@ jobs:
           const inline = renderToString(h(Pennant, { code: 'ar' }));
           assert.match(inline, /data-pennant="ar"/);
           assert.match(inline, /aria-label="Argentina"/);
-          assert.match(renderToString(h(Pennant, { code: 'ar', mode: 'img' })), /<img [^>]*src="[^"]*\/svg\/ar\.svg"/);
-          const bundled = renderToString(h(PennantSvg, { svg: ar }));
+          assert.match(
+            renderToString(h(Pennant, { code: 'ar', mode: 'img', shape: 'square' })),
+            /<img [^>]*src="[^"]*\/svg\/square\/ar\.svg"/,
+          );
+          const bundled = renderToString(h(PennantSvg, { art: ar, shape: 'circle' }));
           assert.match(bundled, /<svg/);
           assert.match(bundled, /aria-label="Argentina"/);
 
