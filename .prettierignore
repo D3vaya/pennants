@@ -1,0 +1,10 @@
+dist/
+coverage/
+svg/
+png/
+css/
+sprite/
+src/generated/
+reference/
+node_modules/
+package-lock.json

@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+/svg/
+/png/
+/css/
+/sprite/
+src/generated/
+*.tgz
+.DS_Store
