@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -76,5 +76,43 @@ describe('loadFlagArtwork', () => {
 
   it('resolves the flag-icons package', () => {
     expect(flagIconsRoot()).toMatch(/flag-icons$/);
+  });
+});
+
+describe('CSP: no inline styles', () => {
+  it('converts presentation styles to attributes and drops no-op ones', () => {
+    const art = optimizeFlag(
+      'xx',
+      '<svg viewBox="0 0 2 2"><path d="M0 0h2v2H0z" style="fill:red;marker:none;-inkscape-stroke:none;width:0"/></svg>',
+    );
+    expect(art.content).not.toContain('style=');
+    expect(art.content).toContain('fill="red"');
+  });
+
+  it('refuses unknown style properties instead of dropping them', () => {
+    expect(() =>
+      optimizeFlag(
+        'xx',
+        '<svg viewBox="0 0 2 2"><path d="M0 0h2v2H0z" style="mix-blend-mode:multiply"/></svg>',
+      ),
+    ).toThrow('Unexpected style property "mix-blend-mode"');
+  });
+
+  it('ships no style attribute in any generated art module or SVG', async () => {
+    const root = new URL('../', import.meta.url);
+    const dirs = [
+      ...['1x1', '4x3'].map((set) => `src/generated/art/${set}`),
+      ...['pennant', 'rect', 'square', 'circle'].map((shape) => `svg/${shape}`),
+    ];
+    const offenders: string[] = [];
+    for (const dir of dirs) {
+      const files = await readdir(new URL(dir, root));
+      expect(files.length).toBeGreaterThanOrEqual(249);
+      for (const file of files) {
+        const text = await readFile(new URL(`${dir}/${file}`, root), 'utf8');
+        if (/\sstyle=/.test(text)) offenders.push(`${dir}/${file}`);
+      }
+    }
+    expect(offenders).toEqual([]);
   });
 });

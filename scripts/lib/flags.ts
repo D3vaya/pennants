@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
-import { optimize } from 'svgo';
+import { optimize, type CustomPlugin } from 'svgo';
 import type { ArtSet } from '../../src/shapes.ts';
 import { assertValidCode, unwrapSvg, type FlagArtwork } from './pennant.ts';
 
@@ -37,6 +37,39 @@ export async function readFlagSources(root = flagIconsRoot()): Promise<FlagSourc
 export const DEFAULT_PRECISION = 3;
 
 /**
+ * Style properties some source flags carry (Inkscape leftovers) that cannot
+ * affect rendering here: text layout without `<text>`, `marker` without
+ * markers, CSS `width` on paths. Presentation properties (fill, stroke…) are
+ * turned into attributes first by `convertStyleToAttrs`.
+ */
+export const NO_OP_STYLE =
+  /^(?:-inkscape-[\w-]+|line-height|text-[\w-]+|marker|width|font-[\w-]+)$/;
+
+/**
+ * Removes `style` attributes so inlined SVGs work under a CSP without
+ * `style-src 'unsafe-inline'`. Fails the build on any property not known to
+ * be a no-op, instead of silently changing a flag.
+ */
+export const dropNoOpStyles: CustomPlugin = {
+  name: 'dropNoOpStyles',
+  fn: () => ({
+    element: {
+      enter(node) {
+        const style = node.attributes.style;
+        if (style === undefined) return;
+        for (const declaration of style.split(';')) {
+          const property = declaration.split(':')[0]?.trim() ?? '';
+          if (property && !NO_OP_STYLE.test(property)) {
+            throw new Error(`Unexpected style property "${property}" in <${node.name}>`);
+          }
+        }
+        delete node.attributes.style;
+      },
+    },
+  }),
+};
+
+/**
  * Minifies a source flag and namespaces its ids so it can be embedded safely.
  * `precision` is the number of decimals kept in coordinates (see
  * `pickPrecision`: lower is smaller but can destroy tiny `<use>`-scaled shapes).
@@ -54,6 +87,8 @@ export function optimizeFlag(
       { name: 'preset-default', params: { floatPrecision: precision } },
       'removeDimensions',
       'removeXlink',
+      'convertStyleToAttrs',
+      dropNoOpStyles,
       { name: 'prefixIds', params: { prefix: `pn-${code}`, delim: '-' } },
     ],
   });
