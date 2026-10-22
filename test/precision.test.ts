@@ -9,6 +9,8 @@ import {
 import { buildPennant } from '../scripts/lib/pennant.ts';
 import { MAX_STRONG_PIXELS, pickPrecision, strongDiff } from '../scripts/lib/precision.ts';
 import { mapLimit } from '../scripts/lib/png.ts';
+import { ART_SETS, PRECISION_SHAPE } from '../scripts/lib/art.ts';
+import { composeFlag } from '../src/shapes.ts';
 
 const build = (code: string, source: string) => (precision: number) =>
   buildPennant(optimizeFlag(code, source, precision));
@@ -70,13 +72,19 @@ describe('pickPrecision', () => {
   });
 });
 
-describe('generated SVGs', () => {
-  it('render like the lossless artwork for every flag', async () => {
+describe.each(ART_SETS)('generated %s artwork', (set) => {
+  const shape = PRECISION_SHAPE[set];
+
+  it(`renders like the lossless artwork for every flag (as ${shape})`, async () => {
     const sources = await readFlagSources();
     const failures = (
       await mapLimit(sources, 8, async ({ code }) => {
-        const lossless = build(code, await readFlagSvg(code))(DEFAULT_PRECISION);
-        const generated = await readFile(new URL(`../svg/${code}.svg`, import.meta.url), 'utf8');
+        const source = await readFlagSvg(code, undefined, set);
+        const lossless = composeFlag(optimizeFlag(code, source, DEFAULT_PRECISION), shape);
+        const generated = await readFile(
+          new URL(`../svg/${shape}/${code}.svg`, import.meta.url),
+          'utf8',
+        );
         const diff = await strongDiff(generated, lossless);
         return diff > MAX_STRONG_PIXELS ? `${code}: ${diff}` : null;
       })

@@ -13,6 +13,7 @@ import sharp from 'sharp';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadFlagArtwork } from '../scripts/lib/flags.ts';
 import { buildPennant, PENNANT } from '../scripts/lib/pennant.ts';
+import { composeFlag, SHAPE_ART, SHAPE_SIZE, type FlagArt } from '../src/shapes.ts';
 import { renderPng } from '../scripts/lib/png.ts';
 
 const SAMPLE = ['ar', 'us', 'jp', 'br', 'bz', 'de', 'gb', 'ca'];
@@ -152,5 +153,73 @@ describe('frame checks catch regressions', () => {
     expect(Math.abs(border.ratio - LIMITS.borderRatio)).toBeGreaterThan(LIMITS.borderTolerance);
     const cut = await broken('V50L33 72L0 50Z"/></clipPath>', 'V60H0Z"/></clipPath>');
     expect(alphaDiff(cut, ref, 128).over).toBeGreaterThan(0);
+  });
+});
+
+/**
+ * rect / square / circle have no hand-made references, so their frames are
+ * checked against the expected geometry: a white flag must come out white
+ * inside, 30 % darker (255 * 0.7 ≈ 179) in the 3px border, transparent
+ * outside the outline, and real flags must fill exactly the outline's
+ * silhouette.
+ */
+describe.each(['rect', 'square', 'circle'] as const)('%s frame', (shape) => {
+  const { width, height } = SHAPE_SIZE[shape];
+  const white: FlagArt = {
+    code: 'xx',
+    viewBox: '0 0 4 3',
+    content: '<path fill="#fff" d="M0 0h4v3H0z"/>',
+  };
+  let img: Buffer;
+  const at = (x: number, y: number): number[] => [
+    ...img.subarray((y * width + x) * 4, (y * width + x) * 4 + 4),
+  ];
+  beforeAll(async () => {
+    img = await sharp(await renderPng(composeFlag(white, shape), 1, shape))
+      .ensureAlpha()
+      .raw()
+      .toBuffer();
+  });
+
+  it('darkens a 3px inner border by 30% and leaves the inside untouched', () => {
+    const midY = height >> 1;
+    const midX = width >> 1;
+    for (const [x, y] of [
+      [1, midY],
+      [2, midY],
+      [width - 2, midY],
+      [midX, 1],
+      [midX, height - 2],
+    ] as const) {
+      const [r, g, b, a] = at(x, y);
+      expect(a).toBe(255);
+      for (const c of [r, g, b]) expect(Math.abs((c as number) - 179)).toBeLessThanOrEqual(4);
+    }
+    for (const [x, y] of [
+      [4, midY],
+      [midX, midY],
+      [width - 5, midY],
+    ] as const) {
+      expect(at(x, y)).toEqual([255, 255, 255, 255]);
+    }
+  });
+
+  it('is transparent outside its outline', () => {
+    const corner = at(0, 0)[3] as number;
+    if (shape === 'circle') {
+      expect(corner).toBe(0);
+      expect(at(5, 5)[3]).toBe(0);
+    } else {
+      // corner radius 2: the very corner pixel is only partly covered
+      expect(corner).toBeLessThan(160);
+      expect(corner).toBeGreaterThan(0);
+    }
+  });
+
+  // np is left out: its artwork is not rectangular and leaves transparent areas.
+  it.each(['ar', 'gb', 'br'])('fills exactly the outline with %s', async (code) => {
+    const art = await loadFlagArtwork(code, undefined, undefined, SHAPE_ART[shape]);
+    const flag = await rgba(await renderPng(composeFlag(art, shape), 1, shape));
+    expect(alphaDiff(flag, img, 128).over).toBe(0);
   });
 });
