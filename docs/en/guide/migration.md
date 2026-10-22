@@ -8,14 +8,14 @@ bar instead of a rectangle), the class prefix and the extra formats.
 
 ## Classes
 
-| flag-icons                                   | pennants                | Notes                                          |
-| -------------------------------------------- | ----------------------- | ---------------------------------------------- |
-| `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css'` |                                                |
-| `fi fi-ar`                                   | `pn pn-ar`              |                                                |
-| `fi fi-ar fis` (square)                      | `pn pn-ar`              | There is one shape; drop `fis`.                |
-| `fib fi-ar` (background only)                | `pn pn-ar`              | `.pn` already sets `background-size: contain`. |
-| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/ar.svg`   |                                                |
-| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/ar.svg`   |                                                |
+| flag-icons                                   | pennants                                 | Notes                                          |
+| -------------------------------------------- | ---------------------------------------- | ---------------------------------------------- |
+| `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css/pennants.min.css'` |                                                |
+| `fi fi-ar`                                   | `pn pn-ar`                               |                                                |
+| `fi fi-ar fis` (square)                      | `pn pn-ar`                               | There is one shape; drop `fis`.                |
+| `fib fi-ar` (background only)                | `pn pn-ar`                               | `.pn` already sets `background-size: contain`. |
+| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/ar.svg`                    |                                                |
+| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/ar.svg`                    |                                                |
 
 A search and replace covers most projects:
 

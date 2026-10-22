@@ -97,7 +97,7 @@ export function snippets(code: string, lang: Lang): Snippet[] {
   const locale = lang === 'en' ? '' : ` locale="${lang}"`;
   const label = lang === 'en' ? '' : ` label="${name}"`;
   const all: Record<FormatId, string> = {
-    css: `import 'pennants/css';\n\n<span class="pn pn-${code}" role="img" aria-label="${name}"></span>`,
+    css: `import 'pennants/css/pennants.min.css';\n\n<span class="pn pn-${code}" role="img" aria-label="${name}"></span>`,
     img: `<img src="${cdn}/svg/${code}.svg" width="33" height="36" alt="${name}" />`,
     png: `<img\n  src="${cdn}/png/1x/${code}.png"\n  srcset="${cdn}/png/2x/${code}.png 2x"\n  width="66" height="72" alt="${name}" />`,
     sprite: `<!-- copy node_modules/pennants/sprite/pennants.svg to /assets -->\n<svg width="33" height="36" role="img" aria-label="${name}">\n  <use href="/assets/pennants.svg#pn-${code}" />\n</svg>`,

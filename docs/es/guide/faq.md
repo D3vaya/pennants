@@ -67,9 +67,10 @@ import markup from 'pennants/svg/ar.svg?raw'; // Vite: el SVG como texto
   `node_modules/pennants`.
 - **Next.js:** el import estático de un `.svg` devuelve un objeto; usa `.src`, la carpeta
   `/public` o `pennantUrl`.
-- **`pennants/css` con Vite:** Vite incrusta como data URI los assets de menos de 4 kB, lo que
-  convertiría la mayoría de las 271 referencias en base64 dentro de tu CSS. Para mantenerlas como
-  archivos:
+- **`pennants/css` con Vite, SvelteKit o Astro:** Vite incrusta como data URI los assets de
+  menos de 4 KiB, así que la mayoría de las 271 banderas termina dentro de tu CSS: 388 kB sin
+  comprimir / 56 kB con gzip, en lugar de 15 kB / 3,7 kB. Para mantenerlas como archivos (en
+  Astro, la opción va dentro de `vite.build`). Next.js y Angular no las incrustan.
 
 ```js
 // vite.config.js
@@ -78,6 +79,16 @@ export default {
     assetsInlineLimit: (file) => (file.includes('/pennants/svg/') ? false : undefined),
   },
 };
+```
+
+## TypeScript 6 rechaza `import 'pennants/css'` {#typescript-css-import}
+
+TypeScript 6 activa por defecto `noUncheckedSideEffectImports` y marca el error TS2882 en los
+imports de efecto secundario que no puede asociar a un tipo de archivo conocido. Usa la ruta
+completa, que termina en `.css` y queda cubierta por los tipos de CSS de tu bundler:
+
+```js
+import 'pennants/css/pennants.min.css';
 ```
 
 ## Una bandera se ve mal {#bandera-incorrecta}

@@ -12,26 +12,29 @@ const markup = ref('');
 
 const notes: Record<'en' | 'es', Record<FormatId, string>> = {
   en: {
-    css: 'One stylesheet (≈1 kB), images fetched per flag on demand. No JavaScript.',
+    css: 'One small stylesheet; each image loads only when its class is used. With Vite, set assetsInlineLimit (see FAQ).',
     img: 'Zero bundle cost. Cached by the browser and the CDN.',
     png: 'For email, native apps and places without SVG support.',
     sprite:
       'One file with all 271 flags (≈260 kB brotli): worth it only when you show many at once.',
-    module: 'Tree-shaken: only the flags you import are bundled (≈0.5 kB each).',
-    lazy: 'Each flag is its own chunk, fetched the first time you ask for it.',
-    react: 'Lazy inline SVG or <img>, accessible name by default, SSR-safe.',
-    element: 'Framework-free custom element with lazy loading (≈3 kB).',
+    module:
+      'Tree-shaken: only the flags you import are bundled (≈1 kB gzip for the first, ≈0.6 kB each more).',
+    lazy: '≈5 kB gzip for the loader map, then one small chunk per flag, fetched on first use.',
+    react: 'Lazy inline SVG or <img>, accessible name by default, SSR-safe (≈7 kB gzip).',
+    element: 'Framework-free custom element with lazy loading (≈7 kB gzip).',
   },
   es: {
-    css: 'Una hoja de estilos (≈1 kB); cada imagen se descarga solo cuando se usa. Sin JavaScript.',
+    css: 'Una hoja de estilos pequeña; cada imagen se descarga solo cuando se usa su clase. Con Vite, configura assetsInlineLimit (ver FAQ).',
     img: 'Cero impacto en el bundle. La caché del navegador y del CDN hace el resto.',
     png: 'Para email, apps nativas y lugares sin soporte de SVG.',
     sprite:
       'Un archivo con las 271 banderas (≈260 kB con brotli): conviene solo si muestras muchas a la vez.',
-    module: 'Tree-shaking: solo se incluyen las banderas que importas (≈0,5 kB cada una).',
-    lazy: 'Cada bandera es su propio chunk y se descarga la primera vez que se pide.',
-    react: 'SVG inline diferido o <img>, nombre accesible por defecto, compatible con SSR.',
-    element: 'Custom element sin framework, con carga diferida (≈3 kB).',
+    module:
+      'Tree-shaking: solo se incluyen las banderas que importas (≈1 kB con gzip la primera, ≈0,6 kB cada una más).',
+    lazy: '≈5 kB con gzip del mapa de carga y luego un chunk pequeño por bandera, al usarla por primera vez.',
+    react:
+      'SVG inline diferido o <img>, nombre accesible por defecto, compatible con SSR (≈7 kB con gzip).',
+    element: 'Custom element sin framework, con carga diferida (≈7 kB con gzip).',
   },
 };
 

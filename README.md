@@ -26,7 +26,7 @@ npm install pennants
 **CSS classes**: no JavaScript, images load per used class.
 
 ```js
-import 'pennants/css';
+import 'pennants/css/pennants.min.css';
 ```
 
 ```html
@@ -81,16 +81,22 @@ Also: `pennants/png/1x/<code>.png` (66 × 72), `png/2x/` (132 × 144) and
 
 ## Weight
 
-Minified and brotli-compressed, including dependencies.
+What each option adds to an empty Vite 8 production app (gzip):
 
-| Import                                     | Size    |
-| ------------------------------------------ | ------- |
-| `import { isPennantCode } from 'pennants'` | 449 B   |
-| Core API with `loadPennant`                | 1.48 kB |
-| `pennants/react`                           | 2.76 kB |
-| `pennants/element`                         | 2.98 kB |
-| One flag (`pennants/flags/ar`)             | 962 B   |
-| `pennants/css`                             | 930 B   |
+| You use                               | Added                                |
+| ------------------------------------- | ------------------------------------ |
+| `<img>` / CDN, PNG                    | 0                                    |
+| CSS classes                           | ≈3.7 kB CSS ¹, flags load per class  |
+| One flag module (`pennants/flags/ar`) | ≈1.0 kB, ≈0.6 kB per additional flag |
+| `getPennantName`                      | ≈1.1 kB                              |
+| `loadPennant`                         | ≈5.1 kB + one chunk per flag shown   |
+| React `<Pennant>`                     | ≈6.9 kB + one chunk per flag shown   |
+| `<pennant-flag>`                      | ≈7.0 kB + one chunk per flag shown   |
+
+¹ Vite inlines small assets by default, which puts every flag into your CSS (56 kB gzip). Set
+`build.assetsInlineLimit` as shown in the
+[FAQ](https://d3vaya.github.io/pennants/guide/faq#bundler-asset-imports). Next.js and Angular
+do not inline.
 
 The median flag is 0.5 kB with brotli. Country names come from `Intl.DisplayNames`, so no name
 data is bundled. Details: [Performance & weight](https://d3vaya.github.io/pennants/guide/performance).
@@ -137,5 +143,5 @@ JS, React y Web Component. Documentación completa en español:
 **[d3vaya.github.io/pennants/es/](https://d3vaya.github.io/pennants/es/)**.
 
 ```js
-import 'pennants/css'; // <span class="pn pn-ar"></span>
+import 'pennants/css/pennants.min.css'; // <span class="pn pn-ar"></span>
 ```

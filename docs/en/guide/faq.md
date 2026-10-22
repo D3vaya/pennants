@@ -62,8 +62,10 @@ import markup from 'pennants/svg/ar.svg?raw'; // Vite: SVG markup
 - **webpack 5:** add a rule with `type: 'asset/resource'` for `.svg` under `node_modules/pennants`.
 - **Next.js:** a static import of an `.svg` file gives an object; use `.src`, or the
   `/public` folder, or `pennantUrl`.
-- **`pennants/css` with Vite:** Vite inlines assets under 4 kB as data URIs, which would turn
-  most of the 271 flag references into base64 inside your CSS. Keep them as files:
+- **`pennants/css` with Vite, SvelteKit or Astro:** Vite inlines assets under 4 KiB as data
+  URIs, so most of the 271 flags end up inside your CSS: 388 kB raw / 56 kB gzip instead of
+  15 kB / 3.7 kB. Keep them as files (in Astro, put the option under `vite.build`). Next.js and
+  Angular do not inline them.
 
 ```js
 // vite.config.js
@@ -72,6 +74,16 @@ export default {
     assetsInlineLimit: (file) => (file.includes('/pennants/svg/') ? false : undefined),
   },
 };
+```
+
+## TypeScript 6 rejects `import 'pennants/css'` {#typescript-css-import}
+
+TypeScript 6 enables `noUncheckedSideEffectImports` by default and reports TS2882 for
+side-effect imports it cannot resolve to a file type it knows. Use the full file path, which
+ends in `.css` and is matched by your bundler's CSS typings:
+
+```js
+import 'pennants/css/pennants.min.css';
 ```
 
 ## A flag looks wrong

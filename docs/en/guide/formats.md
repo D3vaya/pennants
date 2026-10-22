@@ -1,19 +1,25 @@
 # Which format should I use?
 
 All formats show the same artwork. They differ in what they cost, where they render and what
-you can change.
+you can change. Costs below are what each option adds to an empty Vite 8 production app
+(gzip); see [Performance & weight](./performance) for raw sizes and the library-only numbers.
 
-| Format                           | Bundle cost (min + brotli)             | SSR                           | Bar theming | Lazy                 | Caching                       |
-| -------------------------------- | -------------------------------------- | ----------------------------- | ----------- | -------------------- | ----------------------------- |
-| CSS classes `pn pn-ar`           | 0 JS, 930 B CSS                        | Yes                           | No          | Yes, per used class  | One file per flag, HTTP cache |
-| `<img>` SVG (self-hosted or CDN) | 0                                      | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
-| `<img>` PNG 1x / 2x              | 0                                      | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
-| SVG sprite `<use href>`          | 0 JS, one 1.2 MB file (≈260 kB brotli) | Yes                           | No          | No, one file for all | One file, HTTP cache          |
-| JS module `pennants/flags/ar`    | ≈0.5 kB per flag (`ar`: 962 B)         | Yes                           | Yes         | No, bundled          | Part of your bundle           |
-| `loadPennant(code)`              | 1.48 kB + one chunk per flag on use    | Client (async)                | Yes         | Yes                  | Chunk files, HTTP cache       |
-| React `<Pennant>`                | 2.76 kB + chunk on use                 | Box on server, flag on client | Yes         | Yes                  | Chunk files                   |
-| React `<PennantSvg svg={ar}>`    | 2.76 kB + the imported flags           | Yes, full markup              | Yes         | No                   | Part of your bundle           |
-| `<pennant-flag>`                 | 2.98 kB + chunk on use                 | Client only                   | Yes         | Yes                  | Chunk files                   |
+| Format                           | Added to your app (gzip)                          | SSR                           | Bar theming | Lazy                 | Caching                       |
+| -------------------------------- | ------------------------------------------------- | ----------------------------- | ----------- | -------------------- | ----------------------------- |
+| CSS classes `pn pn-ar`           | 0 JS, ≈3.7 kB CSS ¹                               | Yes                           | No          | Yes, per used class  | One file per flag, HTTP cache |
+| `<img>` SVG (self-hosted or CDN) | 0                                                 | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
+| `<img>` PNG 1x / 2x              | 0                                                 | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
+| SVG sprite `<use href>`          | 0 JS; one 1.2 MB file (≈260 kB brotli)            | Yes                           | No          | No, one file for all | One file, HTTP cache          |
+| JS module `pennants/flags/ar`    | ≈1.0 kB for the first flag, ≈0.6 kB for each more | Yes                           | Yes         | No, bundled          | Part of your bundle           |
+| `loadPennant(code)`              | ≈5.1 kB (loader map) + one chunk per flag shown   | Client (async)                | Yes         | Yes                  | Chunk files, HTTP cache       |
+| React `<Pennant>`                | ≈6.9 kB + one chunk per flag shown                | Box on server, flag on client | Yes         | Yes                  | Chunk files                   |
+| React `<PennantSvg svg={ar}>`    | ≈8.0 kB including `ar` ²                          | Yes, full markup              | Yes         | No                   | Part of your bundle           |
+| `<pennant-flag>`                 | ≈7.0 kB + one chunk per flag shown                | Client only                   | Yes         | Yes                  | Chunk files                   |
+
+¹ With `assetsInlineLimit` set as in the [FAQ](./faq#bundler-asset-imports); without it, Vite
+inlines the flags and the CSS is about 56 kB gzip. Next.js and Angular emit files by default.
+
+² In a Next.js Server Component, `<PennantSvg>` adds no client JavaScript: it renders to HTML.
 
 ## Quick decisions
 

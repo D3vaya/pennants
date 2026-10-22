@@ -22,7 +22,7 @@ features:
   - title: Todos los formatos
     details: SVG y PNG estáticos, clases CSS, un sprite SVG, un módulo ES por bandera, un componente de React y un custom element sin framework.
   - title: Pagas solo lo que muestras
-    details: Cada bandera es su propio módulo y su propio chunk diferido. La API base pesa menos de 1,5 kB; una bandera, unos 0,5 kB con brotli.
+    details: Cada bandera es su propio módulo y su propio chunk diferido, de unos 0,5 kB con brotli. Los nombres salen de Intl.DisplayNames, sin datos extra.
   - title: Tipado y traducido
     details: Un tipo PennantCode con los 271 códigos y nombres en cualquier idioma gracias a Intl.DisplayNames, sin incluir datos de nombres.
   - title: Accesible por defecto
@@ -40,7 +40,7 @@ npm install pennants
 ```
 
 ```js
-import 'pennants/css';
+import 'pennants/css/pennants.min.css';
 ```
 
 ```html

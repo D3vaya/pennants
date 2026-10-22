@@ -22,7 +22,7 @@ features:
   - title: Every format
     details: Static SVG and PNG, CSS classes, an SVG sprite, one ES module per flag, a React component and a framework-free custom element.
   - title: Pay only for what you show
-    details: Each flag is its own module and lazy chunk. The core API is under 1.5 kB; a flag is about 0.5 kB with brotli.
+    details: Each flag is its own module and lazy chunk, about 0.5 kB with brotli. Names come from Intl.DisplayNames, so no name data ships.
   - title: Typed and localized
     details: A PennantCode union for all 271 codes, and names in any language through Intl.DisplayNames, with no bundled name data.
   - title: Accessible by default
@@ -40,7 +40,7 @@ npm install pennants
 ```
 
 ```js
-import 'pennants/css';
+import 'pennants/css/pennants.min.css';
 ```
 
 ```html

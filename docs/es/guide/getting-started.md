@@ -46,11 +46,11 @@ fija la versión:
 
 ### Clases CSS
 
-Sin JavaScript. La hoja de estilos pesa menos de 1 kB con brotli y cada imagen se descarga solo
-cuando algún elemento usa su clase.
+Sin JavaScript. La hoja de estilos ocupa unos 12 kB sin comprimir (menos de 1 kB con brotli) y
+cada imagen se descarga solo cuando algún elemento usa su clase.
 
 ```js
-import 'pennants/css';
+import 'pennants/css/pennants.min.css';
 ```
 
 ```html
@@ -60,6 +60,16 @@ import 'pennants/css';
 
 `.pn` mide `1em` de alto, así que sigue al `font-size`. Tamaños auxiliares: `.pn-lg`, `.pn-2x`,
 `.pn-3x` y `.pn-4x`.
+
+::: warning Vite, SvelteKit y Astro
+Por defecto, Vite incrusta en tu CSS como data URI cada bandera de menos de 4 KiB, y la hoja de
+estilos pasa a ocupar unos 388 kB sin comprimir (56 kB con gzip). Para mantener las banderas
+como archivos, usa [`assetsInlineLimit`](./faq#imports-de-assets-en-el-bundler). Next.js y
+Angular no las incrustan.
+:::
+
+La ruta completa `pennants/css/pennants.min.css` también funciona con TypeScript 6, que revisa
+los imports de efecto secundario; en JavaScript puro alcanza con `import 'pennants/css'`.
 
 ### Imágenes
 
