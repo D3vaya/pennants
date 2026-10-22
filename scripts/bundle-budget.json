@@ -1,0 +1,62 @@
+{
+  "flag": {
+    "jsMin": 3330,
+    "jsGzip": 1140,
+    "jsBrotli": 1040,
+    "lazyFiles": 0
+  },
+  "name": {
+    "jsMin": 2690,
+    "jsGzip": 1210,
+    "jsBrotli": 940,
+    "lazyFiles": 0
+  },
+  "url": {
+    "jsMin": 2130,
+    "jsGzip": 910,
+    "jsBrotli": 690,
+    "lazyFiles": 0
+  },
+  "load": {
+    "jsMin": 16200,
+    "jsGzip": 5390,
+    "jsBrotli": 3970,
+    "lazyFiles": 271
+  },
+  "element": {
+    "jsMin": 20540,
+    "jsGzip": 7380,
+    "jsBrotli": 5600,
+    "lazyFiles": 271
+  },
+  "react-pennant": {
+    "jsMin": 19420,
+    "jsGzip": 7230,
+    "jsBrotli": 5210,
+    "lazyFiles": 271
+  },
+  "react-svg": {
+    "jsMin": 22930,
+    "jsGzip": 8410,
+    "jsBrotli": 6220,
+    "lazyFiles": 270
+  },
+  "css": {
+    "jsMin": 130,
+    "jsGzip": 130,
+    "jsBrotli": 110,
+    "cssMin": 15560,
+    "cssGzip": 3910,
+    "cssBrotli": 2840,
+    "lazyFiles": 0
+  },
+  "css-default": {
+    "jsMin": 130,
+    "jsGzip": 130,
+    "jsBrotli": 110,
+    "cssMin": 391050,
+    "cssGzip": 54610,
+    "cssBrotli": 45020,
+    "lazyFiles": 0
+  }
+}

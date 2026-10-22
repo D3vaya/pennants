@@ -84,6 +84,7 @@
     "check:package": "publint && attw --pack . --profile esm-only --entrypoints . ./flags/ar ./react ./element ./element/register",
     "size": "size-limit",
     "examples:check": "node scripts/examples-check.ts",
+    "bundle:budget": "node scripts/bundle-budget.ts",
     "verify": "npm run lint && npm run typecheck && npm run build && npm run coverage && npm run check:package && npm run size",
     "prepublishOnly": "npm run verify",
     "docs:api": "typedoc --options docs/typedoc.json && node scripts/docs-api.ts",
