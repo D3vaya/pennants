@@ -19,6 +19,13 @@ describe('generated modules', () => {
     expect(src).toContain('export const isoCodes: readonly PennantCode[] = ["ar"];');
   });
 
+  it('codesModule documents its exports for TypeDoc', () => {
+    const src = codesModule(sources);
+    for (const decl of ['export const codes', 'export type PennantCode', 'export const isoCodes']) {
+      expect(src).toMatch(new RegExp(`\\*/\\n${decl}`));
+    }
+  });
+
   it('namesModule bundles only non-ISO names, escaped', () => {
     const src = namesModule(sources);
     expect(src).toContain('"gb-eng": "England\'s \\"flag\\"",');

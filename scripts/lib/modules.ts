@@ -15,8 +15,14 @@ export function codesModule(sources: readonly FlagSource[]): string {
     .join(', ');
   return (
     BANNER +
-    `export const codes = [${codes}] as const;\n` +
-    `export type PennantCode = (typeof codes)[number];\n` +
+    `/**\n` +
+    ` * Every available flag code, sorted: ISO 3166-1 alpha-2 countries plus\n` +
+    ` * regions and organisations (e.g. \`gb-eng\`, \`es-ct\`, \`eu\`, \`un\`).\n` +
+    ` */\n` +
+    `export const codes = [${codes}] as const;\n\n` +
+    `/** A flag code accepted by every pennants API, e.g. \`'ar'\` or \`'gb-eng'\`. */\n` +
+    `export type PennantCode = (typeof codes)[number];\n\n` +
+    `/** The subset of {@link codes} that are ISO 3166-1 alpha-2 countries. */\n` +
     `export const isoCodes: readonly PennantCode[] = [${iso}];\n`
   );
 }
