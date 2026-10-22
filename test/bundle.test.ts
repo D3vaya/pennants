@@ -101,10 +101,16 @@ const BARRELS = {
   'pennantUrl from pennants': use('pennantUrl', 'index.js'),
 };
 
+/**
+ * Asserts no loader map / art chunks. `fetchPennant` legitimately lazy-loads
+ * exactly one chunk: the SVG sanitizer (only fetched in fetch mode).
+ */
 const noLoader = async (bundle: (source: string) => Promise<Bundle>, source: string) => {
   const { files, code } = await bundle(source);
-  expect(files).toBe(1);
-  expect(code).not.toMatch(/import\(/);
+  const lazy = source.includes('fetchPennant') ? 1 : 0;
+  expect(files).toBe(1 + lazy);
+  expect(code.match(/import\(/g)?.length ?? 0).toBe(lazy);
+  if (lazy) expect(code).toContain('XMLSerializer');
   expect(code).not.toMatch(/\/(flags|art)\//); // loader-map entries look like import("./art/1x1/ar.js")
 };
 
@@ -117,8 +123,9 @@ describe('tree-shaking with rolldown (Vite 8)', () => {
   it('the element keeps the loader map out of the entry chunk (loaded only in bundled mode)', async () => {
     const { files, entry } = await withRolldown(use('definePennantElement', 'element/index.js'));
     expect(files).toBeGreaterThan(200);
-    // Only the lazy imports of the two per-set loader chunks, never the 271-entry maps.
-    expect(entry.match(/import\(/g)?.length ?? 0).toBeLessThanOrEqual(2);
+    // Only the lazy imports of the two per-set loader chunks and the fetch-mode
+    // sanitizer, never the 271-entry maps.
+    expect(entry.match(/import\(/g)?.length ?? 0).toBeLessThanOrEqual(3);
     expect(entry).not.toMatch(/\bgb-eng\b.*import\(/);
   });
 });
@@ -129,12 +136,7 @@ describe.each([
 ])('tree-shaking with %s', (_name, bundle) => {
   it.each(Object.entries(LOADER_FREE))(
     '%s bundles no loader map and no flag chunks',
-    async (_case, source) => {
-      const { files, code } = await bundle(source);
-      expect(files).toBe(1);
-      expect(code).not.toMatch(/import\(/);
-      expect(code).not.toMatch(/\/(flags|art)\//); // loader-map entries look like import("./art/1x1/ar.js")
-    },
+    (_case, source) => noLoader(bundle, source),
   );
 
   it('PennantSvg does not pull the client component', async () => {
