@@ -103,7 +103,8 @@ toShape(userInput); // throws RangeError for anything else
 ```
 
 Components throw a `RangeError` for unknown shapes during render; `<pennant-flag>` fires
-`pennant-error` instead.
+`pennant-error` instead. `pennantUrl` also throws for PNG `scale: 2` on any shape other than
+the pennant, since only pennant PNGs ship at 2x.
 
 ## Sprites for other shapes
 

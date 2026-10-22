@@ -13,7 +13,7 @@ too.
 | SVG sprite `<use href>`                   | 0 JS; one 1.15 MB file (248 kB brotli)                         | Yes                           | No          | No, one file for all | One file, HTTP cache          |
 | Art module `pennants/art/1x1/ar`          | <Size probe="art-pennant" /> for the first flag                | Yes                           | Yes         | No, bundled          | Part of your bundle           |
 | `loadFlag(code)`                          | <Size probe="load" /> (loader maps) + one chunk per flag shown | Client (async)                | Yes         | Yes                  | Chunk files, HTTP cache       |
-| Fetch mode ³                              | <Size probe="fetch" /> + one request per flag shown            | Client (async)                | Yes         | Yes                  | HTTP / CDN cache              |
+| Fetch mode ³                              | <Size probe="fetch" /> + one request per flag shown            | Browser only                  | Yes         | Yes                  | HTTP / CDN cache              |
 | React `<Pennant>`                         | <Size probe="react-pennant" /> + one chunk per flag shown      | Box on server, flag on client | Yes         | Yes                  | Chunk files                   |
 | React `<PennantSvg art={ar}>`             | <Size probe="react-svg" /> including `ar` ²                    | Yes, full markup              | Yes         | No                   | Part of your bundle           |
 | `<pennant-flag>`                          | <Size probe="element" /> + one chunk per flag shown            | Client only                   | Yes         | Yes                  | Chunk files                   |
@@ -26,7 +26,8 @@ Next.js and Angular emit files by default.
 ² In a Next.js Server Component, `<PennantSvg>` adds no client JavaScript: it renders to HTML.
 
 ³ `fetchPennant` from `pennants/fetch`, `<Pennant mode="fetch">`, or `<pennant-flag>` with a
-`base` attribute. Needs `connect-src` for the host in a CSP.
+`base` attribute. Responses are sanitized by a lazy chunk; browser only. Needs `connect-src` for
+the host in a CSP.
 
 ## Quick decisions
 

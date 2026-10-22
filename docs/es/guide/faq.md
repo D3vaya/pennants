@@ -1,17 +1,20 @@
 # Preguntas frecuentes
 
-## IDs duplicados al insertar dos veces la misma bandera {#ids-duplicados}
+## IDs duplicados al insertar una bandera más de una vez {#ids-duplicados}
 
-Cada SVG define ids para su clip path y su degradado (`pn-ar-clip`, `pn-ar-bar`, ...). Los ids
-llevan el código de la bandera, así que banderas distintas nunca chocan, pero insertar **el
-mismo** SVG dos veces genera ids repetidos. Los navegadores suelen dibujarlo igual, hasta que la
-primera copia se oculta con `display: none`: entonces las demás pierden el recorte y el
-degradado.
+Cada SVG define ids para su recorte, su degradado y su dibujo. Los ids llevan la bandera y la
+forma (`pn-ar-clip` para el banderín, `pn-ar-circle-clip` para el círculo), así que banderas
+distintas, o formas distintas de la misma bandera, nunca chocan. Insertar **el mismo** SVG dos
+veces sí genera ids repetidos. Los navegadores suelen dibujarlo igual, hasta que la primera
+copia se oculta con `display: none`: entonces las demás pierden el recorte y el degradado.
 
-- `<Pennant>` y `<PennantSvg>` reescriben los ids en cada instancia (a partir de `useId`).
+- `<Pennant>` y `<PennantSvg>` reescriben los ids en cada instancia
+  (`pn<scope>-<código>[-<forma>]-`, a partir de `useId`), así que varias copias, formas o raíces
+  de React nunca comparten ids.
 - `<pennant-flag>` los mantiene dentro de su shadow root.
-- Si insertas el SVG a mano con `innerHTML` y la bandera puede repetirse, usa
-  `<img src={toDataUri(svg)}>` o uno de los componentes.
+- Si insertas el SVG a mano con `innerHTML`, pasa un prefijo único:
+  `renderFlag(ar, { idPrefix: 'hero' })` o `loadFlag('ar', { shape: 'circle', idPrefix: 'fila-3' })`.
+  Un `<img>` (por ejemplo con `toDataUri`) también aísla los ids.
 
 ## Content Security Policy {#csp}
 
@@ -23,11 +26,20 @@ degradado.
 | Modo fetch                                        | `connect-src` para el dominio de `base` (por defecto `https://cdn.jsdelivr.net`) |
 | SVG inline, React, Web Component, personalización | nada extra: funciona con `style-src 'self'`                                      |
 
-Ningún formato necesita `'unsafe-inline'`. El SVG inline no usa estilos inline: los colores de
-la barra son atributos de presentación y la personalización es una regla de
-`pennants/css/theme.css`. `<pennant-flag>` aplica sus estilos con una hoja de estilos
-construible (`adoptedStyleSheets`), que la CSP no restringe; solo en navegadores sin esa API
-recurre a un elemento `<style>`.
+Ningún formato necesita `'unsafe-inline'`:
+
+- El SVG de la bandera no tiene atributos `style`: los colores de la barra son atributos de
+  presentación y la personalización es una regla de `pennants/css/theme.css`.
+- En React, los modos inline y fetch y `<PennantSvg>` generan un `<span role="img">` con un
+  `<svg width height viewBox>` adentro, dimensionado con atributos, así que tampoco necesitan
+  hoja de estilos.
+- `<pennant-flag>` aplica sus estilos con una hoja de estilos construible
+  (`adoptedStyleSheets`), que la CSP no restringe. Solo los navegadores sin esa API recurren a un
+  elemento `<style>`.
+
+Dos casos todavía generan un atributo `style`, que una `style-src` estricta bloquea:
+`<Pennant mode="img">` con un `size` en unidades CSS (usa un número) y cualquier prop `style`
+que pases tú.
 
 ## SSR e hidratación {#ssr-e-hidratacion}
 
@@ -35,11 +47,14 @@ recurre a un elemento `<style>`.
   en el servidor; `<Pennant>` vive en un módulo `'use client'` y pasa a ser una referencia de
   cliente. `pennants/react/static` exporta solo `<PennantSvg>`, para bundlers que de otro modo
   emitirían igual los chunks diferidos.
-- `<Pennant>` (modo inline) renderiza en el servidor un `<span>` vacío del tamaño correcto y
+- `<Pennant>` (modo inline) renderiza en el servidor un `<svg>` vacío del tamaño correcto y
   carga la bandera después de hidratar. No hay error de hidratación ni salto de layout, pero la
   bandera no está en el HTML.
 - Para que la bandera esté en el HTML del servidor, usa `mode="img"` o
   `<PennantSvg art={ar} />` con un import estático.
+- `fetchPennant` y el modo fetch funcionan solo en el navegador: necesitan `DOMParser` para
+  sanear la respuesta, así que en el servidor `fetchPennant` rechaza la promesa. Allí usa
+  `renderFlag` con un dibujo estático, `loadFlag` o `<PennantSvg art>`.
 - `pennants/element` se puede importar en el servidor: `definePennantElement` no hace nada donde
   no existe `customElements`. El elemento se dibuja cuando se define en el navegador.
 - `getPennantName` usa `Intl.DisplayNames`. El servidor y el navegador pueden traer versiones

@@ -1,16 +1,19 @@
 # FAQ & troubleshooting
 
-## Duplicate ids when inlining the same flag twice
+## Duplicate ids when inlining a flag more than once
 
-Each SVG defines ids for its clip path and gradient (`pn-ar-clip`, `pn-ar-bar`, ...). The ids
-are namespaced per flag, so different flags never clash, but inserting the **same** markup twice
-yields duplicate ids. Browsers usually still render it, until the first copy is hidden with
-`display: none`: the other copies then lose their clip path and gradient.
+Each SVG defines ids for its clip path, gradient and artwork. They are namespaced per flag and
+per shape (`pn-ar-clip` for the pennant, `pn-ar-circle-clip` for the circle), so different
+flags and different shapes of the same flag never clash. Inserting the **same** markup twice
+still yields duplicate ids. Browsers usually render it anyway, until the first copy is hidden
+with `display: none`: the other copies then lose their clip path and gradient.
 
-- `<Pennant>` and `<PennantSvg>` rewrite the ids per instance (based on `useId`).
+- `<Pennant>` and `<PennantSvg>` rewrite the ids per instance (`pn<scope>-<code>[-<shape>]-`,
+  from `useId`), so several copies, shapes or React roots never share ids.
 - `<pennant-flag>` keeps them inside its shadow root.
-- For manual `innerHTML`, prefer `<img src={toDataUri(svg)}>` or one of the components when a
-  flag can appear more than once.
+- For manual `innerHTML`, pass a unique prefix: `renderFlag(ar, { idPrefix: 'hero' })` or
+  `loadFlag('ar', { shape: 'circle', idPrefix: 'row-3' })`. An `<img>` (for example with
+  `toDataUri`) also isolates the ids.
 
 ## Content Security Policy
 
@@ -22,10 +25,18 @@ yields duplicate ids. Browsers usually still render it, until the first copy is 
 | Fetch mode                                | `connect-src` for the `base` host (default `https://cdn.jsdelivr.net`) |
 | Inline SVG, React, Web Component, theming | nothing extra: works with `style-src 'self'`                           |
 
-No format needs `'unsafe-inline'`. Inline SVG uses no inline styles: the bar colors are
-presentation attributes and theming is a rule in `pennants/css/theme.css`. `<pennant-flag>`
-styles its shadow root with a constructable stylesheet (`adoptedStyleSheets`), which CSP does
-not restrict; only in browsers without that API does it fall back to a `<style>` element.
+No format needs `'unsafe-inline'`:
+
+- The flag SVG has no `style` attributes: the bar colors are presentation attributes and
+  theming is a rule in `pennants/css/theme.css`.
+- React inline, fetch and `<PennantSvg>` output is a `<span role="img">` around an
+  `<svg width height viewBox>`, sized with attributes, so it needs no stylesheet either.
+- `<pennant-flag>` styles its shadow root with a constructable stylesheet
+  (`adoptedStyleSheets`), which CSP does not restrict. Only browsers without that API fall back
+  to a `<style>` element.
+
+Two cases still produce a `style` attribute, which a strict `style-src` blocks: `<Pennant
+mode="img">` with a CSS-length `size` (use a number), and any `style` prop you pass yourself.
 
 ## SSR and hydration
 
@@ -33,10 +44,13 @@ not restrict; only in browsers without that API does it fall back to a `<style>`
   server; `<Pennant>` lives in a `'use client'` module and becomes a client reference.
   `pennants/react/static` exports only `<PennantSvg>`, for bundlers that would otherwise emit
   the lazy chunks anyway.
-- `<Pennant>` (inline mode) renders a correctly sized empty `<span>` on the server and loads the
+- `<Pennant>` (inline mode) renders a correctly sized empty `<svg>` on the server and loads the
   flag after hydration. No hydration mismatch, no layout shift, but no flag in the HTML.
 - For flags in the server HTML, use `mode="img"`, or `<PennantSvg art={ar} />` with a static
   import.
+- `fetchPennant` and fetch mode run in the browser only: they need `DOMParser` to sanitize the
+  response, so on the server `fetchPennant` rejects. Use `renderFlag` with static art,
+  `loadFlag`, or `<PennantSvg art>` there.
 - `pennants/element` can be imported on the server: `definePennantElement` does nothing where
   `customElements` does not exist. The element renders after it is defined in the browser.
 - `getPennantName` uses `Intl.DisplayNames`. Server and browser can ship different CLDR

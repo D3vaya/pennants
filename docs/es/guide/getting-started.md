@@ -126,7 +126,12 @@ const svg = await fetchPennant('ar'); // o fetchPennant('ar', { base: '/assets/p
 
 El mismo modo existe en los componentes: `<Pennant code="ar" mode="fetch" />` y
 `<pennant-flag code="ar" base="https://cdn.jsdelivr.net/npm/pennants@0.1.0">`. Las respuestas
-se guardan en caché por URL y deben ser un documento `<svg>` sin scripts.
+se guardan en caché por URL y se sanean antes de usarse: se analizan con `DOMParser` y se
+rechazan salvo que sean un único SVG hecho solo de elementos y atributos permitidos, con
+referencias `#id` locales; después se vuelven a serializar. Nunca se permiten scripts,
+manejadores de eventos, `style`, `foreignObject`, animaciones, enlaces, imágenes, `embed`,
+`title` ni `desc`. El saneador es un chunk diferido que se descarga solo en modo fetch. El modo
+fetch funciona solo en el navegador; en el servidor usa `loadFlag` o `renderFlag`.
 
 ### React
 

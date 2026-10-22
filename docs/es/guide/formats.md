@@ -13,7 +13,7 @@ están también min y brotli.
 | Sprite SVG `<use href>`                  | 0 de JS; un archivo de 1,15 MB (248 kB con brotli)                     | Sí                                         | No                | No, un archivo para todas | Un archivo, caché HTTP             |
 | Módulo de dibujo `pennants/art/1x1/ar`   | <Size probe="art-pennant" /> la primera bandera                        | Sí                                         | Sí                | No, va en el bundle       | Parte de tu bundle                 |
 | `loadFlag(código)`                       | <Size probe="load" /> (mapas de carga) + un chunk por bandera mostrada | Cliente (asíncrono)                        | Sí                | Sí                        | Chunks, caché HTTP                 |
-| Modo fetch ³                             | <Size probe="fetch" /> + una petición por bandera mostrada             | Cliente (asíncrono)                        | Sí                | Sí                        | Caché HTTP / CDN                   |
+| Modo fetch ³                             | <Size probe="fetch" /> + una petición por bandera mostrada             | Solo navegador                             | Sí                | Sí                        | Caché HTTP / CDN                   |
 | React `<Pennant>`                        | <Size probe="react-pennant" /> + un chunk por bandera mostrada         | Caja en el servidor, bandera en el cliente | Sí                | Sí                        | Chunks                             |
 | React `<PennantSvg art={ar}>`            | <Size probe="react-svg" /> con `ar` incluida ²                         | Sí, con el SVG completo                    | Sí                | No                        | Parte de tu bundle                 |
 | `<pennant-flag>`                         | <Size probe="element" /> + un chunk por bandera mostrada               | Solo cliente                               | Sí                | Sí                        | Chunks                             |
@@ -29,7 +29,8 @@ defecto.
 renderiza a HTML.
 
 ³ `fetchPennant` de `pennants/fetch`, `<Pennant mode="fetch">` o `<pennant-flag>` con el
-atributo `base`. Con CSP, necesita `connect-src` para ese dominio.
+atributo `base`. Las respuestas se sanean con un chunk diferido; solo en el navegador. Con CSP,
+necesita `connect-src` para ese dominio.
 
 ## Decisiones rápidas
 

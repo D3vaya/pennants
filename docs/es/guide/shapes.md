@@ -106,7 +106,8 @@ toShape(entradaDelUsuario); // lanza RangeError con cualquier otro valor
 ```
 
 Los componentes lanzan `RangeError` al renderizar con una forma desconocida; `<pennant-flag>`
-dispara `pennant-error` en su lugar.
+dispara `pennant-error` en su lugar. `pennantUrl` también lanza un error con PNG `scale: 2` en
+cualquier forma que no sea el banderín, porque solo los PNG de banderín vienen en 2x.
 
 ## Sprites de otras formas {#sprites-de-otras-formas}
 
