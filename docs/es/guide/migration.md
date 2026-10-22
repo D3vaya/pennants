@@ -8,22 +8,21 @@ formas `rect` y `square`, o pasarte al banderín.
 
 ## Mantener rectángulos
 
-| flag-icons                                   | pennants                                                |
-| -------------------------------------------- | ------------------------------------------------------- |
-| `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css/rect'`                            |
-| `fi fi-ar` (4:3)                             | `pn pn-ar` con `pennants/css/rect`                      |
-| `fi fi-ar fis` (1:1)                         | `pn pn-ar` con `pennants/css/square`                    |
-| `fib fi-ar` (solo fondo)                     | `pn pn-ar` (`.pn` ya aplica `background-size: contain`) |
-| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/rect/ar.svg`                              |
-| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/square/ar.svg`                            |
+| flag-icons                                   | pennants                                                             |
+| -------------------------------------------- | -------------------------------------------------------------------- |
+| `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css/rect'`                                         |
+| `fi fi-ar` (4:3)                             | `pn-rect pn-ar` con `pennants/css/rect`                              |
+| `fi fi-ar fis` (1:1)                         | `pn-square pn-ar` con `pennants/css/square`                          |
+| `fib fi-ar` (solo fondo)                     | `pn-rect pn-ar` (todas las bases aplican `background-size: contain`) |
+| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/rect/ar.svg`                                           |
+| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/square/ar.svg`                                         |
 
-En `pennants/css/rect`, `.pn` mide `1em` de alto y `1.333em` de ancho, la misma caja que `.fi`
+`.pn-rect` mide `1em` de alto y `1.333em` de ancho, la misma caja que `.fi`
 de flag-icons, así que la maquetación conserva sus espacios. Las formas rect y square agregan un
 borde fino oscurecido y esquinas redondeadas de 2 px.
 
-Cada hoja de estilos sirve una sola forma: si una página usaba `fi` y `fi fis` a la vez,
-necesitas una misma forma para ambas o los componentes para una de ellas
-(`<Pennant shape="square">`).
+Si una página usaba `fi` y `fi fis` a la vez, carga las dos hojas de estilos
+(`pennants/css/rect` y `pennants/css/square`): sus clases base se combinan.
 
 ## Pasarte al banderín
 
@@ -47,11 +46,13 @@ Para migrar de 4:3 a `rect`, el cambio de clases es mecánico:
 
 ```sh
 # Revisa el diff antes de hacer commit.
-grep -rlE '\bfi fi-' src | xargs sed -i.bak -E 's/\bfi fi-([a-z-]+)/pn pn-\1/g'
+grep -rlE '\bfi fi-' src | xargs sed -i.bak -E \
+  -e 's/fi fi-([a-z-]+) fis/pn-square pn-\1/g' \
+  -e 's/fi fi-([a-z-]+)/pn-rect pn-\1/g'
 ```
 
-Después cambia el import de la hoja de estilos y resuelve las clases `fis` como se explica
-arriba.
+Después cambia el import de la hoja de estilos por `pennants/css/rect` (y `pennants/css/square`
+si tenías clases `fis`).
 
 ## Qué ganas
 

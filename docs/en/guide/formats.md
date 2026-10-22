@@ -5,18 +5,18 @@ you can change. Costs are what each option adds to an empty Vite production buil
 read from the bundle-budget snapshot; [Performance & weight](./performance) has min and brotli
 too.
 
-| Format                           | Added to your app (gzip)                                       | SSR                           | Bar theming | Lazy                 | Caching                       |
-| -------------------------------- | -------------------------------------------------------------- | ----------------------------- | ----------- | -------------------- | ----------------------------- |
-| CSS classes `pn pn-ar`           | 0 JS, <Size probe="css" part="css" /> CSS ¹                    | Yes                           | No          | Yes, per used class  | One file per flag, HTTP cache |
-| `<img>` SVG (self-hosted or CDN) | 0                                                              | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
-| `<img>` PNG 1x / 2x              | 0                                                              | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
-| SVG sprite `<use href>`          | 0 JS; one 1.15 MB file (248 kB brotli)                         | Yes                           | No          | No, one file for all | One file, HTTP cache          |
-| Art module `pennants/art/1x1/ar` | <Size probe="art-pennant" /> for the first flag                | Yes                           | Yes         | No, bundled          | Part of your bundle           |
-| `loadFlag(code)`                 | <Size probe="load" /> (loader maps) + one chunk per flag shown | Client (async)                | Yes         | Yes                  | Chunk files, HTTP cache       |
-| Fetch mode ³                     | <Size probe="fetch" /> + one request per flag shown            | Client (async)                | Yes         | Yes                  | HTTP / CDN cache              |
-| React `<Pennant>`                | <Size probe="react-pennant" /> + one chunk per flag shown      | Box on server, flag on client | Yes         | Yes                  | Chunk files                   |
-| React `<PennantSvg art={ar}>`    | <Size probe="react-svg" /> including `ar` ²                    | Yes, full markup              | Yes         | No                   | Part of your bundle           |
-| `<pennant-flag>`                 | <Size probe="element" /> + one chunk per flag shown            | Client only                   | Yes         | Yes                  | Chunk files                   |
+| Format                                    | Added to your app (gzip)                                       | SSR                           | Bar theming | Lazy                 | Caching                       |
+| ----------------------------------------- | -------------------------------------------------------------- | ----------------------------- | ----------- | -------------------- | ----------------------------- |
+| CSS classes `pn pn-ar`, `pn-circle pn-ar` | 0 JS, <Size probe="css" part="css" /> CSS ¹                    | Yes                           | No          | Yes, per used class  | One file per flag, HTTP cache |
+| `<img>` SVG (self-hosted or CDN)          | 0                                                              | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
+| `<img>` PNG 1x / 2x                       | 0                                                              | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
+| SVG sprite `<use href>`                   | 0 JS; one 1.15 MB file (248 kB brotli)                         | Yes                           | No          | No, one file for all | One file, HTTP cache          |
+| Art module `pennants/art/1x1/ar`          | <Size probe="art-pennant" /> for the first flag                | Yes                           | Yes         | No, bundled          | Part of your bundle           |
+| `loadFlag(code)`                          | <Size probe="load" /> (loader maps) + one chunk per flag shown | Client (async)                | Yes         | Yes                  | Chunk files, HTTP cache       |
+| Fetch mode ³                              | <Size probe="fetch" /> + one request per flag shown            | Client (async)                | Yes         | Yes                  | HTTP / CDN cache              |
+| React `<Pennant>`                         | <Size probe="react-pennant" /> + one chunk per flag shown      | Box on server, flag on client | Yes         | Yes                  | Chunk files                   |
+| React `<PennantSvg art={ar}>`             | <Size probe="react-svg" /> including `ar` ²                    | Yes, full markup              | Yes         | No                   | Part of your bundle           |
+| `<pennant-flag>`                          | <Size probe="element" /> + one chunk per flag shown            | Client only                   | Yes         | Yes                  | Chunk files                   |
 
 ¹ With `assetsInlineLimit` set as in the [FAQ](./faq#bundler-asset-imports), or
 <Size probe="css-cdn" part="css" /> with `pennants/css/cdn` (flags from jsDelivr). Without

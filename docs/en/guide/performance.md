@@ -19,7 +19,7 @@ artwork set, plus the loader maps.
 
 ### Stylesheets
 
-<SizeTable :probes="['css', 'css-cdn', 'css-rect', 'css-rect-cdn', 'css-square', 'css-circle', 'css-default']" />
+<SizeTable :probes="['css', 'css-cdn', 'css-rect', 'css-rect-cdn', 'css-square', 'css-circle', 'css-mixed', 'css-default']" />
 
 Each stylesheet also adds 27 bytes of entry JS. See
 [FAQ: bundler asset imports](./faq#bundler-asset-imports) for `assetsInlineLimit`; Next.js and
@@ -51,7 +51,7 @@ PNG files average 0.9 kB (pennant 1x), 1.6 kB (pennant 2x) and 0.6–1.0 kB (oth
 only). Country names cost nothing: ISO names come from the runtime's `Intl.DisplayNames`; only
 the 22 non-ISO names (`gb-eng`, `asean`, ...) are bundled.
 
-The npm tarball is 2.80 MB (9.26 MB unpacked) because it contains four shapes in every format.
+The npm tarball is 2.80 MB (9.29 MB unpacked) because it contains four shapes in every format.
 What reaches your users depends only on what you import.
 
 ## How lazy chunks work

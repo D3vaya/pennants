@@ -20,7 +20,7 @@ bandera y conjunto de dibujos, más los mapas de carga.
 
 ### Hojas de estilos
 
-<SizeTable :probes="['css', 'css-cdn', 'css-rect', 'css-rect-cdn', 'css-square', 'css-circle', 'css-default']" />
+<SizeTable :probes="['css', 'css-cdn', 'css-rect', 'css-rect-cdn', 'css-square', 'css-circle', 'css-mixed', 'css-default']" />
 
 Cada hoja de estilos agrega además 27 bytes de JS de entrada. Mira
 [Preguntas frecuentes: imports de assets](./faq#imports-de-assets-en-el-bundler) para
@@ -54,7 +54,7 @@ Los PNG pesan en promedio 0,9 kB (banderín 1x), 1,6 kB (banderín 2x) y 0,6–1
 solo 1x). Los nombres de los países no pesan nada: los nombres ISO salen de `Intl.DisplayNames`
 del propio entorno; solo se incluyen los 22 nombres que no son ISO (`gb-eng`, `asean`, ...).
 
-El paquete de npm ocupa 2,80 MB (9,26 MB descomprimido) porque trae cuatro formas en todos los
+El paquete de npm ocupa 2,80 MB (9,29 MB descomprimido) porque trae cuatro formas en todos los
 formatos. Lo que llega a tus usuarios depende solo de lo que importes.
 
 ## Cómo funcionan los chunks diferidos

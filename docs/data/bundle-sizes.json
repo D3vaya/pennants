@@ -1,6 +1,6 @@
 {
   "vite": "8.3.5",
-  "generated": "2026-10-22T21:31:11.991Z",
+  "generated": "2026-10-22T21:36:54.172Z",
   "probes": {
     "empty": {
       "label": "Empty app (baseline)",
@@ -198,9 +198,9 @@
         "brotli": 10
       },
       "css": {
-        "min": 14918,
-        "gzip": 3767,
-        "brotli": 2762
+        "min": 15731,
+        "gzip": 3792,
+        "brotli": 2790
       },
       "lazyFiles": 0
     },
@@ -213,9 +213,9 @@
         "brotli": 10
       },
       "css": {
-        "min": 25487,
-        "gzip": 1945,
-        "brotli": 1158
+        "min": 26300,
+        "gzip": 1971,
+        "brotli": 1189
       },
       "lazyFiles": 0
     },
@@ -228,9 +228,9 @@
         "brotli": 10
       },
       "css": {
-        "min": 14811,
-        "gzip": 3719,
-        "brotli": 2709
+        "min": 16984,
+        "gzip": 3779,
+        "brotli": 2747
       },
       "lazyFiles": 0
     },
@@ -243,9 +243,9 @@
         "brotli": 10
       },
       "css": {
-        "min": 24567,
-        "gzip": 1874,
-        "brotli": 1084
+        "min": 26740,
+        "gzip": 1929,
+        "brotli": 1100
       },
       "lazyFiles": 0
     },
@@ -258,9 +258,9 @@
         "brotli": 10
       },
       "css": {
-        "min": 14805,
-        "gzip": 3697,
-        "brotli": 2714
+        "min": 17522,
+        "gzip": 3773,
+        "brotli": 2756
       },
       "lazyFiles": 0
     },
@@ -273,9 +273,9 @@
         "brotli": 10
       },
       "css": {
-        "min": 25103,
-        "gzip": 1879,
-        "brotli": 1071
+        "min": 27820,
+        "gzip": 1935,
+        "brotli": 1116
       },
       "lazyFiles": 0
     },
@@ -288,9 +288,9 @@
         "brotli": 10
       },
       "css": {
-        "min": 14805,
-        "gzip": 3714,
-        "brotli": 2726
+        "min": 17522,
+        "gzip": 3786,
+        "brotli": 2760
       },
       "lazyFiles": 0
     },
@@ -303,9 +303,24 @@
         "brotli": 10
       },
       "css": {
-        "min": 25103,
-        "gzip": 1879,
-        "brotli": 1086
+        "min": 27820,
+        "gzip": 1934,
+        "brotli": 1131
+      },
+      "lazyFiles": 0
+    },
+    "css-mixed": {
+      "label": "CSS `pennants/css` + `pennants/css/circle` on one page, `assetsInlineLimit` set",
+      "baseline": "empty",
+      "entry": {
+        "min": 64,
+        "gzip": 31,
+        "brotli": 16
+      },
+      "css": {
+        "min": 33075,
+        "gzip": 6865,
+        "brotli": 5330
       },
       "lazyFiles": 0
     },
@@ -318,9 +333,9 @@
         "brotli": 10
       },
       "css": {
-        "min": 375394,
-        "gzip": 53021,
-        "brotli": 43822
+        "min": 376207,
+        "gzip": 53042,
+        "brotli": 43825
       },
       "lazyFiles": 0
     }

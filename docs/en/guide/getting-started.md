@@ -49,15 +49,18 @@ No JavaScript. In a Vite build the stylesheet adds <Size probe="css" part="css" 
 each flag image is fetched only when an element uses its class.
 
 ```js
-import 'pennants/css'; // or 'pennants/css/rect', 'pennants/css/square', 'pennants/css/circle'
+import 'pennants/css'; // pennant: class pn
+import 'pennants/css/circle'; // optional, any other shape: class pn-circle (or pn-rect, pn-square)
 ```
 
 ```html
 <span class="pn pn-ar" role="img" aria-label="Argentina"></span>
 <span class="pn pn-jp pn-2x" aria-hidden="true"></span>
+<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
 ```
 
-`.pn` is `1em` high, so it follows `font-size`. Helpers: `.pn-lg`, `.pn-2x`, `.pn-3x`, `.pn-4x`.
+Each base class (`pn`, `pn-rect`, `pn-square`, `pn-circle`) is `1em` high, so it follows
+`font-size`. Helpers: `.pn-lg`, `.pn-2x`, `.pn-3x`, `.pn-4x`. Use one base class per element.
 
 ::: warning Vite, SvelteKit and Astro
 By default Vite inlines every flag under 4 KiB into your CSS as a data URI, which grows the

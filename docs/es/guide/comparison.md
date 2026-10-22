@@ -20,9 +20,9 @@ npm run build && node scripts/docs-compare.ts
 | Banderas                                                      | 271                                                                        | 271                             | 265                          |
 | Todos los SVG, sin comprimir / gzip / brotli                  | banderín: 1,16 MB / 416 kB / 362 kB<br>rect: 1,10 MB / 383 kB / 335 kB     | 1,93 MB / 647 kB / 561 kB (4x3) | 178 kB / 89 kB / 81 kB (3x2) |
 | SVG mediano, brotli                                           | banderín: 525 B, rect: 430 B                                               | 356 B (4x3)                     | 253 B (3x2)                  |
-| CSS completo, sin comprimir / gzip / brotli                   | banderín: 14,4 kB / 1,8 kB / 1,0 kB ¹<br>rect: 13,5 kB / 1,8 kB / 0,9 kB ¹ | 28,0 kB / 2,4 kB / 1,5 kB ¹     | 201 kB / 48 kB / 40 kB ²     |
+| CSS completo, sin comprimir / gzip / brotli                   | banderín: 15,2 kB / 1,8 kB / 1,0 kB ¹<br>rect: 15,6 kB / 1,8 kB / 1,0 kB ¹ | 28,0 kB / 2,4 kB / 1,5 kB ¹     | 201 kB / 48 kB / 40 kB ²     |
 | Un módulo JS de bandera (`ar`), sin comprimir / gzip / brotli | 2,6 kB / 0,8 kB / 0,7 kB (dibujo, cualquier forma)                         | —                               | 0,3 kB / 0,2 kB / 0,2 kB     |
-| Paquete de npm, comprimido / descomprimido                    | 2,80 MB / 9,26 MB                                                          | 1,08 MB / 3,99 MB               | 1,12 MB / 5,79 MB            |
+| Paquete de npm, comprimido / descomprimido                    | 2,80 MB / 9,29 MB                                                          | 1,08 MB / 3,99 MB               | 1,12 MB / 5,79 MB            |
 
 ¹ Referencia un archivo SVG por bandera; las imágenes se cargan solo cuando se usa la clase.
 ² Incluye todas las banderas como data URI.

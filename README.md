@@ -81,8 +81,9 @@ import { Pennant } from 'pennants/react';
 <pennant-flag code="ar" size="32"></pennant-flag>
 ```
 
-**Shapes**: `pennant` (default), `rect` (4:3), `square`, `circle`. Pass `shape` to any API, or
-import `pennants/css/rect` (`square`, `circle`) for CSS classes.
+**Shapes**: `pennant` (default), `rect` (4:3), `square`, `circle`. Pass `shape` to any API. For
+CSS, import `pennants/css/circle` (or `rect`, `square`) and use `pn-circle pn-ar`; stylesheets
+combine on one page.
 
 Also: `pennants/svg/<shape>/<code>.svg`, `pennants/png/<shape>/1x/<code>.png` (plus `2x` for
 the pennant) and `pennants/sprite` (pennant, `<use href="pennant.svg#pn-ar">`).
@@ -98,7 +99,7 @@ Generated from `npm run bundle:budget`; see the docs for min and brotli.
 | ----------------------------------------------- | -------------- | ------------ |
 | `<img>` / CDN, PNG                              | 0              | 0            |
 | CSS classes, `assetsInlineLimit` set ¹          | 3.8 kB CSS     | 0            |
-| CSS classes, `pennants/css/cdn` ²               | 1.9 kB CSS     | 0            |
+| CSS classes, `pennants/css/cdn` ²               | 2.0 kB CSS     | 0            |
 | One flag, static import (`pennants/art/1x1/ar`) | 1.7 kB JS      | 0            |
 | `getPennantName`                                | 1.0 kB JS      | 0            |
 | `fetchPennant` (`pennants/fetch`)               | 1.2 kB JS      | 0            |
@@ -120,7 +121,8 @@ and the [comparison with flag-icons and country-flag-icons](https://d3vaya.githu
 ## Compared with flag-icons
 
 The artwork is [flag-icons](https://github.com/lipis/flag-icons)' and the codes are the same:
-`fi fi-ar` becomes `pn pn-ar`, with `pennants/css/rect` if you want to keep 4:3 rectangles.
+`fi fi-ar` becomes `pn pn-ar`, or `pn-rect pn-ar` with `pennants/css/rect` to keep 4:3
+rectangles.
 
 |                                 | flag-icons            | pennants                               |
 | ------------------------------- | --------------------- | -------------------------------------- |

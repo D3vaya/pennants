@@ -8,21 +8,21 @@ codes and the flag designs are the same. You can keep the rectangular look with 
 
 ## Keep rectangles
 
-| flag-icons                                   | pennants                                           |
-| -------------------------------------------- | -------------------------------------------------- |
-| `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css/rect'`                       |
-| `fi fi-ar` (4:3)                             | `pn pn-ar` with `pennants/css/rect`                |
-| `fi fi-ar fis` (1:1)                         | `pn pn-ar` with `pennants/css/square`              |
-| `fib fi-ar` (background only)                | `pn pn-ar` (`.pn` sets `background-size: contain`) |
-| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/rect/ar.svg`                         |
-| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/square/ar.svg`                       |
+| flag-icons                                   | pennants                                                     |
+| -------------------------------------------- | ------------------------------------------------------------ |
+| `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css/rect'`                                 |
+| `fi fi-ar` (4:3)                             | `pn-rect pn-ar` with `pennants/css/rect`                     |
+| `fi fi-ar fis` (1:1)                         | `pn-square pn-ar` with `pennants/css/square`                 |
+| `fib fi-ar` (background only)                | `pn-rect pn-ar` (every base sets `background-size: contain`) |
+| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/rect/ar.svg`                                   |
+| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/square/ar.svg`                                 |
 
-`.pn` in `pennants/css/rect` is `1em` high and `1.333em` wide, the same box as flag-icons'
+`.pn-rect` is `1em` high and `1.333em` wide, the same box as flag-icons'
 `.fi`, so layouts keep their spacing. The rect and square shapes add a thin darkening border and
 2 px rounded corners.
 
-Each stylesheet serves one shape, so a page that used both `fi` and `fi fis` needs either one
-shape for both, or the components for one of them (`<Pennant shape="square">`).
+If a page used both `fi` and `fi fis`, load both stylesheets (`pennants/css/rect` and
+`pennants/css/square`): their base classes compose.
 
 ## Switch to pennants
 
@@ -45,10 +45,13 @@ For a 4:3 to `rect` migration, the class change is mechanical:
 
 ```sh
 # Review the diff before committing.
-grep -rlE '\bfi fi-' src | xargs sed -i.bak -E 's/\bfi fi-([a-z-]+)/pn pn-\1/g'
+grep -rlE '\bfi fi-' src | xargs sed -i.bak -E \
+  -e 's/fi fi-([a-z-]+) fis/pn-square pn-\1/g' \
+  -e 's/fi fi-([a-z-]+)/pn-rect pn-\1/g'
 ```
 
-Then replace the stylesheet import, and handle any `fis` classes as described above.
+Then replace the stylesheet import with `pennants/css/rect` (and `pennants/css/square` if you
+had `fis` classes).
 
 ## What you gain
 

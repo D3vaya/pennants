@@ -158,7 +158,11 @@ export default defineConfig({
   sitemap: { hostname: 'https://d3vaya.github.io/pennants/' },
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}svg/pennant/ar.svg` }],
-    ['link', { rel: 'stylesheet', href: `${base}css/pennant.min.css` }],
+    // All four stylesheets: base classes (pn, pn-rect, pn-square, pn-circle) compose on one page.
+    ...['pennant', 'rect', 'square', 'circle'].map((shape): [string, Record<string, string>] => [
+      'link',
+      { rel: 'stylesheet', href: `${base}css/${shape}.min.css` },
+    ]),
     ['meta', { name: 'theme-color', content: '#8e713f' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:image', content: `https://d3vaya.github.io${base}preview.png` }],

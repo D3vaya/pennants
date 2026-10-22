@@ -9,6 +9,7 @@ import {
   flagAsset,
   type FormatId,
   shapeBox,
+  shapeClass,
   siteName,
   snippets,
   useLang,
@@ -23,7 +24,7 @@ const markup = ref('');
 // No size figures here: they live on the Performance page, read from the budget snapshot.
 const notes: Record<'en' | 'es', Record<FormatId, string>> = {
   en: {
-    css: 'One stylesheet per shape, no JavaScript; each image loads only when its class is used. With Vite, use the cdn variant or set assetsInlineLimit (see FAQ).',
+    css: 'One stylesheet per shape, combinable on one page, no JavaScript; each image loads only when its class is used. With Vite, use the cdn variant or set assetsInlineLimit (see FAQ).',
     img: 'Zero bundle cost. Cached by the browser and the CDN.',
     png: 'For email, native apps and places without SVG support. 2x files exist for the pennant only.',
     sprite: 'One file with every flag in one shape: worth it only when you show many at once.',
@@ -35,7 +36,7 @@ const notes: Record<'en' | 'es', Record<FormatId, string>> = {
     element: 'Framework-free custom element with lazy loading or fetch mode; CSP-safe.',
   },
   es: {
-    css: 'Una hoja de estilos por forma, sin JavaScript; cada imagen se descarga solo cuando se usa su clase. Con Vite, usa la variante cdn o configura assetsInlineLimit (ver FAQ).',
+    css: 'Una hoja de estilos por forma, combinables en una misma página, sin JavaScript; cada imagen se descarga solo cuando se usa su clase. Con Vite, usa la variante cdn o configura assetsInlineLimit (ver FAQ).',
     img: 'Cero impacto en el bundle. La caché del navegador y del CDN hace el resto.',
     png: 'Para email, apps nativas y lugares sin soporte de SVG. Los archivos 2x existen solo para el banderín.',
     sprite:
@@ -99,16 +100,10 @@ watch(
         role="img"
         :style="{ '--w': `${box.width}px`, '--h': `${box.height}px` }"
       >
-        <!-- The site loads only the pennant stylesheet; other shapes show the same file as a background. -->
         <span
-          v-if="format === 'css' && currentShape === 'pennant'"
-          :class="['pn', `pn-${code}`]"
+          v-if="format === 'css'"
+          :class="[shapeClass(currentShape), `pn-${code}`]"
           class="big"
-        />
-        <span
-          v-else-if="format === 'css'"
-          class="css-shape"
-          :style="{ backgroundImage: `url(${flagAsset(code, currentShape)})` }"
         />
         <img v-else-if="format === 'img'" :src="flagAsset(code, currentShape)" alt="" />
         <img v-else-if="format === 'png'" :src="asset(pngPath)" alt="" />
@@ -179,14 +174,10 @@ watch(
 }
 .preview img,
 .preview svg,
-.preview .css-shape,
 .preview .inline :deep(svg) {
   display: block;
   width: var(--w);
   height: var(--h);
-}
-.css-shape {
-  background: center / contain no-repeat;
 }
 .shape-row {
   padding: 8px 8px 0;

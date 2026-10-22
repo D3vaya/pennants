@@ -20,7 +20,7 @@ barra, así que solo el banderín se puede [personalizar](./theming).
 
 | Formato          | Banderín (por defecto)                   | Otras formas                                             |
 | ---------------- | ---------------------------------------- | -------------------------------------------------------- |
-| Clases CSS       | `import 'pennants/css'`                  | `import 'pennants/css/rect'` (`square`, `circle`)        |
+| Clases CSS       | `pennants/css`, clase `pn pn-ar`         | `pennants/css/rect`, clase `pn-rect pn-ar`               |
 | CSS desde el CDN | `import 'pennants/css/cdn'`              | `import 'pennants/css/rect/cdn'`                         |
 | Archivos SVG     | `pennants/svg/pennant/ar.svg`            | `pennants/svg/rect/ar.svg`                               |
 | Archivos PNG     | `png/pennant/1x/` y `png/pennant/2x/`    | `png/rect/1x/` (solo 1x)                                 |
@@ -32,9 +32,28 @@ barra, así que solo el banderín se puede [personalizar](./theming).
 | React            | `<Pennant code="ar" />`                  | `<Pennant code="ar" shape="circle" />`                   |
 | Web Component    | `<pennant-flag code="ar">`               | `<pennant-flag code="ar" shape="rect">`                  |
 
-Las clases CSS son las mismas en todas las hojas de estilos (`.pn .pn-ar`), así que con CSS una
-página usa una sola forma. Para mezclar formas en una misma página, usa los componentes,
-`loadFlag` o los archivos SVG.
+## Clases CSS
+
+La hoja de estilos de cada forma tiene su propia clase base: `pn` (banderín), `pn-rect`,
+`pn-square` y `pn-circle`. La clase de la bandera, `pn-<código>`, es la misma en todas, y sus
+reglas dependen de la clase base, así que puedes cargar varias hojas de estilos y mezclar formas
+en una misma página.
+
+```js
+import 'pennants/css';
+import 'pennants/css/circle';
+```
+
+```html
+<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn-circle pn-jp pn-2x" role="img" aria-label="Japón"></span>
+```
+
+Usa una sola clase base por elemento: `pn pn-circle pn-ar` no tiene un resultado definido. Los
+tamaños auxiliares (`.pn-lg`, `.pn-2x` a `.pn-4x`) funcionan con todas las bases, y cada hoja
+de estilos tiene una variante `/cdn` (`pennants/css/circle/cdn`). Cada hoja de estilos que
+cargues suma su propio peso; mira [Rendimiento](./performance#hojas-de-estilos).
 
 ## Módulos de dibujo
 
@@ -74,8 +93,7 @@ SHAPE_SIZE.rect; // { width: 64, height: 48 }
 pennantBox(32, 'rect'); // { width: '42.667px', height: '32px' }
 ```
 
-En cada hoja de estilos, la clase `.pn` usa `height: 1em` y calcula el ancho con la proporción
-de la forma.
+Cada clase base usa `height: 1em` y calcula el ancho con la proporción de su forma.
 
 ## Validar nombres de forma
 

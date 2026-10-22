@@ -19,7 +19,7 @@ pennant can be [themed](./theming).
 
 | Format         | Pennant (default)                        | Other shapes                                          |
 | -------------- | ---------------------------------------- | ----------------------------------------------------- |
-| CSS classes    | `import 'pennants/css'`                  | `import 'pennants/css/rect'` (`square`, `circle`)     |
+| CSS classes    | `pennants/css`, class `pn pn-ar`         | `pennants/css/rect`, class `pn-rect pn-ar`            |
 | CSS from CDN   | `import 'pennants/css/cdn'`              | `import 'pennants/css/rect/cdn'`                      |
 | SVG files      | `pennants/svg/pennant/ar.svg`            | `pennants/svg/rect/ar.svg`                            |
 | PNG files      | `png/pennant/1x/` and `png/pennant/2x/`  | `png/rect/1x/` (1x only)                              |
@@ -31,8 +31,27 @@ pennant can be [themed](./theming).
 | React          | `<Pennant code="ar" />`                  | `<Pennant code="ar" shape="circle" />`                |
 | Web Component  | `<pennant-flag code="ar">`               | `<pennant-flag code="ar" shape="rect">`               |
 
-The CSS classes are the same in every stylesheet (`.pn .pn-ar`), so a page uses one shape
-through CSS. To mix shapes on one page, use the components, `loadFlag` or the SVG files.
+## CSS classes
+
+Each shape's stylesheet has its own base class: `pn` (pennant), `pn-rect`, `pn-square` and
+`pn-circle`. The flag class `pn-<code>` is the same everywhere, and flag rules are scoped to
+their base, so you can load several stylesheets and mix shapes on one page.
+
+```js
+import 'pennants/css';
+import 'pennants/css/circle';
+```
+
+```html
+<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn-circle pn-jp pn-2x" role="img" aria-label="Japan"></span>
+```
+
+Use exactly one base class per element: `pn pn-circle pn-ar` is undefined. Size helpers
+(`.pn-lg`, `.pn-2x` to `.pn-4x`) work with every base, and every stylesheet has a `/cdn`
+variant (`pennants/css/circle/cdn`). Each stylesheet you load adds its own cost; see
+[Performance](./performance#stylesheets).
 
 ## Artwork modules
 
@@ -71,7 +90,7 @@ SHAPE_SIZE.rect; // { width: 64, height: 48 }
 pennantBox(32, 'rect'); // { width: '42.667px', height: '32px' }
 ```
 
-The `.pn` class sets `height: 1em` and the width from the shape's ratio in each stylesheet.
+Each base class sets `height: 1em` and the width from its shape's ratio.
 
 ## Validating shape names
 

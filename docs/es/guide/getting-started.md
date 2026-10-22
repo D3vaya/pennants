@@ -51,16 +51,19 @@ Sin JavaScript. En una build de Vite la hoja de estilos agrega
 <Size probe="css" part="css" /> con gzip, y cada imagen se descarga solo cuando algún elemento usa su clase.
 
 ```js
-import 'pennants/css'; // o 'pennants/css/rect', 'pennants/css/square', 'pennants/css/circle'
+import 'pennants/css'; // banderín: clase pn
+import 'pennants/css/circle'; // opcional, otra forma: clase pn-circle (o pn-rect, pn-square)
 ```
 
 ```html
 <span class="pn pn-ar" role="img" aria-label="Argentina"></span>
 <span class="pn pn-jp pn-2x" aria-hidden="true"></span>
+<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
 ```
 
-`.pn` mide `1em` de alto, así que sigue al `font-size`. Tamaños auxiliares: `.pn-lg`, `.pn-2x`,
-`.pn-3x` y `.pn-4x`.
+Cada clase base (`pn`, `pn-rect`, `pn-square`, `pn-circle`) mide `1em` de alto, así que sigue
+al `font-size`. Tamaños auxiliares: `.pn-lg`, `.pn-2x`, `.pn-3x` y `.pn-4x`. Usa una sola clase
+base por elemento.
 
 ::: warning Vite, SvelteKit y Astro
 Por defecto, Vite incrusta en tu CSS como data URI cada bandera de menos de 4 KiB, y la hoja de

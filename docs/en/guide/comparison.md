@@ -19,9 +19,9 @@ npm run build && node scripts/docs-compare.ts
 | Flags                                          | 271                                                                       | 271                             | 265                          |
 | All SVGs, raw / gzip / brotli                  | pennant: 1.16 MB / 416 kB / 362 kB<br>rect: 1.10 MB / 383 kB / 335 kB     | 1.93 MB / 647 kB / 561 kB (4x3) | 178 kB / 89 kB / 81 kB (3x2) |
 | Median SVG, brotli                             | pennant: 525 B, rect: 430 B                                               | 356 B (4x3)                     | 253 B (3x2)                  |
-| Full CSS, raw / gzip / brotli                  | pennant: 14.4 kB / 1.8 kB / 1.0 kB ¹<br>rect: 13.5 kB / 1.8 kB / 0.9 kB ¹ | 28.0 kB / 2.4 kB / 1.5 kB ¹     | 201 kB / 48 kB / 40 kB ²     |
+| Full CSS, raw / gzip / brotli                  | pennant: 15.2 kB / 1.8 kB / 1.0 kB ¹<br>rect: 15.6 kB / 1.8 kB / 1.0 kB ¹ | 28.0 kB / 2.4 kB / 1.5 kB ¹     | 201 kB / 48 kB / 40 kB ²     |
 | One flag JS module (`ar`), raw / gzip / brotli | 2.6 kB / 0.8 kB / 0.7 kB (artwork, any shape)                             | —                               | 0.3 kB / 0.2 kB / 0.2 kB     |
-| npm tarball, packed / unpacked                 | 2.80 MB / 9.26 MB                                                         | 1.08 MB / 3.99 MB               | 1.12 MB / 5.79 MB            |
+| npm tarball, packed / unpacked                 | 2.80 MB / 9.29 MB                                                         | 1.08 MB / 3.99 MB               | 1.12 MB / 5.79 MB            |
 
 ¹ References one SVG file per flag; images load only when a class is used.
 ² Contains every flag as a data URI.

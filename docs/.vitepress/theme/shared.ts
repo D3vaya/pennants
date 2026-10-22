@@ -114,6 +114,10 @@ export const shapeLabels: Record<Lang, Record<PennantShape, string>> = {
 /** Shape picked in the gallery, hero and format picker; shared across components. */
 export const currentShape = ref<PennantShape>('pennant');
 
+/** Base CSS class of a shape's stylesheet: `pn` for the pennant, `pn-<shape>` otherwise. */
+export const shapeClass = (shape: PennantShape): string =>
+  shape === 'pennant' ? 'pn' : `pn-${shape}`;
+
 /** Display box for a shape at a given height, in px. */
 export function shapeBox(shape: PennantShape, height: number): { width: number; height: number } {
   const size = SHAPE_SIZE[shape];
@@ -139,6 +143,7 @@ const spanishProbeWords: [RegExp, string][] = [
   [/\(square\)/, '(cuadrado)'],
   [/\(circle\)/, '(círculo)'],
   [/circle \+ rect/, 'círculo + rect'],
+  [/on one page/, 'en una misma página'],
 ];
 
 /** Bundle-budget probe label as HTML: escaped, `code` spans, translated to Spanish. */
@@ -193,7 +198,7 @@ export function snippets(code: string, lang: Lang, shape: PennantShape = 'pennan
       ? `<!-- sprite/${shape}.svg no se publica en npm: genéralo con npm run generate (ver Formas) -->`
       : `<!-- sprite/${shape}.svg is not published to npm: build it with npm run generate (see Shapes) -->`;
   const all: Record<FormatId, string> = {
-    css: `import '${css}';\n\n<span class="pn pn-${code}" role="img" aria-label="${name}"></span>`,
+    css: `import '${css}';\n\n<span class="${shapeClass(shape)} pn-${code}" role="img" aria-label="${name}"></span>`,
     img: `<img src="${pennantUrl(code, { shape })}" width="${width}" height="${height}" alt="${name}" />`,
     png: isPennant
       ? `<img\n  src="${png1}"\n  srcset="${pennantUrl(code, { shape, format: 'png', scale: 2 })} 2x"\n  width="${width}" height="${height}" alt="${name}" />`
