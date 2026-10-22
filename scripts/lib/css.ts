@@ -58,6 +58,29 @@ export function pennantsCss(codes: readonly string[], { svgPath }: CssOptions = 
   );
 }
 
+const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
+
+/**
+ * Version-pinned jsDelivr URL of the `svg/` directory, for
+ * `css/pennants.cdn.min.css`. Absolute URLs are left alone by bundlers
+ * (Vite, SvelteKit, Astro…), which otherwise inline every referenced SVG
+ * under their size limit as a data URI and blow the stylesheet up ~25x.
+ */
+export function cdnSvgPath(version: string): string {
+  if (!VERSION_PATTERN.test(version)) {
+    throw new Error(`Invalid package version "${version}"`);
+  }
+  return `https://cdn.jsdelivr.net/npm/pennants@${version}/svg`;
+}
+
+/**
+ * Declaration for the stylesheet subpaths so `import 'pennants/css'`
+ * type-checks under `noUncheckedSideEffectImports` (default in TS 6).
+ */
+export function cssDeclaration(): string {
+  return '// Side-effect-only stylesheet import; nothing is exported.\nexport {};\n';
+}
+
 /**
  * Tiny minifier for the stylesheet generated above — not a general CSS
  * minifier: it drops non-`/*!` comments, whitespace and the last `;` of each

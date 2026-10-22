@@ -52,6 +52,10 @@
       "types": "./dist/flags/*.d.ts",
       "default": "./dist/flags/*.js"
     },
+    "./fetch": {
+      "types": "./dist/fetch.d.ts",
+      "default": "./dist/fetch.js"
+    },
     "./react": {
       "types": "./dist/react/index.d.ts",
       "default": "./dist/react/index.js"
@@ -64,8 +68,18 @@
       "types": "./dist/element/register.d.ts",
       "default": "./dist/element/register.js"
     },
-    "./css": "./css/pennants.min.css",
-    "./css/*": "./css/*",
+    "./css": {
+      "types": "./css/pennants.d.ts",
+      "default": "./css/pennants.min.css"
+    },
+    "./css/cdn": {
+      "types": "./css/pennants.d.ts",
+      "default": "./css/pennants.cdn.min.css"
+    },
+    "./css/*": {
+      "types": "./css/pennants.d.ts",
+      "default": "./css/*"
+    },
     "./svg/*": "./svg/*",
     "./png/*": "./png/*",
     "./sprite": "./sprite/pennants.svg",

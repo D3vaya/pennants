@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   baseRule,
+  cdnSvgPath,
+  cssDeclaration,
   flagRule,
   minifyCss,
   pennantsCss,
@@ -93,5 +95,31 @@ describe('minifyCss', () => {
     );
     expect(min).toContain('.pn-ar{background-image:url(../svg/ar.svg)}');
     expect(min.split('\n')).toHaveLength(3);
+  });
+});
+
+describe('cdnSvgPath', () => {
+  it('pins the jsDelivr URL to the package version', () => {
+    expect(cdnSvgPath('0.1.0')).toBe('https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg');
+    expect(cdnSvgPath('1.2.3-beta.1')).toBe(
+      'https://cdn.jsdelivr.net/npm/pennants@1.2.3-beta.1/svg',
+    );
+  });
+
+  it.each(['', 'latest', '1.2', '1.2.3)', '../1.2.3'])('rejects %j', (version) => {
+    expect(() => cdnSvgPath(version)).toThrow('Invalid package version');
+  });
+
+  it('produces absolute flag URLs in the CDN stylesheet', () => {
+    const min = minifyCss(pennantsCss(['ar'], { svgPath: cdnSvgPath('0.1.0') }));
+    expect(min).toContain(
+      '.pn-ar{background-image:url(https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/ar.svg)}',
+    );
+  });
+});
+
+describe('cssDeclaration', () => {
+  it('is an empty ES module', () => {
+    expect(cssDeclaration()).toMatch(/^\/\/[^\n]*\nexport \{\};\n$/);
   });
 });
