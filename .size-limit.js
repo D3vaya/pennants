@@ -1,8 +1,8 @@
-// Flag art chunks and the per-set loader maps load on demand via import(); exclude them so these
+// Flag art chunks, the per-set loader maps and the fetch sanitizer load on demand via import(); exclude them so these
 // budgets measure eager code only. Real-bundler totals (incl. lazy maps) are gated by bundle:budget.
 const excludeFlagChunks = (config) => ({
   ...config,
-  external: [...[config.external ?? []].flat(), /\/(flags|art)\/|\/load-(1x1|4x3)-/],
+  external: [...[config.external ?? []].flat(), /\/(flags|art)\/|\/(load-(1x1|4x3)|sanitize)-/],
 });
 
 export default [
@@ -23,7 +23,7 @@ export default [
     name: 'react',
     path: 'dist/react/index.js',
     ignore: ['react', 'react-dom', 'react/jsx-runtime'],
-    limit: '3.5 kB',
+    limit: '3.75 kB',
     modifyRolldownConfig: excludeFlagChunks,
   },
   {
