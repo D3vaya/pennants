@@ -95,7 +95,10 @@ export interface PennantUrlOptions {
    * (`<base>/png/<shape>/<scale>x/<code>.png`).
    */
   format?: 'svg' | 'png';
-  /** PNG density folder, only used when `format` is `png`. */
+  /**
+   * PNG density folder, only used when `format` is `png`. `2` exists for the
+   * `pennant` shape only; other shapes ship 1x PNGs (use SVG for crisp output).
+   */
   scale?: 1 | 2;
 }
 
@@ -108,13 +111,17 @@ export function toShape(value: unknown): PennantShape {
 /**
  * Builds the URL of a static flag asset. Defaults to the jsDelivr CDN,
  * pinned to this package version, so it works without bundler configuration.
- * Throws a `RangeError` for unknown codes or shapes.
+ * Throws a `RangeError` for unknown codes or shapes, and for PNG densities
+ * that are not shipped (2x exists for `pennant` only).
  */
 export function pennantUrl(code: string, options: PennantUrlOptions = {}): string {
   const { base = DEFAULT_CDN_BASE, format = 'svg', scale = 1, shape = 'pennant' } = options;
   const root = base.replace(/\/+$/, '');
   const normalized = toPennantCode(code);
   const folder = toShape(shape);
+  if (format === 'png' && scale !== 1 && (scale !== 2 || folder !== 'pennant')) {
+    throw new RangeError(`No ${String(scale)}x PNGs for the "${folder}" shape`);
+  }
   return format === 'png'
     ? `${root}/png/${folder}/${scale}x/${normalized}.png`
     : `${root}/svg/${folder}/${normalized}.svg`;

@@ -1,3 +1,4 @@
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import ar43 from '../src/generated/art/4x3/ar.ts';
 import ar from '../src/generated/art/1x1/ar.ts';
@@ -150,6 +151,35 @@ describe('pennantUrl', () => {
     expect(pennantUrl('gb-eng', { shape: 'rect', format: 'png', base: '/a' })).toBe(
       '/a/png/rect/1x/gb-eng.png',
     );
+  });
+
+  it('only builds URLs of files that ship in the package', () => {
+    const root = new URL('../', import.meta.url);
+    const { files } = JSON.parse(readFileSync(new URL('package.json', root), 'utf8')) as {
+      files: string[];
+    };
+    expect(files).toEqual(expect.arrayContaining(['svg', 'png']));
+    const missing: string[] = [];
+    for (const shape of SHAPES) {
+      const variants = [
+        { format: 'svg' as const },
+        { format: 'png' as const, scale: 1 as const },
+        ...(shape === 'pennant' ? [{ format: 'png' as const, scale: 2 as const }] : []),
+      ];
+      for (const code of codes) {
+        for (const variant of variants) {
+          const url = pennantUrl(code, { base: '', shape, ...variant });
+          if (!existsSync(new URL(url.slice(1), root))) missing.push(url);
+        }
+      }
+    }
+    expect(missing).toEqual([]);
+  });
+
+  it('rejects PNG densities that are not shipped', () => {
+    expect(() => pennantUrl('ar', { shape: 'rect', format: 'png', scale: 2 })).toThrow(RangeError);
+    expect(() => pennantUrl('ar', { format: 'png', scale: 3 as 2 })).toThrow(RangeError);
+    expect(pennantUrl('ar', { shape: 'rect', scale: 2 })).toMatch(/svg\/rect\/ar\.svg$/); // svg ignores scale
   });
 
   it('validates the code and shape', () => {
