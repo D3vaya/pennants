@@ -42,7 +42,7 @@ describe('sizeRules', () => {
 describe('flagRule', () => {
   it('points at the flag SVG', () => {
     expect(flagRule('gb-eng')).toBe(
-      '.pn-gb-eng {\n  background-image: url(../svg/gb-eng.svg);\n}\n',
+      '.pn-gb-eng {\n  background-image: url(../svg/pennant/gb-eng.svg);\n}\n',
     );
   });
 
@@ -94,16 +94,16 @@ describe('minifyCss', () => {
     expect(min).toContain(
       '.pn{display:inline-block;position:relative;width:calc(66/72*1em);height:1em;',
     );
-    expect(min).toContain('.pn-ar{background-image:url(../svg/ar.svg)}');
+    expect(min).toContain('.pn-ar{background-image:url(../svg/pennant/ar.svg)}');
     expect(min.split('\n')).toHaveLength(3);
   });
 });
 
 describe('cdnSvgPath', () => {
   it('pins the jsDelivr URL to the package version', () => {
-    expect(cdnSvgPath('0.1.0')).toBe('https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg');
+    expect(cdnSvgPath('0.1.0')).toBe('https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant');
     expect(cdnSvgPath('1.2.3-beta.1')).toBe(
-      'https://cdn.jsdelivr.net/npm/pennants@1.2.3-beta.1/svg',
+      'https://cdn.jsdelivr.net/npm/pennants@1.2.3-beta.1/svg/pennant',
     );
   });
 
@@ -114,7 +114,7 @@ describe('cdnSvgPath', () => {
   it('produces absolute flag URLs in the CDN stylesheet', () => {
     const min = minifyCss(pennantsCss(['ar'], { svgPath: cdnSvgPath('0.1.0') }));
     expect(min).toContain(
-      '.pn-ar{background-image:url(https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/ar.svg)}',
+      '.pn-ar{background-image:url(https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/ar.svg)}',
     );
   });
 });
@@ -135,5 +135,26 @@ describe('themeCss', () => {
 
   it('is part of the full stylesheet', () => {
     expect(pennantsCss([])).toContain(themeCss());
+  });
+});
+
+describe('per-shape stylesheets', () => {
+  it('sizes .pn by the shape aspect ratio', () => {
+    expect(baseRule('rect')).toContain('width: calc(64/48*1em);');
+    expect(baseRule('square')).toContain('width: 1em;');
+    expect(baseRule('circle')).toContain('width: 1em;');
+  });
+
+  it('points at the shape folder and keeps theming for the pennant only', () => {
+    const circle = pennantsCss(['ar'], { shape: 'circle' });
+    expect(circle).toContain('url(../svg/circle/ar.svg)');
+    expect(circle).not.toContain('pn-bar-l');
+    expect(pennantsCss(['ar'])).toContain('pn-bar-l');
+  });
+
+  it('builds CDN URLs per shape', () => {
+    expect(cdnSvgPath('0.1.0', 'circle')).toBe(
+      'https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/circle',
+    );
   });
 });

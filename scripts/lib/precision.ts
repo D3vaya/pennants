@@ -6,7 +6,6 @@
  * and the smallest one that looks the same wins.
  */
 import sharp from 'sharp';
-import { PENNANT } from './pennant.ts';
 
 /** Tried in order; the lossless default is the implicit last resort. */
 export const PRECISION_CANDIDATES = [0, 1, 2] as const;
@@ -33,7 +32,6 @@ export interface PrecisionChoice {
 
 async function rasterize(svg: string, scale: number): Promise<Buffer> {
   return sharp(Buffer.from(svg), { density: 72 * scale })
-    .resize(PENNANT.width * scale, PENNANT.height * scale)
     .ensureAlpha()
     .raw()
     .toBuffer();

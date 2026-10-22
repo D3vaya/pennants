@@ -2,7 +2,7 @@
  * PNG rasterisation of the generated pennant SVGs.
  */
 import sharp, { type PngOptions } from 'sharp';
-import { PENNANT } from './pennant.ts';
+import { SHAPE_SIZE, type PennantShape } from '../../src/shapes.ts';
 
 /** Pixel densities written to `png/<scale>x/`. */
 export const PNG_SCALES = [1, 2] as const;
@@ -19,20 +19,28 @@ export const PNG_OPTIONS = {
   compressionLevel: 9,
 } as const satisfies PngOptions;
 
-export function pngSize(scale: number): { width: number; height: number } {
+export function pngSize(
+  scale: number,
+  shape: PennantShape = 'pennant',
+): { width: number; height: number } {
   if (!Number.isInteger(scale) || scale < 1) {
     throw new Error(`Invalid PNG scale ${scale}`);
   }
-  return { width: PENNANT.width * scale, height: PENNANT.height * scale };
+  const { width, height } = SHAPE_SIZE[shape];
+  return { width: width * scale, height: height * scale };
 }
 
 /**
- * Rasterises an SVG at `scale` times its intrinsic 66x72 size. The SVG is
+ * Rasterises a `shape` SVG at `scale` times its intrinsic size. The SVG is
  * rendered at the matching density (72 dpi = 1x), so vectors stay sharp
  * instead of being upscaled from a 1x bitmap.
  */
-export function renderPng(svg: string | Buffer, scale = 1): Promise<Buffer> {
-  const { width, height } = pngSize(scale);
+export function renderPng(
+  svg: string | Buffer,
+  scale = 1,
+  shape: PennantShape = 'pennant',
+): Promise<Buffer> {
+  const { width, height } = pngSize(scale, shape);
   return sharp(Buffer.from(svg), { density: 72 * scale })
     .resize(width, height)
     .png(PNG_OPTIONS)

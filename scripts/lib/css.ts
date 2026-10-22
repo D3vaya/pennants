@@ -3,10 +3,12 @@
  *
  *   <span class="pn pn-ar"></span>
  *
- * `.pn` is 1em tall and keeps the 66:72 pennant ratio, so it scales with
+ * One stylesheet per shape. `.pn` is 1em tall and keeps the shape's aspect
+ * ratio (66:72 pennant, 4:3 rect, 1:1 square/circle), so it scales with
  * `font-size`; `.pn-<code>` only sets the background image.
  */
-import { assertValidCode, BAR_CLASS, PENNANT } from './pennant.ts';
+import { BAR_CLASS, PENNANT, SHAPE_SIZE, type PennantShape } from '../../src/shapes.ts';
+import { assertValidCode } from './pennant.ts';
 
 /** Size helpers, font-awesome style: multiply the inherited font-size. */
 export const SIZES: Readonly<Record<string, string>> = {
@@ -17,19 +19,23 @@ export const SIZES: Readonly<Record<string, string>> = {
 };
 
 export interface CssOptions {
-  /** URL of the `svg/` directory relative to the stylesheet. Defaults to `../svg`. */
+  /** Shape the stylesheet is for. Defaults to `pennant`. */
+  shape?: PennantShape;
+  /** URL of the shape's SVG directory. Defaults to `../svg/<shape>` (relative to `css/`). */
   svgPath?: string;
 }
 
 const HEADER =
   '/*! pennants — country flags in pennant style. MIT. Artwork from flag-icons (MIT). */\n';
 
-export function baseRule(): string {
+export function baseRule(shape: PennantShape = 'pennant'): string {
+  const { width, height } = SHAPE_SIZE[shape];
+  const cssWidth = width === height ? '1em' : `calc(${width}/${height}*1em)`;
   return (
     `.pn {\n` +
     `  display: inline-block;\n` +
     `  position: relative;\n` +
-    `  width: calc(${PENNANT.width}/${PENNANT.height}*1em);\n` +
+    `  width: ${cssWidth};\n` +
     `  height: 1em;\n` +
     `  line-height: 1em;\n` +
     `  vertical-align: middle;\n` +
@@ -61,17 +67,23 @@ export function themeCss(): string {
   );
 }
 
-export function flagRule(code: string, svgPath = '../svg'): string {
+export function flagRule(code: string, svgPath = '../svg/pennant'): string {
   assertValidCode(code);
   return `.pn-${code} {\n  background-image: url(${svgPath}/${code}.svg);\n}\n`;
 }
 
-/** Full, readable stylesheet (`css/pennants.css`). */
-export function pennantsCss(codes: readonly string[], { svgPath }: CssOptions = {}): string {
+/**
+ * Full, readable stylesheet of one shape (`css/<shape>.css`). Only the
+ * pennant has a bar, so only its stylesheet carries the theming rules.
+ */
+export function pennantsCss(
+  codes: readonly string[],
+  { shape = 'pennant', svgPath = `../svg/${shape}` }: CssOptions = {},
+): string {
   return [
-    HEADER + baseRule(),
+    HEADER + baseRule(shape),
     sizeRules(),
-    themeCss(),
+    ...(shape === 'pennant' ? [themeCss()] : []),
     ...codes.map((code) => flagRule(code, svgPath)),
   ].join('\n');
 }
@@ -84,11 +96,11 @@ const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
  * (Vite, SvelteKit, Astro…), which otherwise inline every referenced SVG
  * under their size limit as a data URI and blow the stylesheet up ~25x.
  */
-export function cdnSvgPath(version: string): string {
+export function cdnSvgPath(version: string, shape: PennantShape = 'pennant'): string {
   if (!VERSION_PATTERN.test(version)) {
     throw new Error(`Invalid package version "${version}"`);
   }
-  return `https://cdn.jsdelivr.net/npm/pennants@${version}/svg`;
+  return `https://cdn.jsdelivr.net/npm/pennants@${version}/svg/${shape}`;
 }
 
 /**

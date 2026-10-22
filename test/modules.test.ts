@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { codesModule, flagModule, loadersModule, namesModule } from '../scripts/lib/modules.ts';
+import {
+  artLoadersModule,
+  artModule,
+  codesModule,
+  flagModule,
+  loadersModule,
+  namesModule,
+} from '../scripts/lib/modules.ts';
 
 const sources = [
   { code: 'ar', name: 'Argentina', iso: true },
@@ -36,5 +43,23 @@ describe('generated modules', () => {
     const src = loadersModule(sources);
     expect(src).toContain('"ar": () => import("./flags/ar.ts"),');
     expect(src).toContain('"gb-eng": () => import("./flags/gb-eng.ts"),');
+  });
+});
+
+describe('art modules', () => {
+  it('artModule exports the artwork with a self-contained type', () => {
+    const src = artModule({ code: 'ar', viewBox: '0 0 4 3', content: '<path d="M0 0"/>' });
+    expect(src).not.toContain('import');
+    expect(src).toContain(
+      'const art: { code: string; viewBox: string; content: string } = {"code":"ar","viewBox":"0 0 4 3","content":"<path d=\\"M0 0\\"/>"};',
+    );
+    expect(src).toContain('export default art;');
+  });
+
+  it('artLoadersModule maps each code to its art chunk of the set', () => {
+    const src = artLoadersModule(sources, '4x3');
+    expect(src).toContain('"ar": () => import("./art/4x3/ar.ts"),');
+    expect(src).toContain('"gb-eng": () => import("./art/4x3/gb-eng.ts"),');
+    expect(src).toContain('Promise<{ default: FlagArt }>');
   });
 });

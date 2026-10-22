@@ -1,6 +1,7 @@
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import { buildPennant } from '../scripts/lib/pennant.ts';
+import { composeFlag } from '../src/shapes.ts';
 import { mapLimit, PNG_SCALES, pngSize, renderPng } from '../scripts/lib/png.ts';
 
 const svg = buildPennant({
@@ -10,11 +11,16 @@ const svg = buildPennant({
 });
 
 describe('pngSize', () => {
-  it('multiplies the 66x72 canvas', () => {
-    expect(PNG_SCALES.map(pngSize)).toEqual([
+  it('multiplies the 66x72 pennant canvas by default', () => {
+    expect(PNG_SCALES.map((scale) => pngSize(scale))).toEqual([
       { width: 66, height: 72 },
       { width: 132, height: 144 },
     ]);
+  });
+
+  it('follows the shape size', () => {
+    expect(pngSize(2, 'rect')).toEqual({ width: 128, height: 96 });
+    expect(pngSize(1, 'circle')).toEqual({ width: 48, height: 48 });
   });
 
   it.each([0, -1, 1.5, Number.NaN])('rejects scale %s', (scale) => {
@@ -44,6 +50,22 @@ describe('renderPng', () => {
     ];
     expect(px(0, 71)[3]).toBe(0);
     expect(px(33, 40)).toEqual([188, 0, 45, 255]);
+  });
+});
+
+describe('renderPng shapes', () => {
+  it('renders a circle at its own size, transparent in the corners', async () => {
+    const circle = composeFlag(
+      { code: 'jp', viewBox: '0 0 8 8', content: '<path fill="#fff" d="M0 0h8v8H0z"/>' },
+      'circle',
+    );
+    const { data, info } = await sharp(await renderPng(circle, 2, 'circle'))
+      .ensureAlpha()
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    expect([info.width, info.height]).toEqual([96, 96]);
+    expect(data[3]).toBe(0);
+    expect(data[(48 * 96 + 48) * 4 + 3]).toBe(255);
   });
 });
 
