@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { asset } from '../shared';
+import ShapeSwitcher from './ShapeSwitcher.vue';
+import { currentShape, flagAsset } from '../shared';
 
 // Two strings of pennants hanging like bunting.
 const rows = [
@@ -14,29 +15,36 @@ const drop = (index: number, total: number) => {
 </script>
 
 <template>
-  <div class="bunting" aria-hidden="true">
-    <div v-for="(row, r) in rows" :key="r" class="row">
-      <svg class="string" viewBox="0 0 100 30" preserveAspectRatio="none">
-        <path d="M0 2 Q50 46 100 2" />
-      </svg>
-      <img
-        v-for="(code, i) in row"
-        :key="code"
-        :src="asset(`svg/${code}.svg`)"
-        alt=""
-        width="66"
-        height="72"
-        :style="{
-          '--tilt': `${tilt(i, row.length)}deg`,
-          '--drop': `${drop(i, row.length)}px`,
-          '--delay': `${(i + r) * -0.4}s`,
-        }"
-      />
+  <div class="hero-flags">
+    <div class="bunting" aria-hidden="true">
+      <div v-for="(row, r) in rows" :key="r" class="row">
+        <svg class="string" viewBox="0 0 100 30" preserveAspectRatio="none">
+          <path d="M0 2 Q50 46 100 2" />
+        </svg>
+        <img
+          v-for="(code, i) in row"
+          :key="code"
+          :src="flagAsset(code, currentShape)"
+          alt=""
+          width="50"
+          :style="{
+            '--tilt': `${tilt(i, row.length)}deg`,
+            '--drop': `${drop(i, row.length)}px`,
+            '--delay': `${(i + r) * -0.4}s`,
+          }"
+        />
+      </div>
     </div>
+    <ShapeSwitcher class="hero-switch" />
   </div>
 </template>
 
 <style scoped>
+.hero-flags {
+  display: grid;
+  gap: 28px;
+  justify-items: center;
+}
 .bunting {
   display: grid;
   gap: 28px;

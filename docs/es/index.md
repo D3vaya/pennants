@@ -5,8 +5,8 @@ titleTemplate: Banderas de países con forma de banderín
 
 hero:
   name: pennants
-  text: Banderas de países con forma de banderín
-  tagline: '271 banderas en SVG, PNG, CSS, sprite, JS con tree-shaking, React y Web Component. Con tipos y carga diferida: solo envías las banderas que muestras.'
+  text: Todas las banderas, todas las formas, una sola API
+  tagline: '271 banderas de países como banderines (el estilo propio), rectángulos, cuadrados y círculos. SVG, PNG, CSS, sprite, JS con tree-shaking, React y Web Component; solo envías las banderas que muestras.'
   actions:
     - theme: brand
       text: Empezar
@@ -15,10 +15,15 @@ hero:
       text: Ver la galería
       link: /es/gallery
     - theme: alt
+      text: Formas
+      link: /es/guide/shapes
+    - theme: alt
       text: ¿Qué formato uso?
       link: /es/guide/formats
 
 features:
+  - title: Cuatro formas
+    details: Banderín por defecto, más rectángulo 4:3, cuadrado y círculo. Los mismos códigos y la misma API; eliges la forma con una opción.
   - title: Todos los formatos
     details: SVG y PNG estáticos, clases CSS, un sprite SVG, un módulo ES por bandera, un componente de React y un custom element sin framework.
   - title: Pagas solo lo que muestras
@@ -28,9 +33,9 @@ features:
   - title: Accesible por defecto
     details: Los componentes reciben un nombre accesible traducido automáticamente; pasa un title o label vacío si la bandera es decorativa.
   - title: Personalizable
-    details: Cambia el color de la barra del SVG inline con dos custom properties de CSS.
+    details: Cambia el color de la barra del banderín con dos custom properties de CSS. Compatible con CSP estricta.
   - title: Los mismos códigos que flag-icons
-    details: Generado a partir de las banderas de flag-icons. Migrar es, sobre todo, cambiar fi fi-xx por pn pn-xx.
+    details: Generado a partir de las banderas de flag-icons. Mantén los rectángulos con la forma rect o pásate a los banderines.
 ---
 
 ## Inicio rápido

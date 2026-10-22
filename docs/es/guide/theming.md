@@ -1,5 +1,8 @@
 # Personalización
 
+Solo la forma de banderín tiene barra; `rect`, `square` y `circle` no tienen nada que
+personalizar.
+
 La barra de la que cuelga la bandera es un degradado cuyos dos colores llevan las clases
 `pn-bar-l` y `pn-bar-d`. Una hoja de estilos pequeña los asocia a dos custom properties de CSS:
 
@@ -10,7 +13,7 @@ La barra de la que cuelga la bandera es un degradado cuyos dos colores llevan la
 
 La regla está en `pennants/css/theme.css` (unos 110 bytes) y ya viene incluida en
 `pennants/css` y `pennants/css/cdn`. Si usas SVG inline sin las clases CSS (módulos por bandera,
-`loadPennant`, React), impórtala una vez:
+`loadFlag`, React), impórtala una vez:
 
 ```js
 import 'pennants/css/theme.css';
@@ -43,7 +46,7 @@ funciona con una Content Security Policy estricta (`style-src 'self'`).
 ## Qué formatos se pueden personalizar
 
 - El SVG inline en tu documento, con la hoja de estilos del tema cargada: módulos por bandera
-  insertados en el DOM, `loadPennant`, `fetchPennant`, `<Pennant>` (modos inline y fetch) y
+  insertados en el DOM, `loadFlag`, `fetchPennant`, `<Pennant>` (modos inline y fetch) y
   `<PennantSvg>`.
 - `<pennant-flag>`, sin ninguna hoja de estilos extra.
 
@@ -52,14 +55,14 @@ otro archivo) son documentos aislados y siempre usan el dorado por defecto.
 
 ## Tamaño
 
-| Formato          | Cómo cambiar el tamaño                                               |
-| ---------------- | -------------------------------------------------------------------- |
-| Clases CSS       | `font-size`, o `.pn-lg`, `.pn-2x`, `.pn-3x`, `.pn-4x`                |
-| React            | `size={32}` (px) o `size="2rem"`; el ancho sigue la proporción 66:72 |
-| `<pennant-flag>` | `size="32"`, `size="2rem"` o la propiedad `--pennant-size`           |
-| Imágenes         | `width` y `height` con proporción 66:72, por ejemplo 33 × 36         |
+| Formato          | Cómo cambiar el tamaño                                           |
+| ---------------- | ---------------------------------------------------------------- |
+| Clases CSS       | `font-size`, o `.pn-lg`, `.pn-2x`, `.pn-3x`, `.pn-4x`            |
+| React            | `size={32}` (px) o `size="2rem"`; el ancho sigue la forma        |
+| `<pennant-flag>` | `size="32"`, `size="2rem"` o la propiedad `--pennant-size`       |
+| Imágenes         | `width` y `height` con la proporción de la forma, p. ej. 33 × 36 |
 
-`pennantBox(size)` de `pennants/react` devuelve el par `{ width, height }` que usan los
+`pennantBox(size, shape)` de `pennants/react` devuelve el par `{ width, height }` que usan los
 componentes, por si necesitas armar tu propio contenedor.
 
 ## Estilos del Web Component

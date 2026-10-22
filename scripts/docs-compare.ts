@@ -4,7 +4,7 @@
  *
  *   npm run build && node scripts/docs-compare.ts [--json]
  *
- * pennants is measured from the local build (svg/, css/, dist/flags/); the other
+ * pennants is measured from the local build (svg/<shape>/, css/, dist/art/); the other
  * packages are downloaded with `npm pack` at the pinned versions below, so the
  * numbers are reproducible. Compressed sizes are the sum over individual files
  * (each file is served on its own), with Node's zlib: brotli quality 11, gzip level 9.
@@ -77,7 +77,7 @@ function fetchPackage(spec: string, into: string): { dir: string; tarball: numbe
   return { dir: join(dir, 'package'), tarball: statSync(tarball).size };
 }
 
-for (const required of ['svg', 'css/pennants.min.css', 'dist/flags/ar.js']) {
+for (const required of ['svg/pennant', 'svg/rect', 'css/pennant.min.css', 'dist/art/1x1/ar.js']) {
   if (!existsSync(join(root, required))) {
     console.error(`Missing ${required}. Run \`npm run build\` first.`);
     process.exit(1);
@@ -95,7 +95,8 @@ try {
     }),
   ) as { size: number; unpackedSize: number }[];
 
-  const pennantsSvgs = svgsIn(join(root, 'svg'));
+  const pennantsSvgs = svgsIn(join(root, 'svg/pennant'));
+  const pennantsRects = svgsIn(join(root, 'svg/rect'));
   const flagIconsSvgs = svgsIn(join(flagIcons.dir, 'flags/4x3'));
   const flagIconsSquare = svgsIn(join(flagIcons.dir, 'flags/1x1'));
   const cfiSvgs = svgsIn(join(countryFlagIcons.dir, '3x2'));
@@ -114,23 +115,26 @@ try {
       'country-flag-icons': cfiSvgs.length,
     },
     allSvgs: {
-      pennants: measure(pennantsSvgs),
+      'pennants (pennant)': measure(pennantsSvgs),
+      'pennants (rect 4:3)': measure(pennantsRects),
       'flag-icons (4x3)': measure(flagIconsSvgs),
       'flag-icons (1x1)': measure(flagIconsSquare),
       'country-flag-icons (3x2)': measure(cfiSvgs),
     },
     medianSvgBrotli: {
-      pennants: median(pennantsSvgs),
+      'pennants (pennant)': median(pennantsSvgs),
+      'pennants (rect 4:3)': median(pennantsRects),
       'flag-icons (4x3)': median(flagIconsSvgs),
       'country-flag-icons (3x2)': median(cfiSvgs),
     },
     css: {
-      pennants: measure([join(root, 'css/pennants.min.css')]),
+      'pennants (pennant)': measure([join(root, 'css/pennant.min.css')]),
+      'pennants (rect)': measure([join(root, 'css/rect.min.css')]),
       'flag-icons': measure([join(flagIcons.dir, 'css/flag-icons.min.css')]),
       'country-flag-icons': measure([join(countryFlagIcons.dir, '3x2/flags.css')]),
     },
     oneFlagModule: {
-      pennants: measure([join(root, 'dist/flags/ar.js')]),
+      'pennants (art/1x1/ar)': measure([join(root, 'dist/art/1x1/ar.js')]),
       'country-flag-icons': measure([join(countryFlagIcons.dir, 'string/3x2/AR.js')]),
     },
     tarball: {

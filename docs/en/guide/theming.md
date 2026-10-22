@@ -1,5 +1,7 @@
 # Theming
 
+Only the pennant shape has a bar; `rect`, `square` and `circle` have nothing to theme.
+
 The hanging bar is a gradient whose two stops carry the classes `pn-bar-l` and `pn-bar-d`. A
 small stylesheet maps them to two CSS custom properties:
 
@@ -10,7 +12,7 @@ small stylesheet maps them to two CSS custom properties:
 
 The mapping rule ships in `pennants/css/theme.css` (about 110 bytes) and is already part of
 `pennants/css` and `pennants/css/cdn`. If you use inline SVG without the CSS classes (per-flag
-modules, `loadPennant`, React), import it once:
+modules, `loadFlag`, React), import it once:
 
 ```js
 import 'pennants/css/theme.css';
@@ -43,7 +45,7 @@ Content Security Policy (`style-src 'self'`).
 ## Which formats can be themed
 
 - Inline SVG in your document, with the theme stylesheet loaded: per-flag modules inserted into
-  the DOM, `loadPennant`, `fetchPennant`, `<Pennant>` (inline and fetch modes) and
+  the DOM, `loadFlag`, `fetchPennant`, `<Pennant>` (inline and fetch modes) and
   `<PennantSvg>`.
 - `<pennant-flag>`, with no extra stylesheet.
 
@@ -55,11 +57,11 @@ file) are isolated documents and always use the default gold.
 | Format           | How to size                                                 |
 | ---------------- | ----------------------------------------------------------- |
 | CSS classes      | `font-size`, or `.pn-lg`, `.pn-2x`, `.pn-3x`, `.pn-4x`      |
-| React            | `size={32}` (px) or `size="2rem"`; width follows 66:72      |
+| React            | `size={32}` (px) or `size="2rem"`; width follows the shape  |
 | `<pennant-flag>` | `size="32"`, `size="2rem"` or the `--pennant-size` property |
-| Images           | `width` and `height` with the 66:72 ratio, e.g. 33 × 36     |
+| Images           | `width` and `height` with the shape's ratio, e.g. 33 × 36   |
 
-`pennantBox(size)` from `pennants/react` returns the `{ width, height }` pair used by the
+`pennantBox(size, shape)` from `pennants/react` returns the `{ width, height }` pair used by the
 components if you need to build your own wrapper.
 
 ## Styling the Web Component

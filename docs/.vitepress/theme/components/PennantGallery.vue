@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue';
-import { codes, isoCodes, toEmoji } from 'pennants';
+import { SHAPE_SIZE, codes, isoCodes, toEmoji } from 'pennants';
 import CopyCode from './CopyCode.vue';
-import { asset, siteName, snippets, useLang } from '../shared';
+import ShapeSwitcher from './ShapeSwitcher.vue';
+import {
+  currentShape,
+  flagAsset,
+  shapeBox,
+  shapeLabels,
+  siteName,
+  snippets,
+  useLang,
+} from '../shared';
 
 const { lang, t } = useLang();
 const query = ref('');
@@ -10,6 +19,10 @@ const size = ref(56);
 const selected = ref<string | null>(null);
 const dialog = ref<HTMLDialogElement | null>(null);
 const iso = new Set<string>(isoCodes);
+// Tile width follows the shape's aspect ratio.
+const ratio = computed(
+  () => SHAPE_SIZE[currentShape.value].width / SHAPE_SIZE[currentShape.value].height,
+);
 
 const entries = computed(() =>
   codes.map((code) => {
@@ -39,7 +52,7 @@ const current = computed(() => {
     name: siteName(code, lang.value),
     emoji: toEmoji(code),
     iso: iso.has(code),
-    snippets: snippets(code, lang.value),
+    snippets: snippets(code, lang.value, currentShape.value),
   };
 });
 
@@ -61,8 +74,9 @@ function onDialogClick(event: MouseEvent) {
 </script>
 
 <template>
-  <div class="gallery" :style="{ '--tile': `${size}px` }">
+  <div class="gallery" :style="{ '--tile': `${size}px`, '--ratio': ratio }">
     <div class="controls">
+      <ShapeSwitcher />
       <label class="control">
         <span>{{ t.search }}</span>
         <input
@@ -87,7 +101,12 @@ function onDialogClick(event: MouseEvent) {
           :aria-label="t.openDetails(entry.name, entry.code)"
           @click="open(entry.code)"
         >
-          <img :src="asset(`svg/${entry.code}.svg`)" alt="" loading="lazy" width="66" height="72" />
+          <img
+            :src="flagAsset(entry.code, currentShape)"
+            alt=""
+            loading="lazy"
+            v-bind="shapeBox(currentShape, 72)"
+          />
           <span class="code">{{ entry.code }}</span>
           <span class="name">{{ entry.name }}</span>
         </button>
@@ -98,11 +117,16 @@ function onDialogClick(event: MouseEvent) {
     <dialog ref="dialog" class="panel" aria-labelledby="pn-panel-title" @click="onDialogClick">
       <div v-if="current" class="panel-body">
         <header class="panel-head">
-          <img :src="asset(`svg/${current.code}.svg`)" alt="" width="88" height="96" />
+          <img
+            :src="flagAsset(current.code, currentShape)"
+            alt=""
+            v-bind="shapeBox(currentShape, 96)"
+          />
           <div>
             <h2 id="pn-panel-title">{{ current.name }} {{ current.emoji }}</h2>
             <p>
-              <code>{{ current.code }}</code> · {{ current.iso ? t.iso : t.other }}
+              <code>{{ current.code }}</code> · {{ current.iso ? t.iso : t.other }} ·
+              {{ shapeLabels[lang][currentShape] }}
             </p>
           </div>
           <button type="button" class="close" autofocus @click="close">{{ t.close }}</button>
@@ -151,7 +175,10 @@ function onDialogClick(event: MouseEvent) {
 }
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(max(calc(var(--tile) + 40px), 104px), 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(max(calc(var(--tile) * var(--ratio) + 40px), 104px), 1fr)
+  );
   gap: 8px;
   margin: 0 !important;
   padding: 0 !important;
@@ -180,7 +207,7 @@ function onDialogClick(event: MouseEvent) {
   transform: translateY(-2px);
 }
 .grid img {
-  width: calc(var(--tile) * 66 / 72);
+  width: calc(var(--tile) * var(--ratio));
   height: var(--tile);
 }
 .code {

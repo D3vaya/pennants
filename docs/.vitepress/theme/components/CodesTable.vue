@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { codes, isoCodes, toEmoji } from 'pennants';
-import { asset, siteName, useLang } from '../shared';
+import { flagAsset, siteName, useLang } from '../shared';
 
 const props = defineProps<{ kind: 'iso' | 'other' }>();
 const { lang, t } = useLang();
@@ -27,7 +27,7 @@ const rows = computed(() =>
     <tbody>
       <tr v-for="row in rows" :key="row.code">
         <td>
-          <img :src="asset(`svg/${row.code}.svg`)" alt="" width="22" height="24" loading="lazy" />
+          <img :src="flagAsset(row.code)" alt="" width="22" height="24" loading="lazy" />
         </td>
         <td>
           <code>{{ row.code }}</code>

@@ -39,7 +39,7 @@ recurre a un elemento `<style>`.
   carga la bandera después de hidratar. No hay error de hidratación ni salto de layout, pero la
   bandera no está en el HTML.
 - Para que la bandera esté en el HTML del servidor, usa `mode="img"` o
-  `<PennantSvg svg={ar} />` con un import estático.
+  `<PennantSvg art={ar} />` con un import estático.
 - `pennants/element` se puede importar en el servidor: `definePennantElement` no hace nada donde
   no existe `customElements`. El elemento se dibuja cuando se define en el navegador.
 - `getPennantName` usa `Intl.DisplayNames`. El servidor y el navegador pueden traer versiones
@@ -57,15 +57,15 @@ const { getPennantName } = require('pennants'); // funciona en Node.js 20.19+
 
 En entornos más antiguos usa `import()`. En TypeScript, usa `moduleResolution: "bundler"`,
 `"node16"` o `"nodenext"`; el modo antiguo `"node"` (node10) no lee `exports` y no encuentra
-`pennants/react` ni `pennants/flags/*`.
+`pennants/react` ni `pennants/art/*`.
 
 ## Imports de assets en el bundler {#imports-de-assets-en-el-bundler}
 
 Importar un archivo de imagen devuelve lo que tu bundler tenga configurado:
 
 ```js
-import url from 'pennants/svg/ar.svg'; // Vite: la URL
-import markup from 'pennants/svg/ar.svg?raw'; // Vite: el SVG como texto
+import url from 'pennants/svg/pennant/ar.svg'; // Vite: la URL
+import markup from 'pennants/svg/pennant/ar.svg?raw'; // Vite: el SVG como texto
 ```
 
 - **webpack 5:** agrega una regla con `type: 'asset/resource'` para los `.svg` de

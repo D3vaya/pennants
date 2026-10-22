@@ -10,11 +10,11 @@ you can change. Costs below are what each option adds to an empty Vite 8 product
 | `<img>` SVG (self-hosted or CDN) | 0                                                   | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
 | `<img>` PNG 1x / 2x              | 0                                                   | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
 | SVG sprite `<use href>`          | 0 JS; one 1.2 MB file (≈260 kB brotli)              | Yes                           | No          | No, one file for all | One file, HTTP cache          |
-| JS module `pennants/flags/ar`    | ≈1.0 kB per flag                                    | Yes                           | Yes         | No, bundled          | Part of your bundle           |
+| Art module `pennants/art/1x1/ar` | ≈1.0 kB per flag                                    | Yes                           | Yes         | No, bundled          | Part of your bundle           |
 | `loadPennant(code)`              | ≈5.1 kB (loader map) + one chunk per flag shown     | Client (async)                | Yes         | Yes                  | Chunk files, HTTP cache       |
 | Fetch mode ³                     | <Size probe="fetch" /> + one request per flag shown | Client (async)                | Yes         | Yes                  | HTTP / CDN cache              |
 | React `<Pennant>`                | ≈6.9 kB + one chunk per flag shown                  | Box on server, flag on client | Yes         | Yes                  | Chunk files                   |
-| React `<PennantSvg svg={ar}>`    | ≈8.0 kB including `ar` ²                            | Yes, full markup              | Yes         | No                   | Part of your bundle           |
+| React `<PennantSvg art={ar}>`    | ≈8.0 kB including `ar` ²                            | Yes, full markup              | Yes         | No                   | Part of your bundle           |
 | `<pennant-flag>`                 | ≈7.0 kB + one chunk per flag shown                  | Client only                   | Yes         | Yes                  | Chunk files                   |
 
 ¹ With `assetsInlineLimit` set as in the [FAQ](./faq#bundler-asset-imports), or 1.9 kB with
@@ -32,11 +32,11 @@ inlines the flags and the CSS is 52 kB gzip. Next.js and Angular emit files by d
 - **Many flags in server-rendered HTML** (tables, country pickers): CSS classes. The browser
   downloads only the flags on the page.
 - **Flags known at build time, must be visible on first paint with SSR:** per-flag modules,
-  in React through `<PennantSvg svg={ar} />`.
-- **Flag chosen at runtime** (user profile, API data): `loadPennant`, `<Pennant>` or
+  in React through `<PennantSvg art={ar} />`.
+- **Flag chosen at runtime** (user profile, API data): `loadFlag`, `<Pennant>` or
   `<pennant-flag>`. For the smallest bundle, use fetch mode: no loader map, flags are
   downloaded as SVG files from the CDN or your own host.
-- **You want to recolor the bar:** inline SVG (modules, `loadPennant`, React) with
+- **You want to recolor the bar:** inline SVG (modules, `loadFlag`, React) with
   `pennants/css/theme.css`, or `<pennant-flag>`. See [Theming](./theming).
 - **Email, native apps, Open Graph images:** PNG.
 - **Hundreds of flags on one page at once:** the sprite, or CSS classes.

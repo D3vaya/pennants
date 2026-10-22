@@ -39,6 +39,7 @@ const labels: Record<'en' | 'es', Labels> = {
     pages: [
       ['getting-started', 'Getting started'],
       ['formats', 'Which format should I use?'],
+      ['shapes', 'Shapes'],
       ['performance', 'Performance & weight'],
       ['accessibility', 'Accessibility'],
       ['theming', 'Theming'],
@@ -56,6 +57,7 @@ const labels: Record<'en' | 'es', Labels> = {
     pages: [
       ['getting-started', 'Primeros pasos'],
       ['formats', '¿Qué formato uso?'],
+      ['shapes', 'Formas'],
       ['performance', 'Rendimiento y peso'],
       ['accessibility', 'Accesibilidad'],
       ['theming', 'Personalización'],
@@ -155,8 +157,8 @@ export default defineConfig({
   srcExclude: ['**/README.md'],
   sitemap: { hostname: 'https://d3vaya.github.io/pennants/' },
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}svg/ar.svg` }],
-    ['link', { rel: 'stylesheet', href: `${base}css/pennants.min.css` }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}svg/pennant/ar.svg` }],
+    ['link', { rel: 'stylesheet', href: `${base}css/pennant.min.css` }],
     ['meta', { name: 'theme-color', content: '#8e713f' }],
     ['meta', { property: 'og:type', content: 'website' }],
     ['meta', { property: 'og:image', content: `https://d3vaya.github.io${base}preview.png` }],
@@ -173,7 +175,7 @@ export default defineConfig({
     },
   },
   themeConfig: {
-    logo: { src: '/svg/ar.svg', alt: '' },
+    logo: { src: '/svg/pennant/ar.svg', alt: '' },
     socialLinks: [
       { icon: 'github', link: repo },
       { icon: 'npm', link: 'https://www.npmjs.com/package/pennants' },

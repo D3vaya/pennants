@@ -1,7 +1,8 @@
 # Getting started
 
 `pennants` ships 271 flags (249 ISO 3166-1 countries plus regions and organizations) in pennant
-shape: a hanging golden bar over a flag cut into a point. Every pennant is 66 × 72 (ratio 11:12).
+shape: a hanging golden bar over a flag cut into a point. Every pennant is 66 × 72. The same
+flags also come as rectangles (4:3), squares and circles; see [Shapes](./shapes).
 
 ## Install
 
@@ -25,7 +26,7 @@ Or skip the install and load files from jsDelivr. Pin the version in production:
 
 ```html
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/ar.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/ar.svg"
   width="33"
   height="36"
   alt="Argentina"
@@ -48,7 +49,7 @@ No JavaScript. In a Vite 8 build the stylesheet adds 3.7 kB gzip, and each flag 
 fetched only when an element uses its class.
 
 ```js
-import 'pennants/css';
+import 'pennants/css'; // or 'pennants/css/rect', 'pennants/css/square', 'pennants/css/circle'
 ```
 
 ```html
@@ -69,10 +70,10 @@ inline them.
 ### Images
 
 ```html
-<img src="/assets/pennants/svg/ar.svg" width="33" height="36" alt="Argentina" />
+<img src="/assets/pennants/svg/pennant/ar.svg" width="33" height="36" alt="Argentina" />
 <img
-  src="/assets/pennants/png/1x/ar.png"
-  srcset="/assets/pennants/png/2x/ar.png 2x"
+  src="/assets/pennants/png/pennant/1x/ar.png"
+  srcset="/assets/pennants/png/pennant/2x/ar.png 2x"
   width="66"
   height="72"
   alt="Argentina"
@@ -84,24 +85,28 @@ Copy `node_modules/pennants/svg` (and `png`) into your public folder, or use the
 
 ### One module per flag
 
-```js
-import ar from 'pennants/flags/ar'; // SVG markup as a string, tree-shaken
+Each flag's artwork is its own module, tree-shaken; `renderFlag` frames it in any shape.
 
-element.innerHTML = ar;
+```js
+import { renderFlag } from 'pennants';
+import ar from 'pennants/art/1x1/ar';
+
+element.innerHTML = renderFlag(ar); // or renderFlag(ar, { shape: 'circle' })
 ```
 
 ### Lazy loading
 
 ```js
-import { loadPennant, toPennantCode } from 'pennants';
+import { loadFlag, toPennantCode } from 'pennants';
 
-const svg = await loadPennant(toPennantCode(userInput)); // fetches one small chunk
+const svg = await loadFlag(toPennantCode(userInput)); // fetches one small chunk
+const circle = await loadFlag('jp', { shape: 'circle' });
 ```
 
 ### Fetch mode
 
-`loadPennant` bundles a small loader map with one chunk per flag. Fetch mode skips that: it
-downloads `<base>/svg/<code>.svg` at runtime, from jsDelivr by default or from your own copy of
+`loadFlag` bundles a small loader map with one chunk per flag. Fetch mode skips that: it
+downloads `<base>/svg/<shape>/<code>.svg` at runtime, from jsDelivr by default or from your own copy of
 the `svg/` folder.
 
 ```js
@@ -120,6 +125,7 @@ Responses are cached per URL and must be a script-free `<svg>` document.
 import { Pennant } from 'pennants/react';
 
 <Pennant code="ar" size={32} />;
+<Pennant code="ar" shape="circle" size={32} />;
 ```
 
 ### Web Component
@@ -130,6 +136,7 @@ import 'pennants/element/register';
 
 ```html
 <pennant-flag code="ar" size="32"></pennant-flag>
+<pennant-flag code="ar" shape="rect" size="32"></pennant-flag>
 ```
 
 ## Next steps

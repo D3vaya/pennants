@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { asset, siteName, useLang } from '../shared';
+import { asset, flagAsset, siteName, useLang } from '../shared';
 
 const { lang } = useLang();
 const samples = ['ar', 'br', 'jp', 'gb-eng', 'eu', 'za'];
@@ -9,9 +9,10 @@ const samples = ['ar', 'br', 'jp', 'gb-eng', 'eu', 'za'];
   <div class="compare">
     <figure v-for="code in samples" :key="code">
       <div class="pair">
-        <img :src="asset(`flag-icons/${code}.svg`)" alt="" width="64" height="48" />
+        <img :src="asset(`flag-icons/${code}.svg`)" alt="" width="64" height="48" class="source" />
         <span class="arrow" aria-hidden="true">→</span>
-        <img :src="asset(`svg/${code}.svg`)" alt="" width="44" height="48" />
+        <img :src="flagAsset(code, 'rect')" alt="" width="64" height="48" />
+        <img :src="flagAsset(code)" alt="" width="44" height="48" />
       </div>
       <figcaption>
         <code>fi-{{ code }}</code> → <code>pn-{{ code }}</code>
@@ -24,7 +25,7 @@ const samples = ['ar', 'br', 'jp', 'gb-eng', 'eu', 'za'];
 <style scoped>
 .compare {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 12px;
   margin: 20px 0;
 }
@@ -42,7 +43,7 @@ figure {
   align-items: center;
   justify-content: center;
 }
-.pair img:first-child {
+.pair img.source {
   border-radius: 2px;
   box-shadow: 0 0 0 1px var(--vp-c-divider);
 }

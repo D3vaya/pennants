@@ -5,15 +5,17 @@
 [![CI](https://github.com/d3vaya/pennants/actions/workflows/ci.yml/badge.svg)](https://github.com/d3vaya/pennants/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/pennants)](LICENSE)
 
-Country flags in pennant style. 271 flags (249 ISO 3166-1 countries plus regions and
-organizations) as SVG, PNG, CSS classes, an SVG sprite, tree-shakable ES modules, a React
-component and a Web Component. Typed and lazy: you only ship the flags you show.
+Every flag, every shape, one API. 271 country flags (249 ISO 3166-1 countries plus regions and
+organizations) as pennants, the signature style, and as 4:3 rectangles, squares and circles.
+SVG, PNG, CSS classes, an SVG sprite, tree-shakable ES modules, a React component and a Web
+Component. Typed and lazy: you only ship the flags you show.
 
-![Two strings of pennant flags](https://raw.githubusercontent.com/d3vaya/pennants/main/docs/public/preview.png)
+![A string of pennant flags above rectangle, square and circle flags](https://raw.githubusercontent.com/d3vaya/pennants/main/docs/public/preview.png)
 
 **[Documentation](https://d3vaya.github.io/pennants/)** ·
 **[Gallery](https://d3vaya.github.io/pennants/gallery)** ·
 [Which format?](https://d3vaya.github.io/pennants/guide/formats) ·
+[Shapes](https://d3vaya.github.io/pennants/guide/shapes) ·
 [API](https://d3vaya.github.io/pennants/api/) ·
 [Español](https://d3vaya.github.io/pennants/es/)
 
@@ -37,25 +39,28 @@ import 'pennants/css';
 
 ```html
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/ar.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/ar.svg"
   width="33"
   height="36"
   alt="Argentina"
 />
 ```
 
-**One module per flag**: the SVG markup as a string, tree-shaken.
+**One module per flag**: tree-shaken artwork, framed in any shape.
 
 ```js
-import ar from 'pennants/flags/ar';
+import { renderFlag } from 'pennants';
+import ar from 'pennants/art/1x1/ar';
+
+renderFlag(ar, { shape: 'circle' }); // SVG markup
 ```
 
 **Lazy, by code**: each flag is its own chunk.
 
 ```js
-import { loadPennant, getPennantName } from 'pennants';
+import { loadFlag, getPennantName } from 'pennants';
 
-const svg = await loadPennant('ar');
+const svg = await loadFlag('ar'); // or loadFlag('ar', { shape: 'rect' })
 getPennantName('de', 'es'); // 'Alemania'
 ```
 
@@ -76,8 +81,11 @@ import { Pennant } from 'pennants/react';
 <pennant-flag code="ar" size="32"></pennant-flag>
 ```
 
-Also: `pennants/png/1x/<code>.png` (66 × 72), `png/2x/` (132 × 144) and
-`pennants/sprite` (`<use href="pennants.svg#pn-ar">`).
+**Shapes**: `pennant` (default), `rect` (4:3), `square`, `circle`. Pass `shape` to any API, or
+import `pennants/css/rect` (`square`, `circle`) for CSS classes.
+
+Also: `pennants/svg/<shape>/<code>.svg`, `pennants/png/<shape>/1x/<code>.png` (plus `2x` for
+the pennant) and `pennants/sprite` (pennant, `<use href="pennant.svg#pn-ar">`).
 
 ## Weight
 
@@ -107,11 +115,11 @@ and the [comparison with flag-icons and country-flag-icons](https://d3vaya.githu
 ## Compared with flag-icons
 
 The artwork is [flag-icons](https://github.com/lipis/flag-icons)' and the codes are the same:
-`fi fi-ar` becomes `pn pn-ar`.
+`fi fi-ar` becomes `pn pn-ar`, with `pennants/css/rect` if you want to keep 4:3 rectangles.
 
 |                                 | flag-icons            | pennants                               |
 | ------------------------------- | --------------------- | -------------------------------------- |
-| Shape                           | Rectangle 4:3 and 1:1 | Pennant 11:12                          |
+| Shapes                          | Rectangle 4:3 and 1:1 | Pennant, rectangle 4:3, square, circle |
 | SVG files and CSS classes       | Yes                   | Yes                                    |
 | PNG and SVG sprite              | No                    | Yes                                    |
 | JS module per flag, lazy loader | No                    | Yes                                    |
@@ -126,9 +134,9 @@ See [Migrating from flag-icons](https://d3vaya.github.io/pennants/guide/migratio
 
 - ESM only. Node.js 20.19+ (where `require()` of ESM also works). React 18+ for
   `pennants/react`.
-- Only pass markup from `pennants/flags/*` or `loadPennant` to `innerHTML` or `<PennantSvg>`,
-  never user input.
-- Inline SVG can be themed with `--pennant-bar-light` and `--pennant-bar-dark`.
+- Only pass markup from `renderFlag`, `loadFlag` or `fetchPennant` to `innerHTML`, and artwork from
+  `pennants/art/*` to `<PennantSvg>`; never user input.
+- The pennant's bar can be themed with `--pennant-bar-light` and `--pennant-bar-dark`.
 
 ## Contributing
 
@@ -141,8 +149,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 
 ## En español
 
-Banderas de países con forma de banderín, en todos los formatos: SVG, PNG, CSS, sprite, módulos
-JS, React y Web Component. Documentación completa en español:
+Banderas de países como banderines, rectángulos 4:3, cuadrados y círculos, en todos los
+formatos: SVG, PNG, CSS, sprite, módulos JS, React y Web Component. Documentación completa en español:
 **[d3vaya.github.io/pennants/es/](https://d3vaya.github.io/pennants/es/)**.
 
 ```js

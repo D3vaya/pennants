@@ -35,7 +35,7 @@ not restrict; only in browsers without that API does it fall back to a `<style>`
   the lazy chunks anyway.
 - `<Pennant>` (inline mode) renders a correctly sized empty `<span>` on the server and loads the
   flag after hydration. No hydration mismatch, no layout shift, but no flag in the HTML.
-- For flags in the server HTML, use `mode="img"`, or `<PennantSvg svg={ar} />` with a static
+- For flags in the server HTML, use `mode="img"`, or `<PennantSvg art={ar} />` with a static
   import.
 - `pennants/element` can be imported on the server: `definePennantElement` does nothing where
   `customElements` does not exist. The element renders after it is defined in the browser.
@@ -53,15 +53,15 @@ const { getPennantName } = require('pennants'); // works on Node.js 20.19+
 
 On older runtimes use `import()`. In TypeScript, use `moduleResolution: "bundler"`, `"node16"` or
 `"nodenext"`; the legacy `"node"` (node10) mode does not read `exports` and cannot find
-`pennants/react` or `pennants/flags/*`.
+`pennants/react` or `pennants/art/*`.
 
 ## Bundler asset imports
 
 Importing an asset file returns whatever your bundler is configured to return:
 
 ```js
-import url from 'pennants/svg/ar.svg'; // Vite: URL string
-import markup from 'pennants/svg/ar.svg?raw'; // Vite: SVG markup
+import url from 'pennants/svg/pennant/ar.svg'; // Vite: URL string
+import markup from 'pennants/svg/pennant/ar.svg?raw'; // Vite: SVG markup
 ```
 
 - **webpack 5:** add a rule with `type: 'asset/resource'` for `.svg` under `node_modules/pennants`.

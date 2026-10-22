@@ -1,6 +1,6 @@
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useData, withBase } from 'vitepress';
-import { DEFAULT_CDN_BASE, getPennantName } from 'pennants';
+import { SHAPE_ART, SHAPE_SIZE, getPennantName, pennantUrl, type PennantShape } from 'pennants';
 
 export type Lang = 'en' | 'es';
 
@@ -9,7 +9,7 @@ const messages = {
     search: 'Search',
     searchPlaceholder: 'Code or name (ar, Japan, gb-eng)',
     size: 'Size',
-    count: (shown: number, total: number) => `${shown} of ${total} pennants`,
+    count: (shown: number, total: number) => `${shown} of ${total} flags`,
     copy: 'Copy',
     copied: 'Copied',
     close: 'Close',
@@ -29,12 +29,13 @@ const messages = {
     dark: 'Bar dark',
     presets: 'Presets',
     reset: 'Reset',
+    shape: 'Shape',
   },
   es: {
     search: 'Buscar',
     searchPlaceholder: 'Código o nombre (ar, Japón, gb-eng)',
     size: 'Tamaño',
-    count: (shown: number, total: number) => `${shown} de ${total} banderines`,
+    count: (shown: number, total: number) => `${shown} de ${total} banderas`,
     copy: 'Copiar',
     copied: 'Copiado',
     close: 'Cerrar',
@@ -54,6 +55,7 @@ const messages = {
     dark: 'Barra oscura',
     presets: 'Ajustes',
     reset: 'Restablecer',
+    shape: 'Forma',
   },
 } as const;
 
@@ -100,6 +102,24 @@ export function siteName(code: string, lang: Lang): string {
 /** URL of an asset copied into docs/public by scripts/docs-assets.ts. */
 export const asset = (path: string): string => withBase(`/${path}`);
 
+/** Site URL of one flag's SVG in a shape (same layout as the npm package). */
+export const flagAsset = (code: string, shape: PennantShape = 'pennant'): string =>
+  asset(`svg/${shape}/${code}.svg`);
+
+export const shapeLabels: Record<Lang, Record<PennantShape, string>> = {
+  en: { pennant: 'Pennant', rect: 'Rectangle 4:3', square: 'Square', circle: 'Circle' },
+  es: { pennant: 'Banderín', rect: 'Rectángulo 4:3', square: 'Cuadrado', circle: 'Círculo' },
+};
+
+/** Shape picked in the gallery, hero and format picker; shared across components. */
+export const currentShape = ref<PennantShape>('pennant');
+
+/** Display box for a shape at a given height, in px. */
+export function shapeBox(shape: PennantShape, height: number): { width: number; height: number } {
+  const size = SHAPE_SIZE[shape];
+  return { width: Math.round((height * size.width) / size.height), height };
+}
+
 /** Bytes as the docs print them: `933 B`, `5.1 kB` (`5,1 kB` in Spanish). */
 export function formatBytes(bytes: number, lang: Lang): string {
   if (Math.abs(bytes) < 1000) return `${bytes} B`;
@@ -117,7 +137,8 @@ export interface Snippet {
   code: string;
 }
 
-export type FormatId = 'css' | 'img' | 'png' | 'sprite' | 'module' | 'lazy' | 'react' | 'element';
+export type FormatId =
+  'css' | 'img' | 'png' | 'sprite' | 'module' | 'lazy' | 'fetch' | 'react' | 'element';
 
 export const formatLabels: Record<FormatId, string> = {
   css: 'CSS',
@@ -125,27 +146,41 @@ export const formatLabels: Record<FormatId, string> = {
   png: 'PNG',
   sprite: 'SVG sprite',
   module: 'JS module',
-  lazy: 'loadPennant',
+  lazy: 'loadFlag',
+  fetch: 'fetchPennant',
   react: 'React',
   element: 'Web Component',
 };
 
-/** Copy-ready usage for one pennant in every format. */
-export function snippets(code: string, lang: Lang): Snippet[] {
+/** Copy-ready usage for one flag in one shape, in every format. */
+export function snippets(code: string, lang: Lang, shape: PennantShape = 'pennant'): Snippet[] {
   const name = siteName(code, lang);
   const id = identifier(code);
-  const cdn = DEFAULT_CDN_BASE;
+  const isPennant = shape === 'pennant';
+  const css = isPennant ? 'pennants/css' : `pennants/css/${shape}`;
+  const { width, height } = shapeBox(shape, 36);
+  const png1 = pennantUrl(code, { shape, format: 'png' });
+  const opt = isPennant ? '' : `, { shape: '${shape}' }`;
+  const attr = isPennant ? '' : ` shape="${shape}"`;
   const locale = lang === 'en' ? '' : ` locale="${lang}"`;
   const label = lang === 'en' ? '' : ` label="${name}"`;
+  const sprite = isPennant
+    ? `<!-- copy node_modules/pennants/sprite/pennant.svg to /assets -->`
+    : lang === 'es'
+      ? `<!-- sprite/${shape}.svg no se publica en npm: genéralo con npm run generate (ver Formas) -->`
+      : `<!-- sprite/${shape}.svg is not published to npm: build it with npm run generate (see Shapes) -->`;
   const all: Record<FormatId, string> = {
-    css: `import 'pennants/css';\n\n<span class="pn pn-${code}" role="img" aria-label="${name}"></span>`,
-    img: `<img src="${cdn}/svg/${code}.svg" width="33" height="36" alt="${name}" />`,
-    png: `<img\n  src="${cdn}/png/1x/${code}.png"\n  srcset="${cdn}/png/2x/${code}.png 2x"\n  width="66" height="72" alt="${name}" />`,
-    sprite: `<!-- copy node_modules/pennants/sprite/pennants.svg to /assets -->\n<svg width="33" height="36" role="img" aria-label="${name}">\n  <use href="/assets/pennants.svg#pn-${code}" />\n</svg>`,
-    module: `import ${id} from 'pennants/flags/${code}';\n\nelement.innerHTML = ${id}; // trusted SVG markup`,
-    lazy: `import { loadPennant } from 'pennants';\n\nelement.innerHTML = await loadPennant('${code}');`,
-    react: `import { Pennant } from 'pennants/react';\n\n<Pennant code="${code}" size={32}${locale} />`,
-    element: `import 'pennants/element/register';\n\n<pennant-flag code="${code}" size="32"${label}></pennant-flag>`,
+    css: `import '${css}';\n\n<span class="pn pn-${code}" role="img" aria-label="${name}"></span>`,
+    img: `<img src="${pennantUrl(code, { shape })}" width="${width}" height="${height}" alt="${name}" />`,
+    png: isPennant
+      ? `<img\n  src="${png1}"\n  srcset="${pennantUrl(code, { shape, format: 'png', scale: 2 })} 2x"\n  width="${width}" height="${height}" alt="${name}" />`
+      : `<img src="${png1}" width="${width}" height="${height}" alt="${name}" />`,
+    sprite: `${sprite}\n<svg width="${width}" height="${height}" role="img" aria-label="${name}">\n  <use href="/assets/${shape}.svg#pn-${code}" />\n</svg>`,
+    module: `import { renderFlag } from 'pennants';\nimport ${id} from 'pennants/art/${SHAPE_ART[shape]}/${code}';\n\nelement.innerHTML = renderFlag(${id}${opt}); // trusted SVG markup`,
+    lazy: `import { loadFlag } from 'pennants';\n\nelement.innerHTML = await loadFlag('${code}'${opt});`,
+    fetch: `import { fetchPennant } from 'pennants/fetch';\n\nelement.innerHTML = await fetchPennant('${code}'${opt});`,
+    react: `import { Pennant } from 'pennants/react';\n\n<Pennant code="${code}"${attr} size={32}${locale} />`,
+    element: `import 'pennants/element/register';\n\n<pennant-flag code="${code}"${attr} size="32"${label}></pennant-flag>`,
   };
   return (Object.keys(all) as FormatId[]).map((key) => ({
     id: key,

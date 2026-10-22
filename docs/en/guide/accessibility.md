@@ -37,7 +37,7 @@ Add the name yourself:
 <span class="pn pn-ar" role="img" aria-label="Argentina"></span>
 <span class="pn pn-ar" aria-hidden="true"></span> Argentina
 
-<svg role="img" aria-label="Argentina"><use href="/pennants.svg#pn-ar" /></svg>
+<svg role="img" aria-label="Argentina"><use href="/pennant.svg#pn-ar" /></svg>
 ```
 
 ## Localized names

@@ -30,18 +30,18 @@ not inline the flags; their CSS is 15–16 kB min.
 What these numbers mean in practice:
 
 - A static flag import costs about 1 kB gzip per flag; there is no fixed runtime cost.
-- `loadPennant` and the components carry a 271-entry loader map with hashed chunk names, about
+- `loadFlag` and the components carry a 271-entry loader map with hashed chunk names, about
   5 kB gzip, before any flag is shown. For a handful of known flags, static imports are cheaper.
 - In a Next.js Server Component, `<PennantSvg>` adds no client JavaScript: it renders to HTML.
 
 ## Flag files
 
-| Set                            | Raw    | Brotli (sum of files) |
-| ------------------------------ | ------ | --------------------- |
-| All 271 SVGs (`svg/`)          | 1.2 MB | ≈370 kB               |
-| Median SVG                     | 1.2 kB | ≈530 B                |
-| Largest SVG (`rs`, Serbia)     | 60 kB  | ≈14 kB                |
-| Sprite (`sprite/pennants.svg`) | 1.2 MB | ≈260 kB               |
+| Set                           | Raw    | Brotli (sum of files) |
+| ----------------------------- | ------ | --------------------- |
+| All 271 SVGs (`svg/`)         | 1.2 MB | ≈370 kB               |
+| Median SVG                    | 1.2 kB | ≈530 B                |
+| Largest SVG (`rs`, Serbia)    | 60 kB  | ≈14 kB                |
+| Sprite (`sprite/pennant.svg`) | 1.2 MB | ≈260 kB               |
 
 PNG files average about 0.9 kB (1x) and 1.6 kB (2x). Country names cost nothing: ISO names come
 from the runtime's `Intl.DisplayNames`; only the 22 non-ISO names (`gb-eng`, `asean`, ...) are
@@ -52,7 +52,7 @@ depends only on what you import.
 
 ## How lazy chunks work
 
-`loadPennant` holds a map of 271 dynamic `import()` calls, one per flag. Bundlers turn each
+`loadFlag` holds a map of 271 dynamic `import()` calls, one per flag. Bundlers turn each
 entry into a separate chunk, so:
 
 - your build output contains 271 small files, but
@@ -65,10 +65,10 @@ shown many times is fetched and parsed once.
 ## Keeping bundles minimal
 
 - Import what you use: `import { getPennantName } from 'pennants'` does not pull in any flag.
-- For a fixed, small set of flags, use static per-flag imports. Use `loadPennant` or the
+- For a fixed, small set of flags, use static per-flag imports. Use `loadFlag` or the
   components when the flag is chosen at runtime and the set is large.
 - Avoid `import * as flags` or building an object of all flag modules: that bundles all 271.
-- Do not iterate `codes` and call `loadPennant` for each one to show a list; use CSS classes or
+- Do not iterate `codes` and call `loadFlag` for each one to show a list; use CSS classes or
   `<img>` for long lists.
 - With Vite, SvelteKit or Astro, set `assetsInlineLimit` so the CSS does not inline every flag.
 

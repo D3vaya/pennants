@@ -1,8 +1,18 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { loadPennant } from 'pennants';
+import { SHAPE_SIZE, loadFlag } from 'pennants';
 import CopyCode from './CopyCode.vue';
-import { asset, type FormatId, siteName, snippets, useLang } from '../shared';
+import ShapeSwitcher from './ShapeSwitcher.vue';
+import {
+  asset,
+  currentShape,
+  flagAsset,
+  type FormatId,
+  shapeBox,
+  siteName,
+  snippets,
+  useLang,
+} from '../shared';
 
 const { lang, t } = useLang();
 const flags = ['ar', 'jp', 'br', 'es', 'gb-eng', 'za'];
@@ -10,43 +20,57 @@ const code = ref('ar');
 const format = ref<FormatId>('css');
 const markup = ref('');
 
+// No size figures here: they live on the Performance page, read from the budget snapshot.
 const notes: Record<'en' | 'es', Record<FormatId, string>> = {
   en: {
-    css: 'One small stylesheet; each image loads only when its class is used. With Vite, set assetsInlineLimit (see FAQ).',
+    css: 'One stylesheet per shape, no JavaScript; each image loads only when its class is used. With Vite, use the cdn variant or set assetsInlineLimit (see FAQ).',
     img: 'Zero bundle cost. Cached by the browser and the CDN.',
-    png: 'For email, native apps and places without SVG support.',
-    sprite:
-      'One file with all 271 flags (≈260 kB brotli): worth it only when you show many at once.',
-    module: 'Tree-shaken: only the flags you import are bundled (≈1 kB gzip each in a Vite build).',
-    lazy: '≈5 kB gzip for the loader map, then one small chunk per flag, fetched on first use.',
-    react: 'Lazy inline SVG or <img>, accessible name by default, SSR-safe (≈7 kB gzip).',
-    element: 'Framework-free custom element with lazy loading (≈7 kB gzip).',
+    png: 'For email, native apps and places without SVG support. 2x files exist for the pennant only.',
+    sprite: 'One file with every flag in one shape: worth it only when you show many at once.',
+    module: 'Tree-shaken artwork: only the flags you import are bundled, framed in any shape.',
+    lazy: 'A loader map up front, then one small chunk per flag on first use.',
+    fetch: 'No loader map: each flag is downloaded as an SVG file from the CDN or your host.',
+    react:
+      'Lazy inline SVG, fetch or <img>; accessible name by default; safe in Server Components.',
+    element: 'Framework-free custom element with lazy loading or fetch mode; CSP-safe.',
   },
   es: {
-    css: 'Una hoja de estilos pequeña; cada imagen se descarga solo cuando se usa su clase. Con Vite, configura assetsInlineLimit (ver FAQ).',
+    css: 'Una hoja de estilos por forma, sin JavaScript; cada imagen se descarga solo cuando se usa su clase. Con Vite, usa la variante cdn o configura assetsInlineLimit (ver FAQ).',
     img: 'Cero impacto en el bundle. La caché del navegador y del CDN hace el resto.',
-    png: 'Para email, apps nativas y lugares sin soporte de SVG.',
+    png: 'Para email, apps nativas y lugares sin soporte de SVG. Los archivos 2x existen solo para el banderín.',
     sprite:
-      'Un archivo con las 271 banderas (≈260 kB con brotli): conviene solo si muestras muchas a la vez.',
+      'Un archivo con todas las banderas en una forma: conviene solo si muestras muchas a la vez.',
     module:
-      'Tree-shaking: solo se incluyen las banderas que importas (≈1 kB con gzip cada una en una build de Vite).',
-    lazy: '≈5 kB con gzip del mapa de carga y luego un chunk pequeño por bandera, al usarla por primera vez.',
+      'Dibujos con tree-shaking: solo se incluyen las banderas que importas, en cualquier forma.',
+    lazy: 'Un mapa de carga de entrada y luego un chunk pequeño por bandera al usarla por primera vez.',
+    fetch:
+      'Sin mapa de carga: cada bandera se descarga como archivo SVG desde el CDN o tu servidor.',
     react:
-      'SVG inline diferido o <img>, nombre accesible por defecto, compatible con SSR (≈7 kB con gzip).',
-    element: 'Custom element sin framework, con carga diferida (≈7 kB con gzip).',
+      'SVG inline diferido, fetch o <img>; nombre accesible por defecto; compatible con Server Components.',
+    element:
+      'Custom element sin framework, con carga diferida o modo fetch; compatible con CSP estricta.',
   },
 };
 
-const all = computed(() => snippets(code.value, lang.value));
+const all = computed(() => snippets(code.value, lang.value, currentShape.value));
 const snippet = computed(() => all.value.find((s) => s.id === format.value) ?? all.value[0]!);
 const name = computed(() => siteName(code.value, lang.value));
-const inline = computed(() => ['module', 'lazy', 'react'].includes(format.value));
+const inline = computed(() => ['module', 'lazy', 'fetch', 'react'].includes(format.value));
+const box = computed(() => shapeBox(currentShape.value, 96));
+const viewBox = computed(() => {
+  const size = SHAPE_SIZE[currentShape.value];
+  return `0 0 ${size.width} ${size.height}`;
+});
+const pngPath = computed(
+  () =>
+    `png/${currentShape.value}/${currentShape.value === 'pennant' ? '2x' : '1x'}/${code.value}.png`,
+);
 
 watch(
-  [code, inline],
-  async ([value, needsMarkup]) => {
+  [code, inline, currentShape],
+  async ([value, needsMarkup, shape]) => {
     if (!needsMarkup || import.meta.env.SSR) return;
-    markup.value = await loadPennant(value);
+    markup.value = await loadFlag(value, { shape });
   },
   { immediate: true },
 );
@@ -54,6 +78,7 @@ watch(
 
 <template>
   <div class="picker">
+    <div class="shape-row"><ShapeSwitcher :code="code" /></div>
     <div class="tabs" role="radiogroup" :aria-label="t.format">
       <button
         v-for="s in all"
@@ -68,14 +93,35 @@ watch(
       </button>
     </div>
     <div class="body">
-      <div class="preview" :aria-label="`${t.preview}: ${name}`" role="img">
-        <span v-if="format === 'css'" :class="['pn', `pn-${code}`]" class="big" />
-        <img v-else-if="format === 'img'" :src="asset(`svg/${code}.svg`)" alt="" />
-        <img v-else-if="format === 'png'" :src="asset(`png/2x/${code}.png`)" alt="" />
-        <svg v-else-if="format === 'sprite'" viewBox="0 0 66 72">
-          <use :href="asset(`sprite/pennants.svg#pn-${code}`)" />
+      <div
+        class="preview"
+        :aria-label="`${t.preview}: ${name}`"
+        role="img"
+        :style="{ '--w': `${box.width}px`, '--h': `${box.height}px` }"
+      >
+        <!-- The site loads only the pennant stylesheet; other shapes show the same file as a background. -->
+        <span
+          v-if="format === 'css' && currentShape === 'pennant'"
+          :class="['pn', `pn-${code}`]"
+          class="big"
+        />
+        <span
+          v-else-if="format === 'css'"
+          class="css-shape"
+          :style="{ backgroundImage: `url(${flagAsset(code, currentShape)})` }"
+        />
+        <img v-else-if="format === 'img'" :src="flagAsset(code, currentShape)" alt="" />
+        <img v-else-if="format === 'png'" :src="asset(pngPath)" alt="" />
+        <svg v-else-if="format === 'sprite'" :viewBox="viewBox">
+          <use :href="asset(`sprite/${currentShape}.svg#pn-${code}`)" />
         </svg>
-        <pennant-flag v-else-if="format === 'element'" :code="code" size="96" label="" />
+        <pennant-flag
+          v-else-if="format === 'element'"
+          :code="code"
+          :shape="currentShape"
+          size="96"
+          label=""
+        />
         <span v-else class="inline" v-html="markup" />
         <select v-model="code" :aria-label="t.flag">
           <option v-for="f in flags" :key="f" :value="f">{{ f }}</option>
@@ -133,10 +179,17 @@ watch(
 }
 .preview img,
 .preview svg,
+.preview .css-shape,
 .preview .inline :deep(svg) {
   display: block;
-  width: 88px;
-  height: 96px;
+  width: var(--w);
+  height: var(--h);
+}
+.css-shape {
+  background: center / contain no-repeat;
+}
+.shape-row {
+  padding: 8px 8px 0;
 }
 .big {
   font-size: 96px;

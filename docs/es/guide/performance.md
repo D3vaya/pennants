@@ -32,7 +32,7 @@ Next.js 16 y Angular 22 no incrustan las banderas; su CSS ocupa 15–16 kB min.
 En la práctica:
 
 - Un import estático cuesta alrededor de 1 kB con gzip por bandera, sin costo fijo de runtime.
-- `loadPennant` y los componentes incluyen un mapa de carga de 271 entradas con nombres de chunk
+- `loadFlag` y los componentes incluyen un mapa de carga de 271 entradas con nombres de chunk
   con hash, unos 5 kB con gzip, antes de mostrar ninguna bandera. Para unas pocas banderas
   conocidas, los imports estáticos salen más baratos.
 - En un Server Component de Next.js, `<PennantSvg>` no agrega JavaScript al cliente: se
@@ -40,12 +40,12 @@ En la práctica:
 
 ## Archivos de banderas
 
-| Conjunto                       | Sin comprimir | Brotli (suma de archivos) |
-| ------------------------------ | ------------- | ------------------------- |
-| Los 271 SVG (`svg/`)           | 1,2 MB        | ≈370 kB                   |
-| SVG mediano                    | 1,2 kB        | ≈530 B                    |
-| SVG más pesado (`rs`, Serbia)  | 60 kB         | ≈14 kB                    |
-| Sprite (`sprite/pennants.svg`) | 1,2 MB        | ≈260 kB                   |
+| Conjunto                      | Sin comprimir | Brotli (suma de archivos) |
+| ----------------------------- | ------------- | ------------------------- |
+| Los 271 SVG (`svg/`)          | 1,2 MB        | ≈370 kB                   |
+| SVG mediano                   | 1,2 kB        | ≈530 B                    |
+| SVG más pesado (`rs`, Serbia) | 60 kB         | ≈14 kB                    |
+| Sprite (`sprite/pennant.svg`) | 1,2 MB        | ≈260 kB                   |
 
 Los PNG pesan en promedio unos 0,9 kB (1x) y 1,6 kB (2x). Los nombres de los países no pesan
 nada: los nombres ISO salen de `Intl.DisplayNames` del propio entorno; solo se incluyen los 22
@@ -56,7 +56,7 @@ usuarios depende solo de lo que importes.
 
 ## Cómo funcionan los chunks diferidos
 
-`loadPennant` contiene un mapa de 271 `import()` dinámicos, uno por bandera. Los bundlers
+`loadFlag` contiene un mapa de 271 `import()` dinámicos, uno por bandera. Los bundlers
 convierten cada entrada en un chunk separado, así que:
 
 - tu build genera 271 archivos pequeños, pero
@@ -71,11 +71,11 @@ bandera que aparece muchas veces se descarga y se procesa una sola vez.
 - Importa solo lo que usas: `import { getPennantName } from 'pennants'` no arrastra ninguna
   bandera.
 - Para un conjunto fijo y pequeño de banderas, usa imports estáticos por bandera. Usa
-  `loadPennant` o los componentes cuando la bandera se decide en tiempo de ejecución y el
+  `loadFlag` o los componentes cuando la bandera se decide en tiempo de ejecución y el
   conjunto es grande.
 - Evita `import * as flags` o armar un objeto con todos los módulos: eso mete las 271 en el
   bundle.
-- No recorras `codes` llamando a `loadPennant` para mostrar una lista larga; para eso están las
+- No recorras `codes` llamando a `loadFlag` para mostrar una lista larga; para eso están las
   clases CSS o `<img>`.
 - Con Vite, SvelteKit o Astro, configura `assetsInlineLimit` para que el CSS no incruste todas
   las banderas.

@@ -2,7 +2,8 @@
 
 `pennants` incluye 271 banderas (los 249 países y territorios de ISO 3166-1, más regiones y
 organizaciones) con forma de banderín: una barra dorada de la que cuelga la bandera, cortada en
-punta. Todos los banderines miden 66 × 72 (proporción 11:12).
+punta. Todos los banderines miden 66 × 72. Las mismas banderas vienen también como
+rectángulos (4:3), cuadrados y círculos; mira [Formas](./shapes).
 
 ## Instalación
 
@@ -27,7 +28,7 @@ fija la versión:
 
 ```html
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/ar.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/ar.svg"
   width="33"
   height="36"
   alt="Argentina"
@@ -50,7 +51,7 @@ Sin JavaScript. En una build de Vite 8 la hoja de estilos agrega 3,7 kB con gzip
 se descarga solo cuando algún elemento usa su clase.
 
 ```js
-import 'pennants/css';
+import 'pennants/css'; // o 'pennants/css/rect', 'pennants/css/square', 'pennants/css/circle'
 ```
 
 ```html
@@ -73,10 +74,10 @@ incrustan.
 ### Imágenes
 
 ```html
-<img src="/assets/pennants/svg/ar.svg" width="33" height="36" alt="Argentina" />
+<img src="/assets/pennants/svg/pennant/ar.svg" width="33" height="36" alt="Argentina" />
 <img
-  src="/assets/pennants/png/1x/ar.png"
-  srcset="/assets/pennants/png/2x/ar.png 2x"
+  src="/assets/pennants/png/pennant/1x/ar.png"
+  srcset="/assets/pennants/png/pennant/2x/ar.png 2x"
   width="66"
   height="72"
   alt="Argentina"
@@ -88,24 +89,29 @@ devuelve `pennantUrl(código)`.
 
 ### Un módulo por bandera
 
-```js
-import ar from 'pennants/flags/ar'; // el SVG como string, con tree-shaking
+El dibujo de cada bandera es su propio módulo, con tree-shaking; `renderFlag` le pone el marco
+de cualquier forma.
 
-element.innerHTML = ar;
+```js
+import { renderFlag } from 'pennants';
+import ar from 'pennants/art/1x1/ar';
+
+element.innerHTML = renderFlag(ar); // o renderFlag(ar, { shape: 'circle' })
 ```
 
 ### Carga diferida
 
 ```js
-import { loadPennant, toPennantCode } from 'pennants';
+import { loadFlag, toPennantCode } from 'pennants';
 
-const svg = await loadPennant(toPennantCode(entradaDelUsuario)); // descarga un chunk pequeño
+const svg = await loadFlag(toPennantCode(entradaDelUsuario)); // descarga un chunk pequeño
+const circulo = await loadFlag('jp', { shape: 'circle' });
 ```
 
 ### Modo fetch
 
-`loadPennant` incluye en el bundle un mapa de carga pequeño con un chunk por bandera. El modo
-fetch lo evita: descarga `<base>/svg/<código>.svg` en tiempo de ejecución, por defecto desde
+`loadFlag` incluye en el bundle un mapa de carga pequeño con un chunk por bandera. El modo
+fetch lo evita: descarga `<base>/svg/<forma>/<código>.svg` en tiempo de ejecución, por defecto desde
 jsDelivr o desde tu propia copia de la carpeta `svg/`.
 
 ```js
@@ -124,6 +130,7 @@ se guardan en caché por URL y deben ser un documento `<svg>` sin scripts.
 import { Pennant } from 'pennants/react';
 
 <Pennant code="ar" size={32} locale="es" />;
+<Pennant code="ar" shape="circle" size={32} locale="es" />;
 ```
 
 ### Web Component
@@ -134,6 +141,7 @@ import 'pennants/element/register';
 
 ```html
 <pennant-flag code="ar" size="32" label="Argentina"></pennant-flag>
+<pennant-flag code="ar" shape="rect" size="32" label="Argentina"></pennant-flag>
 ```
 
 ## Siguientes pasos
