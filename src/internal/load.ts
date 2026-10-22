@@ -5,6 +5,12 @@ import { toShape } from './core.ts';
 export interface FlagOptions {
   /** Flag shape, `pennant` by default. */
   shape?: PennantShape;
+  /**
+   * Replaces the `pn-<code>-` id namespace of the frame and artwork, e.g. to
+   * inline the same flag several times in one document. Must match
+   * `/^[A-Za-z][\w-]*$/`.
+   */
+  idPrefix?: string;
 }
 
 /** Options of {@link loadArt}. */
@@ -32,7 +38,7 @@ export async function loadArt(code: string, options: LoadArtOptions = {}): Promi
  * (`rect` expects `pennants/art/4x3/<code>`).
  */
 export function renderFlag(art: FlagArt, options: FlagOptions = {}): string {
-  return composeFlag(art, toShape(options.shape ?? 'pennant'));
+  return composeFlag(art, toShape(options.shape ?? 'pennant'), options.idPrefix);
 }
 
 /**
@@ -42,7 +48,7 @@ export function renderFlag(art: FlagArt, options: FlagOptions = {}): string {
  */
 export async function loadFlag(code: string, options: FlagOptions = {}): Promise<string> {
   const shape = toShape(options.shape ?? 'pennant');
-  return composeFlag(await loadArt(code, { set: SHAPE_ART[shape] }), shape);
+  return composeFlag(await loadArt(code, { set: SHAPE_ART[shape] }), shape, options.idPrefix);
 }
 
 /** Loads one flag as a pennant: alias of `loadFlag(code, { shape: 'pennant' })`. */

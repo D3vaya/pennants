@@ -73,6 +73,26 @@ describe('loadPennant / loadFlag / loadArt / renderFlag', () => {
     await expect(loadArt('zz', { set: '4x3' })).rejects.toThrow(RangeError);
   });
 
+  it('accepts a custom id prefix', async () => {
+    const custom = renderFlag(ar, { shape: 'circle', idPrefix: 'hero-' });
+    expect(custom).toContain('id="hero-clip"');
+    expect(custom).not.toContain('pn-ar-');
+    expect(await loadFlag('ar', { idPrefix: 'x-' })).toContain('url(#x-clip)');
+    expect(() => renderFlag(ar, { idPrefix: '"><script>' })).toThrow();
+  });
+
+  it('namespaces ids per shape by default', () => {
+    const ids = (svg: string): string[] =>
+      [...svg.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1] ?? '');
+    const all = [
+      ...ids(renderFlag(ar)),
+      ...ids(renderFlag(ar, { shape: 'square' })),
+      ...ids(renderFlag(ar, { shape: 'circle' })),
+      ...ids(renderFlag(ar43, { shape: 'rect' })),
+    ];
+    expect(new Set(all).size).toBe(all.length);
+  });
+
   it('renders static art synchronously', () => {
     expect(renderFlag(ar)).toBe(composeFlag(ar, 'pennant'));
     expect(renderFlag(ar43, { shape: 'rect' })).toBe(composeFlag(ar43, 'rect'));
@@ -185,6 +205,7 @@ describe('pennantUrl', () => {
   it('validates the code and shape', () => {
     expect(() => pennantUrl('../../etc')).toThrow(RangeError);
     expect(() => pennantUrl('ar', { shape: '../x' as 'rect' })).toThrow(RangeError);
+    expect(() => pennantUrl('ar', { format: 'gif' as 'png' })).toThrow(RangeError);
   });
 });
 

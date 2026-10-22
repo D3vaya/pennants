@@ -76,7 +76,7 @@ const normalize = (value: string | null): PennantCode | undefined => {
 /** Options of {@link definePennantElement}. */
 export interface DefinePennantElementOptions {
   /**
-   * Fetch mode for every instance of this tag: load `<base>/svg/<code>.svg`
+   * Fetch mode for every instance of this tag: load `<base>/svg/<shape>/<code>.svg`
    * with `fetchPennant` instead of the bundled flag chunks. A per-element
    * `base` attribute takes precedence.
    */
@@ -87,7 +87,7 @@ export interface DefinePennantElementOptions {
  * `<pennant-flag code="ar" size="32" label="Argentina">` — lazily loads the
  * flag into its shadow root. Fires `pennant-load` / `pennant-error`. With a
  * `base` attribute (or `definePennantElement(tag, { base })`) the flag is
- * fetched from `<base>/svg/<code>.svg` instead of the bundled chunks.
+ * fetched from `<base>/svg/<shape>/<code>.svg` instead of the bundled chunks.
  */
 export class PennantElement extends Base {
   /** Attributes the element reacts to: `code`, `size`, `label`, `base`, `shape`. */
