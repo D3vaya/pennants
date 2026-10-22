@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { loadPennant } from 'pennants';
 import CopyCode from './CopyCode.vue';
 import { useLang } from '../shared';
 
@@ -15,6 +16,11 @@ const presets = [
 const light = ref(defaults.light);
 const dark = ref(defaults.dark);
 const flags = ['ar', 'uy', 'gr', 'fi', 'ca', 'kr'];
+// Inline SVG, themed by the .pn-bar-l/.pn-bar-d rule from the site's pennants CSS.
+const markup = ref<string[]>([]);
+onMounted(async () => {
+  markup.value = await Promise.all(flags.map((code) => loadPennant(code)));
+});
 
 const css = computed(
   () =>
@@ -30,7 +36,7 @@ function apply(preset: { light: string; dark: string }) {
 <template>
   <div class="playground">
     <div class="flags" :style="{ '--pennant-bar-light': light, '--pennant-bar-dark': dark }">
-      <pennant-flag v-for="code in flags" :key="code" :code="code" size="72" />
+      <span v-for="(svg, i) in markup" :key="flags[i]" class="flag" v-html="svg" />
     </div>
     <div class="controls">
       <label>{{ t.light }} <input v-model="light" type="color" /></label>
@@ -53,6 +59,11 @@ function apply(preset: { light: string; dark: string }) {
   border: 1px solid var(--vp-c-divider);
   border-radius: 12px;
   background: var(--vp-c-bg-soft);
+}
+.flag :deep(svg) {
+  display: block;
+  width: 66px;
+  height: 72px;
 }
 .flags {
   display: flex;

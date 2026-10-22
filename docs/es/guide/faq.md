@@ -15,18 +15,19 @@ degradado.
 
 ## Content Security Policy {#csp}
 
-| Formato                           | Necesita                                                  |
-| --------------------------------- | --------------------------------------------------------- |
-| `<img>`, PNG, clases CSS          | `img-src` con tu dominio o `https://cdn.jsdelivr.net`     |
-| `toDataUri(svg)` en `<img>` o CSS | `img-src data:`                                           |
-| Chunks diferidos                  | `script-src` de tu propio origen (son parte de tu bundle) |
-| SVG inline y `<pennant-flag>`     | ver abajo                                                 |
+| Formato                            | Necesita                                                  |
+| ---------------------------------- | --------------------------------------------------------- |
+| `<img>`, PNG, clases CSS           | `img-src` con tu dominio o `https://cdn.jsdelivr.net`     |
+| `toDataUri(svg)` en `<img>` o CSS  | `img-src data:`                                           |
+| Chunks diferidos                   | `script-src` de tu propio origen (son parte de tu bundle) |
+| SVG inline, React, personalización | nada extra: funciona con `style-src 'self'`               |
+| `<pennant-flag>`                   | ver abajo                                                 |
 
-Los colores del degradado de la barra se escriben como atributos
-`style="stop-color: var(...)"`, y `<pennant-flag>` agrega un elemento `<style>` a su shadow
-root. Una política `style-src` sin `'unsafe-inline'` bloquea ambos: la barra se ve oscura y el
-elemento pierde su tamaño. Con una política de estilos estricta, usa los formatos de imagen o las
-clases CSS.
+El SVG inline no usa estilos inline: los colores de la barra son atributos de presentación y la
+personalización es una regla de `pennants/css/theme.css`. En la versión 0.1.0, `<pennant-flag>`
+agrega un elemento `<style>` a su shadow root, que una política `style-src` sin
+`'unsafe-inline'` bloquea; el elemento pierde entonces su tamaño. Con una política de estilos
+estricta, usa React, SVG inline, los formatos de imagen o las clases CSS.
 
 ## SSR e hidratación {#ssr-e-hidratacion}
 

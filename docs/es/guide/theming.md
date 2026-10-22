@@ -1,15 +1,24 @@
 # Personalización
 
-La barra de la que cuelga la bandera se dibuja con un degradado que lee dos custom properties
-de CSS:
+La barra de la que cuelga la bandera es un degradado cuyos dos colores llevan las clases
+`pn-bar-l` y `pn-bar-d`. Una hoja de estilos pequeña los asocia a dos custom properties de CSS:
 
 | Propiedad             | Valor por defecto |
 | --------------------- | ----------------- |
 | `--pennant-bar-light` | `#d5b97a`         |
 | `--pennant-bar-dark`  | `#8e713f`         |
 
-Defínelas en cualquier elemento ancestro. Las custom properties se heredan a través del shadow
-root de `<pennant-flag>`, así que el mismo CSS sirve para todos los formatos inline.
+La regla está en `pennants/css/theme.css` (unos 110 bytes) y ya viene incluida en
+`pennants/css` y `pennants/css/cdn`. Si usas SVG inline sin las clases CSS (módulos por bandera,
+`loadPennant`, React), impórtala una vez:
+
+```js
+import 'pennants/css/theme.css';
+```
+
+Después define las propiedades en cualquier elemento ancestro. Sin esa hoja de estilos, la
+barra mantiene el dorado por defecto, así que nada se rompe. Como es una regla de CSS normal,
+funciona con una Content Security Policy estricta (`style-src 'self'`).
 
 <ThemePlayground />
 
@@ -29,10 +38,15 @@ root de `<pennant-flag>`, así que el mismo CSS sirve para todos los formatos in
 
 ## Qué formatos se pueden personalizar
 
-Solo el SVG inline: módulos por bandera insertados en el DOM, `loadPennant`, `<Pennant>` (modo
-inline), `<PennantSvg>` y `<pennant-flag>`. Los archivos cargados como imagen (`<img>`, PNG,
-fondos CSS, el sprite usado con `<use>` desde otro archivo) son documentos aislados y siempre
-usan el dorado por defecto.
+El SVG inline en tu documento, con la hoja de estilos del tema cargada: módulos por bandera
+insertados en el DOM, `loadPennant`, `<Pennant>` (modo inline) y `<PennantSvg>`.
+
+No se pueden personalizar:
+
+- los archivos cargados como imagen (`<img>`, PNG, fondos CSS, el sprite usado con `<use>`
+  desde otro archivo): son documentos aislados y siempre usan el dorado por defecto;
+- `<pennant-flag>` en la versión 0.1.0: la regla del tema de tu documento no llega dentro de su
+  shadow root.
 
 ## Tamaño
 

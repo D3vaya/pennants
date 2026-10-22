@@ -14,13 +14,16 @@ you can change. Costs below are what each option adds to an empty Vite 8 product
 | `loadPennant(code)`              | ≈5.1 kB (loader map) + one chunk per flag shown | Client (async)                | Yes         | Yes                  | Chunk files, HTTP cache       |
 | React `<Pennant>`                | ≈6.9 kB + one chunk per flag shown              | Box on server, flag on client | Yes         | Yes                  | Chunk files                   |
 | React `<PennantSvg svg={ar}>`    | ≈8.0 kB including `ar` ²                        | Yes, full markup              | Yes         | No                   | Part of your bundle           |
-| `<pennant-flag>`                 | ≈7.0 kB + one chunk per flag shown              | Client only                   | Yes         | Yes                  | Chunk files                   |
+| `<pennant-flag>`                 | ≈7.0 kB + one chunk per flag shown              | Client only                   | No ³        | Yes                  | Chunk files                   |
 
 ¹ With `assetsInlineLimit` set as in the [FAQ](./faq#bundler-asset-imports), or 1.9 kB with
 `pennants/css/cdn` (flags from jsDelivr); without either, Vite
 inlines the flags and the CSS is 52 kB gzip. Next.js and Angular emit files by default.
 
 ² In a Next.js Server Component, `<PennantSvg>` adds no client JavaScript: it renders to HTML.
+
+³ The theme rule does not reach inside the element's shadow root in 0.1.0. See
+[Theming](./theming).
 
 ## Quick decisions
 
@@ -31,8 +34,8 @@ inlines the flags and the CSS is 52 kB gzip. Next.js and Angular emit files by d
   in React through `<PennantSvg svg={ar} />`.
 - **Flag chosen at runtime** (user profile, API data): `loadPennant`, `<Pennant>` or
   `<pennant-flag>`.
-- **You want to recolor the bar:** any inline format (modules, `loadPennant`, React,
-  Web Component). See [Theming](./theming).
+- **You want to recolor the bar:** inline SVG (modules, `loadPennant`, React) with
+  `pennants/css/theme.css`. See [Theming](./theming).
 - **Email, native apps, Open Graph images:** PNG.
 - **Hundreds of flags on one page at once:** the sprite, or CSS classes.
 

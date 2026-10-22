@@ -15,7 +15,7 @@ de la librería sola.
 | `loadPennant(código)`         | ≈5,1 kB (mapa de carga) + un chunk por bandera mostrada | Cliente (asíncrono)                        | Sí                | Sí                        | Chunks, caché HTTP                 |
 | React `<Pennant>`             | ≈6,9 kB + un chunk por bandera mostrada                 | Caja en el servidor, bandera en el cliente | Sí                | Sí                        | Chunks                             |
 | React `<PennantSvg svg={ar}>` | ≈8,0 kB con `ar` incluida ²                             | Sí, con el SVG completo                    | Sí                | No                        | Parte de tu bundle                 |
-| `<pennant-flag>`              | ≈7,0 kB + un chunk por bandera mostrada                 | Solo cliente                               | Sí                | Sí                        | Chunks                             |
+| `<pennant-flag>`              | ≈7,0 kB + un chunk por bandera mostrada                 | Solo cliente                               | No ³              | Sí                        | Chunks                             |
 
 ¹ Con `assetsInlineLimit` configurado como en las preguntas frecuentes, o 1,9 kB con
 `pennants/css/cdn` (banderas desde jsDelivr); ver
@@ -24,6 +24,9 @@ banderas y el CSS pesa 52 kB con gzip. Next.js y Angular generan archivos por de
 
 ² En un Server Component de Next.js, `<PennantSvg>` no agrega JavaScript al cliente: se
 renderiza a HTML.
+
+³ La regla del tema no llega dentro del shadow root del elemento en la versión 0.1.0. Mira
+[Personalización](./theming).
 
 ## Decisiones rápidas
 
@@ -34,8 +37,8 @@ renderiza a HTML.
   bandera; en React, `<PennantSvg svg={ar} />`.
 - **Bandera elegida en tiempo de ejecución** (perfil de usuario, datos de una API):
   `loadPennant`, `<Pennant>` o `<pennant-flag>`.
-- **Quieres cambiar el color de la barra:** cualquier formato inline (módulos, `loadPennant`,
-  React, Web Component). Mira [Personalización](./theming).
+- **Quieres cambiar el color de la barra:** SVG inline (módulos, `loadPennant`, React) con
+  `pennants/css/theme.css`. Mira [Personalización](./theming).
 - **Email, apps nativas, imágenes Open Graph:** PNG.
 - **Cientos de banderas a la vez en una página:** el sprite o las clases CSS.
 

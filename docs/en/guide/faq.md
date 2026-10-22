@@ -19,12 +19,14 @@ yields duplicate ids. Browsers usually still render it, until the first copy is 
 | `<img>`, PNG, CSS classes       | `img-src` for your host or `https://cdn.jsdelivr.net`   |
 | `toDataUri(svg)` in `<img>`/CSS | `img-src data:`                                         |
 | Lazy chunks                     | `script-src` for your own origin (they are your bundle) |
-| Inline SVG and `<pennant-flag>` | see below                                               |
+| Inline SVG, React, theming      | nothing extra: works with `style-src 'self'`            |
+| `<pennant-flag>`                | see below                                               |
 
-The bar gradient stops are written as `style="stop-color: var(...)"` attributes, and
-`<pennant-flag>` adds a `<style>` element to its shadow root. A `style-src` policy without
-`'unsafe-inline'` blocks both, which turns the bar dark and breaks the element's sizing. With a
-strict style policy, use the image formats or the CSS classes.
+Inline SVG uses no inline styles: the bar colors are presentation attributes and theming is a
+rule in `pennants/css/theme.css`. `<pennant-flag>` in 0.1.0 adds a `<style>` element to its
+shadow root, which a `style-src` policy without `'unsafe-inline'` blocks; the element then
+loses its sizing. With a strict style policy, use React, inline SVG, the image formats or the
+CSS classes.
 
 ## SSR and hydration
 

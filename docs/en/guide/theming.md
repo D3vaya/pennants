@@ -1,14 +1,24 @@
 # Theming
 
-The hanging bar is drawn with a gradient that reads two CSS custom properties:
+The hanging bar is a gradient whose two stops carry the classes `pn-bar-l` and `pn-bar-d`. A
+small stylesheet maps them to two CSS custom properties:
 
 | Property              | Default   |
 | --------------------- | --------- |
 | `--pennant-bar-light` | `#d5b97a` |
 | `--pennant-bar-dark`  | `#8e713f` |
 
-Set them on any ancestor. Custom properties inherit through the shadow root of
-`<pennant-flag>`, so the same CSS works for every inline format.
+The mapping rule ships in `pennants/css/theme.css` (about 110 bytes) and is already part of
+`pennants/css` and `pennants/css/cdn`. If you use inline SVG without the CSS classes (per-flag
+modules, `loadPennant`, React), import it once:
+
+```js
+import 'pennants/css/theme.css';
+```
+
+Then set the properties on any ancestor. Without the stylesheet the stops keep their default
+gold, so nothing breaks. Because theming is a plain stylesheet rule, it works under a strict
+Content Security Policy (`style-src 'self'`).
 
 <ThemePlayground />
 
@@ -28,10 +38,15 @@ Set them on any ancestor. Custom properties inherit through the shadow root of
 
 ## Which formats can be themed
 
-Only inline SVG: per-flag modules inserted into the DOM, `loadPennant`, `<Pennant>` (inline
-mode), `<PennantSvg>` and `<pennant-flag>`. Files loaded as images (`<img>`, PNG, CSS
-backgrounds, the sprite through `<use>` from another file) are isolated documents and always
-use the default gold.
+Inline SVG in your document, with the theme stylesheet loaded: per-flag modules inserted into
+the DOM, `loadPennant`, `<Pennant>` (inline mode) and `<PennantSvg>`.
+
+Not themeable:
+
+- files loaded as images (`<img>`, PNG, CSS backgrounds, the sprite through `<use>` from another
+  file): they are isolated documents and always use the default gold;
+- `<pennant-flag>` in 0.1.0: the theme rule in your document does not reach inside its shadow
+  root.
 
 ## Size
 
