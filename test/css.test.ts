@@ -7,9 +7,11 @@ import {
   minifyCss,
   pennantsCss,
   sizeRules,
+  SHAPE_CLASS,
   themeCss,
   SIZES,
 } from '../scripts/lib/css.ts';
+import { BAR_CLASS } from '../src/shapes.ts';
 
 describe('baseRule', () => {
   it('is 1em tall and keeps the 66:72 pennant ratio', () => {
@@ -42,7 +44,7 @@ describe('sizeRules', () => {
 describe('flagRule', () => {
   it('points at the flag SVG', () => {
     expect(flagRule('gb-eng')).toBe(
-      '.pn-gb-eng {\n  background-image: url(../svg/pennant/gb-eng.svg);\n}\n',
+      '.pn.pn-gb-eng {\n  background-image: url(../svg/pennant/gb-eng.svg);\n}\n',
     );
   });
 
@@ -66,7 +68,7 @@ describe('pennantsCss', () => {
 
   it('contains size helpers and one rule per code, in order', () => {
     expect(css).toContain('.pn-2x {');
-    expect(css.indexOf('.pn-ar {')).toBeLessThan(css.indexOf('.pn-us {'));
+    expect(css.indexOf('.pn.pn-ar {')).toBeLessThan(css.indexOf('.pn.pn-us {'));
   });
 
   it('forwards svgPath', () => {
@@ -94,7 +96,7 @@ describe('minifyCss', () => {
     expect(min).toContain(
       '.pn{display:inline-block;position:relative;width:calc(66/72*1em);height:1em;',
     );
-    expect(min).toContain('.pn-ar{background-image:url(../svg/pennant/ar.svg)}');
+    expect(min).toContain('.pn.pn-ar{background-image:url(../svg/pennant/ar.svg)}');
     expect(min.split('\n')).toHaveLength(3);
   });
 });
@@ -114,7 +116,7 @@ describe('cdnSvgPath', () => {
   it('produces absolute flag URLs in the CDN stylesheet', () => {
     const min = minifyCss(pennantsCss(['ar'], { svgPath: cdnSvgPath('0.1.0') }));
     expect(min).toContain(
-      '.pn-ar{background-image:url(https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/ar.svg)}',
+      '.pn.pn-ar{background-image:url(https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/ar.svg)}',
     );
   });
 });
@@ -156,5 +158,43 @@ describe('per-shape stylesheets', () => {
     expect(cdnSvgPath('0.1.0', 'circle')).toBe(
       'https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/circle',
     );
+  });
+});
+
+describe('composable shape stylesheets', () => {
+  it('gives every shape its own base class', () => {
+    expect(SHAPE_CLASS).toEqual({
+      pennant: 'pn',
+      rect: 'pn-rect',
+      square: 'pn-square',
+      circle: 'pn-circle',
+    });
+    expect(baseRule('circle')).toMatch(/^\.pn-circle \{/);
+  });
+
+  it('scopes flag rules to the base so stylesheets can be mixed', () => {
+    expect(minifyCss(pennantsCss(['ar'], { shape: 'circle' }))).toContain(
+      '.pn-circle.pn-ar{background-image:url(../svg/circle/ar.svg)}',
+    );
+    const all = (['pennant', 'rect', 'square', 'circle'] as const)
+      .map((shape) => minifyCss(pennantsCss(['ar'], { shape })))
+      .join('');
+    const selectors = all.match(/\.[\w-]+\.pn-ar\{/g);
+    expect(selectors).toEqual([
+      '.pn.pn-ar{',
+      '.pn-rect.pn-ar{',
+      '.pn-square.pn-ar{',
+      '.pn-circle.pn-ar{',
+    ]);
+  });
+
+  it('never collides with a flag code', async () => {
+    const { codes } = await import('../src/generated/codes.ts');
+    const reserved = [
+      ...Object.values(SHAPE_CLASS).map((c) => c.replace(/^pn-?/, '')),
+      ...Object.keys(SIZES),
+      ...Object.values(BAR_CLASS).map((c) => c.slice(3)),
+    ];
+    expect(reserved.filter((name) => (codes as readonly string[]).includes(name))).toEqual([]);
   });
 });

@@ -1,11 +1,16 @@
 /**
- * Stylesheet with a flag-icons-like API:
+ * Stylesheets with a flag-icons-like API, one per shape, composable on one
+ * page:
  *
- *   <span class="pn pn-ar"></span>
+ *   <span class="pn pn-ar"></span>         pennant   (css/pennant.css)
+ *   <span class="pn-rect pn-ar"></span>    4:3 rect  (css/rect.css)
+ *   <span class="pn-square pn-ar"></span>  square    (css/square.css)
+ *   <span class="pn-circle pn-ar"></span>  circle    (css/circle.css)
  *
- * One stylesheet per shape. `.pn` is 1em tall and keeps the shape's aspect
- * ratio (66:72 pennant, 4:3 rect, 1:1 square/circle), so it scales with
- * `font-size`; `.pn-<code>` only sets the background image.
+ * The base class is 1em tall and keeps the shape's aspect ratio, so it
+ * scales with `font-size`. Flag rules are scoped to their base
+ * (`.pn-circle.pn-ar`), so several stylesheets can load together; use one
+ * base class per element. Size helpers (`.pn-lg`, `.pn-2x`…) work with all.
  */
 import { BAR_CLASS, PENNANT, SHAPE_SIZE, type PennantShape } from '../../src/shapes.ts';
 import { assertValidCode } from './pennant.ts';
@@ -25,6 +30,14 @@ export interface CssOptions {
   svgPath?: string;
 }
 
+/** Base class of each shape's stylesheet. */
+export const SHAPE_CLASS: Readonly<Record<PennantShape, string>> = {
+  pennant: 'pn',
+  rect: 'pn-rect',
+  square: 'pn-square',
+  circle: 'pn-circle',
+};
+
 const HEADER =
   '/*! pennants — country flags in pennant style. MIT. Artwork from flag-icons (MIT). */\n';
 
@@ -32,7 +45,7 @@ export function baseRule(shape: PennantShape = 'pennant'): string {
   const { width, height } = SHAPE_SIZE[shape];
   const cssWidth = width === height ? '1em' : `calc(${width}/${height}*1em)`;
   return (
-    `.pn {\n` +
+    `.${SHAPE_CLASS[shape]} {\n` +
     `  display: inline-block;\n` +
     `  position: relative;\n` +
     `  width: ${cssWidth};\n` +
@@ -67,9 +80,14 @@ export function themeCss(): string {
   );
 }
 
-export function flagRule(code: string, svgPath = '../svg/pennant'): string {
+/** Background rule of one flag, scoped to the shape's base class. */
+export function flagRule(
+  code: string,
+  svgPath = '../svg/pennant',
+  shape: PennantShape = 'pennant',
+): string {
   assertValidCode(code);
-  return `.pn-${code} {\n  background-image: url(${svgPath}/${code}.svg);\n}\n`;
+  return `.${SHAPE_CLASS[shape]}.pn-${code} {\n  background-image: url(${svgPath}/${code}.svg);\n}\n`;
 }
 
 /**
@@ -84,7 +102,7 @@ export function pennantsCss(
     HEADER + baseRule(shape),
     sizeRules(),
     ...(shape === 'pennant' ? [themeCss()] : []),
-    ...codes.map((code) => flagRule(code, svgPath)),
+    ...codes.map((code) => flagRule(code, svgPath, shape)),
   ].join('\n');
 }
 
