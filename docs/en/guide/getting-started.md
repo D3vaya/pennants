@@ -124,8 +124,9 @@ The same mode exists in the components: `<Pennant code="ar" mode="fetch" />` and
 Responses are cached per URL and sanitized before use: the response is parsed with
 `DOMParser` and rejected unless it is a single SVG made only of allowlisted elements and
 attributes with local `#id` references, then re-serialized. Scripts, event handlers, `style`,
-`foreignObject`, animation, links, images, `embed`, `title` and `desc` are never allowed. The
-sanitizer is a lazy chunk, downloaded only in fetch mode. Fetch mode is browser-only; on the
+`foreignObject`, animation, links, images, `embed`, `title` and `desc` are never allowed. `pennants/fetch`
+bundles the sanitizer (one request); `fetchPennant` from `pennants`, `<Pennant mode="fetch">`
+and `<pennant-flag base>` load it as a lazy chunk on the first fetch. Fetch mode is browser-only; on the
 server use `loadFlag` or `renderFlag`.
 
 ### React

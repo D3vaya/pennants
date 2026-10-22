@@ -15,7 +15,8 @@ min / gzip / brotli.
 <SizeTable :probes="['art-pennant', 'art-rect', 'art-all', 'name', 'url', 'fetch', 'load', 'load-shapes', 'element', 'react-pennant', 'react-pennant-circle', 'react-svg', 'react-svg-circle']" />
 
 ¹ Emitted into your build, but downloaded only when needed: one chunk per flag and artwork set
-plus the loader maps, or, for fetch mode, the response sanitizer.
+plus the loader maps. Fetch mode from `pennants/fetch` bundles its sanitizer and emits no lazy
+files.
 
 ### Stylesheets
 
@@ -31,8 +32,9 @@ What these numbers mean in practice:
   first flag; more shapes of the same flag reuse its artwork.
 - `loadFlag` and the components carry the loader maps up front (<Size probe="load" /> gzip for
   `loadFlag`) before any flag is shown. For a handful of known flags, static imports are
-  cheaper; fetch mode (<Size probe="fetch" /> gzip) ships no map at all and loads its sanitizer chunk
-  on the first fetch.
+  cheaper; `pennants/fetch` (<Size probe="fetch" /> gzip, sanitizer included) ships no map at all.
+  Fetch mode in `<Pennant>`, `<pennant-flag>` and the root `fetchPennant` loads the sanitizer
+  as a lazy chunk on the first fetch.
 - In a Next.js Server Component, `<PennantSvg>` adds no client JavaScript: it renders to HTML.
 
 ## Flag files

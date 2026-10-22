@@ -130,7 +130,9 @@ se guardan en caché por URL y se sanean antes de usarse: se analizan con `DOMPa
 rechazan salvo que sean un único SVG hecho solo de elementos y atributos permitidos, con
 referencias `#id` locales; después se vuelven a serializar. Nunca se permiten scripts,
 manejadores de eventos, `style`, `foreignObject`, animaciones, enlaces, imágenes, `embed`,
-`title` ni `desc`. El saneador es un chunk diferido que se descarga solo en modo fetch. El modo
+`title` ni `desc`. `pennants/fetch`
+incluye el saneador (una sola petición); el `fetchPennant` de `pennants`, `<Pennant mode="fetch">`
+y `<pennant-flag base>` lo descargan como chunk diferido con la primera petición. El modo
 fetch funciona solo en el navegador; en el servidor usa `loadFlag` o `renderFlag`.
 
 ### React

@@ -29,7 +29,8 @@ defecto.
 renderiza a HTML.
 
 ³ `fetchPennant` de `pennants/fetch`, `<Pennant mode="fetch">` o `<pennant-flag>` con el
-atributo `base`. Las respuestas se sanean con un chunk diferido; solo en el navegador. Con CSP,
+atributo `base`. Las respuestas se sanean (incluido en `pennants/fetch`, chunk diferido en los
+componentes); solo en el navegador. Con CSP,
 necesita `connect-src` para ese dominio.
 
 ## Decisiones rápidas

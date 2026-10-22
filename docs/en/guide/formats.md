@@ -26,7 +26,8 @@ Next.js and Angular emit files by default.
 ² In a Next.js Server Component, `<PennantSvg>` adds no client JavaScript: it renders to HTML.
 
 ³ `fetchPennant` from `pennants/fetch`, `<Pennant mode="fetch">`, or `<pennant-flag>` with a
-`base` attribute. Responses are sanitized by a lazy chunk; browser only. Needs `connect-src` for
+`base` attribute. Responses are sanitized (bundled in `pennants/fetch`, a lazy chunk in the
+components); browser only. Needs `connect-src` for
 the host in a CSP.
 
 ## Quick decisions
