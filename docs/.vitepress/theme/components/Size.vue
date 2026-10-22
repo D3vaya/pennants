@@ -19,11 +19,8 @@ const text = computed(() => {
   const probe = data.probes[props.probe];
   const value =
     props.part === 'css' ? probe?.css?.[props.metric] : probe?.[props.part][props.metric];
-  // A missing probe renders a dash and is reported by the build log.
-  if (value === undefined) {
-    if (import.meta.env.SSR) console.warn(`[docs] missing bundle size: ${props.probe}`);
-    return '—';
-  }
+  // Every figure must come from the snapshot: a missing probe fails the build.
+  if (value === undefined) throw new Error(`[docs] missing bundle size: ${props.probe}`);
   return `${props.sign ? '+' : ''}${formatBytes(value, lang.value)}`;
 });
 </script>

@@ -1,27 +1,29 @@
 # ¿Qué formato uso?
 
 Todos los formatos muestran el mismo dibujo. Cambian en cuánto pesan, dónde se renderizan y qué
-puedes personalizar. Los pesos son lo que cada opción agrega a una app vacía de Vite 8 en
-producción (gzip); en [Rendimiento y peso](./performance) están los tamaños sin comprimir y los
-de la librería sola.
+puedes personalizar. Los pesos son lo que cada opción agrega a una build de producción vacía de
+Vite (gzip), tomados de las mediciones de bundle-budget; en [Rendimiento y peso](./performance)
+están también min y brotli.
 
-| Formato                                | Agrega a tu app (gzip)                                     | SSR                                        | Color de la barra | Diferido                  | Caché                              |
-| -------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ | ----------------- | ------------------------- | ---------------------------------- |
-| Clases CSS `pn pn-ar`                  | 0 de JS, ≈3,7 kB de CSS ¹                                  | Sí                                         | No                | Sí, por clase usada       | Un archivo por bandera, caché HTTP |
-| `<img>` SVG (propio o CDN)             | 0                                                          | Sí                                         | No                | `loading="lazy"`          | Caché HTTP / CDN                   |
-| `<img>` PNG 1x / 2x                    | 0                                                          | Sí                                         | No                | `loading="lazy"`          | Caché HTTP / CDN                   |
-| Sprite SVG `<use href>`                | 0 de JS; un archivo de 1,2 MB (≈260 kB con brotli)         | Sí                                         | No                | No, un archivo para todas | Un archivo, caché HTTP             |
-| Módulo de dibujo `pennants/art/1x1/ar` | ≈1,0 kB por bandera                                        | Sí                                         | Sí                | No, va en el bundle       | Parte de tu bundle                 |
-| `loadPennant(código)`                  | ≈5,1 kB (mapa de carga) + un chunk por bandera mostrada    | Cliente (asíncrono)                        | Sí                | Sí                        | Chunks, caché HTTP                 |
-| Modo fetch ³                           | <Size probe="fetch" /> + una petición por bandera mostrada | Cliente (asíncrono)                        | Sí                | Sí                        | Caché HTTP / CDN                   |
-| React `<Pennant>`                      | ≈6,9 kB + un chunk por bandera mostrada                    | Caja en el servidor, bandera en el cliente | Sí                | Sí                        | Chunks                             |
-| React `<PennantSvg art={ar}>`          | ≈8,0 kB con `ar` incluida ²                                | Sí, con el SVG completo                    | Sí                | No                        | Parte de tu bundle                 |
-| `<pennant-flag>`                       | ≈7,0 kB + un chunk por bandera mostrada                    | Solo cliente                               | Sí                | Sí                        | Chunks                             |
+| Formato                                | Agrega a tu app (gzip)                                                 | SSR                                        | Color de la barra | Diferido                  | Caché                              |
+| -------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------ | ----------------- | ------------------------- | ---------------------------------- |
+| Clases CSS `pn pn-ar`                  | 0 de JS, <Size probe="css" part="css" /> de CSS ¹                      | Sí                                         | No                | Sí, por clase usada       | Un archivo por bandera, caché HTTP |
+| `<img>` SVG (propio o CDN)             | 0                                                                      | Sí                                         | No                | `loading="lazy"`          | Caché HTTP / CDN                   |
+| `<img>` PNG 1x / 2x                    | 0                                                                      | Sí                                         | No                | `loading="lazy"`          | Caché HTTP / CDN                   |
+| Sprite SVG `<use href>`                | 0 de JS; un archivo de 1,15 MB (248 kB con brotli)                     | Sí                                         | No                | No, un archivo para todas | Un archivo, caché HTTP             |
+| Módulo de dibujo `pennants/art/1x1/ar` | <Size probe="art-pennant" /> la primera bandera                        | Sí                                         | Sí                | No, va en el bundle       | Parte de tu bundle                 |
+| `loadFlag(código)`                     | <Size probe="load" /> (mapas de carga) + un chunk por bandera mostrada | Cliente (asíncrono)                        | Sí                | Sí                        | Chunks, caché HTTP                 |
+| Modo fetch ³                           | <Size probe="fetch" /> + una petición por bandera mostrada             | Cliente (asíncrono)                        | Sí                | Sí                        | Caché HTTP / CDN                   |
+| React `<Pennant>`                      | <Size probe="react-pennant" /> + un chunk por bandera mostrada         | Caja en el servidor, bandera en el cliente | Sí                | Sí                        | Chunks                             |
+| React `<PennantSvg art={ar}>`          | <Size probe="react-svg" /> con `ar` incluida ²                         | Sí, con el SVG completo                    | Sí                | No                        | Parte de tu bundle                 |
+| `<pennant-flag>`                       | <Size probe="element" /> + un chunk por bandera mostrada               | Solo cliente                               | Sí                | Sí                        | Chunks                             |
 
-¹ Con `assetsInlineLimit` configurado como en las preguntas frecuentes, o 1,9 kB con
-`pennants/css/cdn` (banderas desde jsDelivr); ver
-[preguntas frecuentes](./faq#imports-de-assets-en-el-bundler); sin eso, Vite incrusta las
-banderas y el CSS pesa 52 kB con gzip. Next.js y Angular generan archivos por defecto.
+¹ Con `assetsInlineLimit` configurado como en las
+[preguntas frecuentes](./faq#imports-de-assets-en-el-bundler), o
+<Size probe="css-cdn" part="css" /> con `pennants/css/cdn` (banderas desde jsDelivr). Sin
+ninguno de los dos, Vite incrusta las banderas y el CSS pesa
+<Size probe="css-default" part="css" /> con gzip. Next.js y Angular generan archivos por
+defecto.
 
 ² En un Server Component de Next.js, `<PennantSvg>` no agrega JavaScript al cliente: se
 renderiza a HTML.

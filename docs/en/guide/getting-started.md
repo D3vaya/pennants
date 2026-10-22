@@ -45,8 +45,8 @@ Or skip the install and load files from jsDelivr. Pin the version in production:
 
 ### CSS classes
 
-No JavaScript. In a Vite 8 build the stylesheet adds 3.7 kB gzip, and each flag image is
-fetched only when an element uses its class.
+No JavaScript. In a Vite build the stylesheet adds <Size probe="css" part="css" /> gzip, and
+each flag image is fetched only when an element uses its class.
 
 ```js
 import 'pennants/css'; // or 'pennants/css/rect', 'pennants/css/square', 'pennants/css/circle'
@@ -61,7 +61,8 @@ import 'pennants/css'; // or 'pennants/css/rect', 'pennants/css/square', 'pennan
 
 ::: warning Vite, SvelteKit and Astro
 By default Vite inlines every flag under 4 KiB into your CSS as a data URI, which grows the
-stylesheet to 372 kB min (52 kB gzip) in Vite 8.3.5. Either import `pennants/css/cdn`, which
+stylesheet to <Size probe="css-default" part="css" metric="min" /> min
+(<Size probe="css-default" part="css" /> gzip). Either import `pennants/css/cdn`, which
 points at version-pinned jsDelivr URLs that bundlers leave alone, or keep the flags as local
 files with [`assetsInlineLimit`](./faq#bundler-asset-imports). Next.js and Angular do not
 inline them.

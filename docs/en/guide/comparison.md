@@ -39,7 +39,7 @@ npm run build && node scripts/docs-compare.ts
 - **Tarball size.** pennants ships four shapes and more formats (PNG, sprite, JS modules), so
   the npm download is more than twice as large. This does not affect what your users download.
 - **Runtime loader cost.** The lazy loader (`loadFlag`, the components) carries a 271-entry map
-  up front (about 5 kB gzip in a Vite build). Fetch mode avoids it; country-flag-icons has no
+  up front (<Size probe="load" /> gzip in a Vite build). Fetch mode avoids it; country-flag-icons has no
   lazy loader.
 
 ## Where pennants wins

@@ -3,63 +3,66 @@
 Todas las cifras de esta página están medidas, no estimadas, y puedes reproducirlas:
 
 - el peso en el bundle con `npm run bundle:budget` (apps de prueba de Vite compiladas contra la
-  librería empaquetada),
+  librería empaquetada). Las tablas se generan a partir de su salida JSON,
+  `docs/data/bundle-sizes.json`;
 - el tamaño de los archivos y la [comparación](./comparison) con `node scripts/docs-compare.ts`.
 
 ## Cuánto agrega a tu app
 
-Build de producción con Vite 8.3.5. Cada fila es la diferencia contra una app vacía (las filas
-de React, contra una app de React vacía: 219,5 kB min / 67,7 kB gzip). Tamaños en
+Cada fila es la diferencia contra una app vacía (las filas de React, contra una app de React
+vacía: <Size probe="react" metric="min" /> min / <Size probe="react" /> gzip). Tamaños en
 min / gzip / brotli.
 
-| Qué usas                               | JS de entrada                | CSS                             | Archivos JS diferidos ¹ |
-| -------------------------------------- | ---------------------------- | ------------------------------- | ----------------------- |
-| `pennantUrl`                           | +2,0 kB / +801 B / +586 B    |                                 | 0                       |
-| `getPennantName`                       | +2,6 kB / +1,1 kB / +840 B   |                                 | 0                       |
-| Una bandera, import estático (`ar`)    | +3,2 kB / +1,0 kB / +933 B   |                                 | 0                       |
-| `loadPennant`                          | +15,4 kB / +5,1 kB / +3,8 kB |                                 | 271                     |
-| `pennants/element/register`            | +19,6 kB / +7,0 kB / +5,3 kB |                                 | 271                     |
-| React `<Pennant>`                      | +18,5 kB / +6,9 kB / +5,0 kB |                                 | 271                     |
-| React `<PennantSvg>` con una bandera   | +21,8 kB / +8,0 kB / +5,9 kB |                                 | 270                     |
-| CSS, con `assetsInlineLimit` ²         | +27 B                        | +14,8 kB / +3,7 kB / +2,7 kB    | 0                       |
-| CSS, `pennants/css/cdn`                | +27 B                        | +23,2 kB / +1,9 kB / +1,1 kB    | 0                       |
-| CSS, configuración por defecto de Vite | +27 B                        | +372,4 kB / +52,0 kB / +42,9 kB | 0                       |
+<SizeTable :probes="['art-pennant', 'art-rect', 'art-all', 'name', 'url', 'fetch', 'load', 'load-shapes', 'element', 'react-pennant', 'react-pennant-circle', 'react-svg', 'react-svg-circle']" />
 
-¹ Se generan en tu build, pero solo se descargan cuando se muestra esa bandera.
-² Mira [Preguntas frecuentes: imports de assets](./faq#imports-de-assets-en-el-bundler).
-Next.js 16 y Angular 22 no incrustan las banderas; su CSS ocupa 15–16 kB min.
+¹ Se generan en tu build, pero solo se descargan cuando se muestra esa bandera: un chunk por
+bandera y conjunto de dibujos, más los mapas de carga.
+
+### Hojas de estilos
+
+<SizeTable :probes="['css', 'css-cdn', 'css-rect', 'css-rect-cdn', 'css-square', 'css-circle', 'css-default']" />
+
+Cada hoja de estilos agrega además 27 bytes de JS de entrada. Mira
+[Preguntas frecuentes: imports de assets](./faq#imports-de-assets-en-el-bundler) para
+`assetsInlineLimit`; Next.js y Angular no incrustan las banderas.
 
 En la práctica:
 
-- Un import estático cuesta alrededor de 1 kB con gzip por bandera, sin costo fijo de runtime.
-- `loadFlag` y los componentes incluyen un mapa de carga de 271 entradas con nombres de chunk
-  con hash, unos 5 kB con gzip, antes de mostrar ninguna bandera. Para unas pocas banderas
-  conocidas, los imports estáticos salen más baratos.
+- Un import estático de dibujo más `renderFlag` cuesta <Size probe="art-pennant" /> con gzip para
+  la primera bandera; otras formas de la misma bandera reutilizan su dibujo.
+- `loadFlag` y los componentes incluyen de entrada los mapas de carga (<Size probe="load" /> con
+  gzip para `loadFlag`) antes de mostrar ninguna bandera. Para unas pocas banderas conocidas, los
+  imports estáticos salen más baratos; el modo fetch (<Size probe="fetch" /> con gzip) no incluye
+  ningún mapa.
 - En un Server Component de Next.js, `<PennantSvg>` no agrega JavaScript al cliente: se
   renderiza a HTML.
 
 ## Archivos de banderas
 
-| Conjunto                      | Sin comprimir | Brotli (suma de archivos) |
-| ----------------------------- | ------------- | ------------------------- |
-| Los 271 SVG (`svg/`)          | 1,2 MB        | ≈370 kB                   |
-| SVG mediano                   | 1,2 kB        | ≈530 B                    |
-| SVG más pesado (`rs`, Serbia) | 60 kB         | ≈14 kB                    |
-| Sprite (`sprite/pennant.svg`) | 1,2 MB        | ≈260 kB                   |
+Medido sobre la build 0.1.0 con `node scripts/docs-compare.ts` (brotli es la suma de cada
+archivo comprimido por separado).
 
-Los PNG pesan en promedio unos 0,9 kB (1x) y 1,6 kB (2x). Los nombres de los países no pesan
-nada: los nombres ISO salen de `Intl.DisplayNames` del propio entorno; solo se incluyen los 22
-nombres que no son ISO (`gb-eng`, `asean`, ...).
+| Conjunto                           | Sin comprimir         | Brotli             |
+| ---------------------------------- | --------------------- | ------------------ |
+| Los 271 SVG de banderín            | 1,16 MB               | 362 kB             |
+| Los 271 SVG rect / square / circle | 1,10 / 1,11 / 1,09 MB | 335 / 336 / 332 kB |
+| SVG mediano (banderín / rect)      | —                     | 525 B / 430 B      |
+| SVG más pesado (`rs`, Serbia)      | 62 kB                 | 15 kB              |
+| Sprite (`sprite/pennant.svg`)      | 1,15 MB               | 248 kB             |
 
-El paquete de npm ocupa alrededor de 1,6 MB porque trae todos los formatos. Lo que llega a tus
-usuarios depende solo de lo que importes.
+Los PNG pesan en promedio 0,9 kB (banderín 1x), 1,6 kB (banderín 2x) y 0,6–1,0 kB (otras formas,
+solo 1x). Los nombres de los países no pesan nada: los nombres ISO salen de `Intl.DisplayNames`
+del propio entorno; solo se incluyen los 22 nombres que no son ISO (`gb-eng`, `asean`, ...).
+
+El paquete de npm ocupa 2,80 MB (9,26 MB descomprimido) porque trae cuatro formas en todos los
+formatos. Lo que llega a tus usuarios depende solo de lo que importes.
 
 ## Cómo funcionan los chunks diferidos
 
-`loadFlag` contiene un mapa de 271 `import()` dinámicos, uno por bandera. Los bundlers
+`loadFlag` contiene un mapa de `import()` dinámicos, uno por bandera y conjunto de dibujos. Los bundlers
 convierten cada entrada en un chunk separado, así que:
 
-- tu build genera 271 archivos pequeños, pero
+- tu build genera un archivo pequeño por bandera y conjunto de dibujos, más los mapas, pero
 - cada visitante descarga solo los chunks de las banderas que se muestran, una sola vez, y el
   navegador los guarda en caché.
 
@@ -77,8 +80,8 @@ bandera que aparece muchas veces se descarga y se procesa una sola vez.
   bundle.
 - No recorras `codes` llamando a `loadFlag` para mostrar una lista larga; para eso están las
   clases CSS o `<img>`.
-- Con Vite, SvelteKit o Astro, configura `assetsInlineLimit` para que el CSS no incruste todas
-  las banderas.
+- Con Vite, SvelteKit o Astro, usa una hoja de estilos `/cdn` o configura `assetsInlineLimit`
+  para que el CSS no incruste todas las banderas.
 
 ## ¿CDN o archivos propios?
 

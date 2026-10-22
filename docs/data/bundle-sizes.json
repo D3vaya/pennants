@@ -1,0 +1,328 @@
+{
+  "vite": "8.3.5",
+  "generated": "2026-10-22T21:31:11.991Z",
+  "probes": {
+    "empty": {
+      "label": "Empty app (baseline)",
+      "baseline": null,
+      "entry": {
+        "min": 700,
+        "gzip": 405,
+        "brotli": 338
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "react": {
+      "label": "Empty React app (baseline)",
+      "baseline": null,
+      "entry": {
+        "min": 219452,
+        "gzip": 67675,
+        "brotli": 58390
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "art-pennant": {
+      "label": "`pennants/art/1x1/ar` + `renderFlag` (pennant)",
+      "baseline": "empty",
+      "entry": {
+        "min": 4506,
+        "gzip": 1689,
+        "brotli": 1523
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "art-rect": {
+      "label": "`pennants/art/4x3/ar` + `renderFlag` (rect)",
+      "baseline": "empty",
+      "entry": {
+        "min": 4402,
+        "gzip": 1666,
+        "brotli": 1511
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "art-square": {
+      "label": "`pennants/art/1x1/ar` + `renderFlag` (square)",
+      "baseline": "empty",
+      "entry": {
+        "min": 4505,
+        "gzip": 1689,
+        "brotli": 1530
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "art-circle": {
+      "label": "`pennants/art/1x1/ar` + `renderFlag` (circle)",
+      "baseline": "empty",
+      "entry": {
+        "min": 4505,
+        "gzip": 1689,
+        "brotli": 1530
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "art-all": {
+      "label": "Both `ar` art sets + `renderFlag` (all four shapes)",
+      "baseline": "empty",
+      "entry": {
+        "min": 6960,
+        "gzip": 2002,
+        "brotli": 1763
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "name": {
+      "label": "`getPennantName`",
+      "baseline": "empty",
+      "entry": {
+        "min": 1783,
+        "gzip": 1048,
+        "brotli": 785
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "url": {
+      "label": "`pennantUrl`",
+      "baseline": "empty",
+      "entry": {
+        "min": 1574,
+        "gzip": 881,
+        "brotli": 673
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "load": {
+      "label": "`loadPennant`",
+      "baseline": "empty",
+      "entry": {
+        "min": 4996,
+        "gzip": 2462,
+        "brotli": 2088
+      },
+      "css": null,
+      "lazyFiles": 544
+    },
+    "load-shapes": {
+      "label": "`loadFlag`, circle + rect",
+      "baseline": "empty",
+      "entry": {
+        "min": 5034,
+        "gzip": 2479,
+        "brotli": 2062
+      },
+      "css": null,
+      "lazyFiles": 544
+    },
+    "fetch": {
+      "label": "`fetchPennant` (`pennants/fetch`)",
+      "baseline": "empty",
+      "entry": {
+        "min": 2064,
+        "gzip": 1151,
+        "brotli": 905
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "element": {
+      "label": "`pennants/element/register`",
+      "baseline": "empty",
+      "entry": {
+        "min": 11469,
+        "gzip": 5039,
+        "brotli": 4349
+      },
+      "css": null,
+      "lazyFiles": 544
+    },
+    "react-pennant": {
+      "label": "React `<Pennant>`",
+      "baseline": "react",
+      "entry": {
+        "min": 8772,
+        "gzip": 4257,
+        "brotli": 3445
+      },
+      "css": null,
+      "lazyFiles": 544
+    },
+    "react-pennant-circle": {
+      "label": "React `<Pennant shape=\"circle\">`",
+      "baseline": "react",
+      "entry": {
+        "min": 8787,
+        "gzip": 4262,
+        "brotli": 3489
+      },
+      "css": null,
+      "lazyFiles": 544
+    },
+    "react-svg": {
+      "label": "React `<PennantSvg>` + one art module",
+      "baseline": "react",
+      "entry": {
+        "min": 7508,
+        "gzip": 3479,
+        "brotli": 2773
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "react-svg-circle": {
+      "label": "React `<PennantSvg shape=\"circle\">` + one art module",
+      "baseline": "react",
+      "entry": {
+        "min": 7523,
+        "gzip": 3486,
+        "brotli": 2747
+      },
+      "css": null,
+      "lazyFiles": 0
+    },
+    "css": {
+      "label": "CSS `pennants/css`, `assetsInlineLimit` set",
+      "baseline": "empty",
+      "entry": {
+        "min": 27,
+        "gzip": 22,
+        "brotli": 10
+      },
+      "css": {
+        "min": 14918,
+        "gzip": 3767,
+        "brotli": 2762
+      },
+      "lazyFiles": 0
+    },
+    "css-cdn": {
+      "label": "CSS `pennants/css/cdn`",
+      "baseline": "empty",
+      "entry": {
+        "min": 27,
+        "gzip": 22,
+        "brotli": 10
+      },
+      "css": {
+        "min": 25487,
+        "gzip": 1945,
+        "brotli": 1158
+      },
+      "lazyFiles": 0
+    },
+    "css-rect": {
+      "label": "CSS `pennants/css/rect`, `assetsInlineLimit` set",
+      "baseline": "empty",
+      "entry": {
+        "min": 27,
+        "gzip": 22,
+        "brotli": 10
+      },
+      "css": {
+        "min": 14811,
+        "gzip": 3719,
+        "brotli": 2709
+      },
+      "lazyFiles": 0
+    },
+    "css-rect-cdn": {
+      "label": "CSS `pennants/css/rect/cdn`",
+      "baseline": "empty",
+      "entry": {
+        "min": 27,
+        "gzip": 22,
+        "brotli": 10
+      },
+      "css": {
+        "min": 24567,
+        "gzip": 1874,
+        "brotli": 1084
+      },
+      "lazyFiles": 0
+    },
+    "css-square": {
+      "label": "CSS `pennants/css/square`, `assetsInlineLimit` set",
+      "baseline": "empty",
+      "entry": {
+        "min": 27,
+        "gzip": 22,
+        "brotli": 10
+      },
+      "css": {
+        "min": 14805,
+        "gzip": 3697,
+        "brotli": 2714
+      },
+      "lazyFiles": 0
+    },
+    "css-square-cdn": {
+      "label": "CSS `pennants/css/square/cdn`",
+      "baseline": "empty",
+      "entry": {
+        "min": 27,
+        "gzip": 22,
+        "brotli": 10
+      },
+      "css": {
+        "min": 25103,
+        "gzip": 1879,
+        "brotli": 1071
+      },
+      "lazyFiles": 0
+    },
+    "css-circle": {
+      "label": "CSS `pennants/css/circle`, `assetsInlineLimit` set",
+      "baseline": "empty",
+      "entry": {
+        "min": 27,
+        "gzip": 22,
+        "brotli": 10
+      },
+      "css": {
+        "min": 14805,
+        "gzip": 3714,
+        "brotli": 2726
+      },
+      "lazyFiles": 0
+    },
+    "css-circle-cdn": {
+      "label": "CSS `pennants/css/circle/cdn`",
+      "baseline": "empty",
+      "entry": {
+        "min": 27,
+        "gzip": 22,
+        "brotli": 10
+      },
+      "css": {
+        "min": 25103,
+        "gzip": 1879,
+        "brotli": 1086
+      },
+      "lazyFiles": 0
+    },
+    "css-default": {
+      "label": "CSS `pennants/css`, Vite defaults (inlined flags)",
+      "baseline": "empty",
+      "entry": {
+        "min": 27,
+        "gzip": 22,
+        "brotli": 10
+      },
+      "css": {
+        "min": 375394,
+        "gzip": 53021,
+        "brotli": 43822
+      },
+      "lazyFiles": 0
+    }
+  }
+}

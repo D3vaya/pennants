@@ -74,11 +74,12 @@ import markup from 'pennants/svg/pennant/ar.svg?raw'; // Vite: el SVG como texto
   `/public` o `pennantUrl`.
 - **`pennants/css` con Vite, SvelteKit o Astro:** lo más simple es
   `import 'pennants/css/cdn'`: las mismas clases, apuntando a URLs de jsDelivr con la versión
-  fijada, que los bundlers no tocan (+1,9 kB de CSS con gzip; las banderas se cargan del CDN).
+  fijada, que los bundlers no tocan (<Size probe="css-cdn" part="css" /> de CSS con gzip; las banderas se cargan del CDN).
   Si prefieres servir las banderas tú mismo, usa la hoja de estilos normal y evita que se
   incrusten. El motivo: Vite incrusta como data URI los assets de
-  menos de 4 KiB, así que la mayoría de las 271 banderas termina dentro de tu CSS: 372 kB min
-  / 52 kB con gzip, en lugar de 15 kB / 3,7 kB (Vite 8.3.5). Para mantenerlas como archivos (en
+  menos de 4 KiB, así que la mayoría de las 271 banderas termina dentro de tu CSS: <Size probe="css-default" part="css" metric="min" /> min /
+  <Size probe="css-default" part="css" /> con gzip, en lugar de
+  <Size probe="css" part="css" metric="min" /> / <Size probe="css" part="css" />. Para mantenerlas como archivos (en
   Astro, la opción va dentro de `vite.build`). Next.js y Angular no las incrustan.
 
 ```js

@@ -27,7 +27,7 @@ features:
   - title: Every format
     details: Static SVG and PNG, CSS classes, an SVG sprite, one ES module per flag, a React component and a framework-free custom element.
   - title: Pay only for what you show
-    details: Each flag is its own module and lazy chunk; a static flag import adds about 1 kB gzip in a Vite build. Names come from Intl.DisplayNames, so no name data ships.
+    details: Each flag is its own module and lazy chunk, so you ship only the flags you show. Names come from Intl.DisplayNames, so no name data ships.
   - title: Typed and localized
     details: A PennantCode union for all 271 codes, and names in any language through Intl.DisplayNames, with no bundled name data.
   - title: Accessible by default

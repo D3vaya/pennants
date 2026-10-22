@@ -127,6 +127,29 @@ export function formatBytes(bytes: number, lang: Lang): string {
   return `${lang === 'es' ? kb.replace('.', ',') : kb} kB`;
 }
 
+const spanishProbeWords: [RegExp, string][] = [
+  [/^Empty React app \(baseline\)$/, 'App de React vacía (referencia)'],
+  [/^Empty app \(baseline\)$/, 'App vacía (referencia)'],
+  [/^Both (.+) art sets/, 'Los dos conjuntos de dibujos de $1'],
+  [/\(all four shapes\)/, '(las cuatro formas)'],
+  [/\+ one art module/, '+ un módulo de dibujo'],
+  [/Vite defaults \(inlined flags\)/, 'configuración por defecto de Vite (banderas incrustadas)'],
+  [/(`assetsInlineLimit`) set/, 'con $1'],
+  [/\(pennant\)/, '(banderín)'],
+  [/\(square\)/, '(cuadrado)'],
+  [/\(circle\)/, '(círculo)'],
+  [/circle \+ rect/, 'círculo + rect'],
+];
+
+/** Bundle-budget probe label as HTML: escaped, `code` spans, translated to Spanish. */
+export function probeLabel(label: string, lang: Lang): string {
+  let text = label;
+  if (lang === 'es')
+    for (const [pattern, value] of spanishProbeWords) text = text.replace(pattern, value);
+  const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
 /** `gb-eng` -> `gbEng`, a valid identifier for import snippets. */
 export const identifier = (code: string): string =>
   code.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());

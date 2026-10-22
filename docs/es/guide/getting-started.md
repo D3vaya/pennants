@@ -47,8 +47,8 @@ fija la versión:
 
 ### Clases CSS
 
-Sin JavaScript. En una build de Vite 8 la hoja de estilos agrega 3,7 kB con gzip, y cada imagen
-se descarga solo cuando algún elemento usa su clase.
+Sin JavaScript. En una build de Vite la hoja de estilos agrega
+<Size probe="css" part="css" /> con gzip, y cada imagen se descarga solo cuando algún elemento usa su clase.
 
 ```js
 import 'pennants/css'; // o 'pennants/css/rect', 'pennants/css/square', 'pennants/css/circle'
@@ -64,7 +64,8 @@ import 'pennants/css'; // o 'pennants/css/rect', 'pennants/css/square', 'pennant
 
 ::: warning Vite, SvelteKit y Astro
 Por defecto, Vite incrusta en tu CSS como data URI cada bandera de menos de 4 KiB, y la hoja de
-estilos pasa a ocupar 372 kB min (52 kB con gzip) con Vite 8.3.5. Puedes importar
+estilos pasa a ocupar <Size probe="css-default" part="css" metric="min" /> min
+(<Size probe="css-default" part="css" /> con gzip). Puedes importar
 `pennants/css/cdn`, que apunta a URLs de jsDelivr con la versión fijada y que los bundlers no
 tocan, o mantener las banderas como archivos locales con
 [`assetsInlineLimit`](./faq#imports-de-assets-en-el-bundler). Next.js y Angular no las

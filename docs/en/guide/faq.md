@@ -69,10 +69,11 @@ import markup from 'pennants/svg/pennant/ar.svg?raw'; // Vite: SVG markup
   `/public` folder, or `pennantUrl`.
 - **`pennants/css` with Vite, SvelteKit or Astro:** the simplest fix is
   `import 'pennants/css/cdn'`: the same classes, pointing at version-pinned jsDelivr URLs,
-  which bundlers do not touch (+1.9 kB gzip CSS, flags load from the CDN). To self-host the
+  which bundlers do not touch (<Size probe="css-cdn" part="css" /> gzip of CSS, flags load from the CDN). To self-host the
   flags instead, keep the default stylesheet and stop the inlining. Background: Vite inlines assets under 4 KiB as data
-  URIs, so most of the 271 flags end up inside your CSS: 372 kB min / 52 kB gzip instead of
-  15 kB / 3.7 kB (Vite 8.3.5). Keep them as files (in Astro, put the option under `vite.build`). Next.js and
+  URIs, so most of the 271 flags end up inside your CSS: <Size probe="css-default" part="css" metric="min" /> min /
+  <Size probe="css-default" part="css" /> gzip instead of
+  <Size probe="css" part="css" metric="min" /> / <Size probe="css" part="css" />. Keep them as files (in Astro, put the option under `vite.build`). Next.js and
   Angular do not inline them.
 
 ```js

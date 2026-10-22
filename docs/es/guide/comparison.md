@@ -41,7 +41,7 @@ npm run build && node scripts/docs-compare.ts
 - **Tamaño del paquete.** pennants incluye cuatro formas y más formatos (PNG, sprite, módulos
   JS), así que la descarga de npm es más del doble. Eso no cambia lo que descargan tus usuarios.
 - **Costo del cargador.** El cargador diferido (`loadFlag`, los componentes) incluye de entrada
-  un mapa de 271 entradas (unos 5 kB con gzip en una build de Vite). El modo fetch lo evita;
+  un mapa de 271 entradas (<Size probe="load" /> con gzip en una build de Vite). El modo fetch lo evita;
   country-flag-icons no tiene cargador diferido.
 
 ## Dónde gana pennants
