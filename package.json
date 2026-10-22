@@ -60,6 +60,10 @@
       "types": "./dist/react/index.d.ts",
       "default": "./dist/react/index.js"
     },
+    "./react/static": {
+      "types": "./dist/react/static.d.ts",
+      "default": "./dist/react/static.js"
+    },
     "./element": {
       "types": "./dist/element/index.d.ts",
       "default": "./dist/element/index.js"
