@@ -5,11 +5,13 @@ Goal: one library, four shapes, same API. Pennant stays the signature/default.
 | Shape     | Canvas | Source art       | Frame                                               |
 | --------- | ------ | ---------------- | --------------------------------------------------- |
 | `pennant` | 66x72  | flag-icons `1x1` | golden bar + V point + 3px darkening border (today) |
-| `rect`    | 64x48  | flag-icons `4x3` | 3px darkening border, corner radius 2               |
-| `square`  | 48x48  | flag-icons `1x1` | 3px darkening border, corner radius 2               |
-| `circle`  | 48x48  | flag-icons `1x1` | circular clip + 3px darkening ring                  |
+| `rect`    | 64x48  | flag-icons `4x3` | 2px darkening border, corner radius 2               |
+| `square`  | 48x48  | flag-icons `1x1` | 2px darkening border, corner radius 2               |
+| `circle`  | 48x48  | flag-icons `1x1` | circular clip + 2px darkening ring                  |
 
 Same design language for all: inner border = black at 30% opacity, so the family reads as one set.
+The border width scales with the canvas (`BORDER_WIDTH`): 3px on the 66px pennant, 2px on the
+48–64px shapes, so all four carry the same visual weight.
 
 ## Single source of truth
 
@@ -33,11 +35,18 @@ Same design language for all: inner border = black at 30% opacity, so the family
 
 ## Static assets
 
-- `svg/<shape>/<code>.svg`, `png/<shape>/{1x,2x}/<code>.png`, `sprite/<shape>.svg`
-  (symbol ids `pn-<code>`; the file name selects the shape).
+- `svg/<shape>/<code>.svg`; `png/pennant/{1x,2x}/<code>.png` and `png/<shape>/1x/<code>.png`
+  for the other shapes (2x only for the pennant, to keep the package light).
+- Sprites: `sprite/<shape>.svg` (symbol ids `pn-<code>`; the file name selects the shape). Only
+  `sprite/pennant.svg` is published (`pennants/sprite`); the others are built by
+  `npm run generate` and offered as release assets.
+- Install budget: `check:package` fails when the unpacked package exceeds 10 MB.
 - CSS: one file per shape to stay light: `pennants/css` (pennant), `pennants/css/rect`,
   `pennants/css/square`, `pennants/css/circle`, each with `.cdn` variant and `.d.ts`.
-  Classes stay `.pn .pn-<code>`; base `.pn` sizing follows the shape's aspect ratio.
+  Each shape has its own base class — `.pn` (pennant), `.pn-rect`, `.pn-square`, `.pn-circle` —
+  sized by the shape's aspect ratio, and flag rules are scoped to it (`.pn-circle.pn-ar`), so
+  several stylesheets mix on one page. One base class per element; `.pn-lg`/`.pn-2x`… work with
+  all of them.
 - `pennantUrl(code, { shape, format, scale, base })`.
 
 ## Components

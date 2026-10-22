@@ -3,9 +3,10 @@ Copyright (c) 2026 d3vaya
 
 This product includes flag artwork from flag-icons
 (https://github.com/lipis/flag-icons), distributed under the MIT License.
-The 1x1 SVG flags are minified with SVGO (ids namespaced), clipped to a
-pennant shape and wrapped in a frame. They ship in svg/, png/, sprite/, css/
-and dist/. The flag-icons copyright and license text follows.
+Both the square (1x1) and 4:3 (4x3) SVG flags are minified with SVGO (ids
+namespaced, inline styles removed) and clipped to one of four shapes, each
+wrapped in a frame: pennant, square and circle use the 1x1 artwork, rect uses
+the 4x3 artwork. They ship in svg/, png/, sprite/, css/ and dist/. The flag-icons copyright and license text follows.
 
 --------------------------------------------------------------------------------
 flag-icons
