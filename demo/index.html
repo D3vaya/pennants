@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pennants gallery</title>
+    <link rel="icon" href="../svg/ar.svg" />
+    <!--
+      Development gallery. Not published to npm.
+      Run `npm run build`, serve the repository root (e.g. `npx serve .`) and open /demo/.
+      Codes and names come from ../dist/index.js; images from ../svg/.
+    -->
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f6f1e7;
+        --fg: #2b2116;
+        --muted: #6d5c47;
+        --card: #fffaf0;
+        --border: #dccbb0;
+        --accent: #8e713f;
+        --size: 48px;
+      }
+      :root[data-theme='dark'] {
+        --bg: #2a2219;
+        --fg: #f3e7cf;
+        --muted: #bfae92;
+        --card: #362c21;
+        --border: #54452f;
+        --accent: #d5b97a;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #2a2219;
+          --fg: #f3e7cf;
+          --muted: #bfae92;
+          --card: #362c21;
+          --border: #54452f;
+          --accent: #d5b97a;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          15px/1.4 system-ui,
+          sans-serif;
+      }
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 20px;
+        align-items: center;
+        padding: 12px 16px;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+      label {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        color: var(--muted);
+      }
+      input,
+      select,
+      button {
+        font: inherit;
+        color: inherit;
+      }
+      input[type='search'],
+      select {
+        padding: 6px 10px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+      }
+      input[type='search'] {
+        width: 16rem;
+        max-width: 100%;
+      }
+      input[type='range'] {
+        accent-color: var(--accent);
+      }
+      #theme {
+        margin-left: auto;
+        padding: 6px 12px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      main {
+        padding: 16px;
+      }
+      #count {
+        margin: 0 0 12px;
+        color: var(--muted);
+      }
+      ul {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(max(calc(var(--size) + 48px), 120px), 1fr));
+        gap: 8px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      li button {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 12px 8px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      li button:hover {
+        border-color: var(--accent);
+      }
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      li img {
+        width: calc(var(--size) * 11 / 12);
+        height: var(--size);
+      }
+      .code {
+        font:
+          600 0.85rem ui-monospace,
+          monospace;
+      }
+      .name {
+        font-size: 0.8rem;
+        color: var(--muted);
+        text-align: center;
+      }
+      #toast {
+        position: fixed;
+        bottom: 16px;
+        left: 50%;
+        max-width: calc(100% - 32px);
+        padding: 8px 14px;
+        overflow: hidden;
+        font:
+          0.85rem ui-monospace,
+          monospace;
+        color: var(--bg);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background: var(--fg);
+        border-radius: 6px;
+        opacity: 0;
+        transform: translateX(-50%);
+        transition: opacity 0.2s;
+        pointer-events: none;
+      }
+      #toast.show {
+        opacity: 1;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #toast {
+          transition: none;
+        }
+      }
+      .error {
+        padding: 16px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>pennants</h1>
+      <label>
+        Search
+        <input id="search" type="search" placeholder="Code or name" autocomplete="off" />
+      </label>
+      <label>
+        Size
+        <input id="size" type="range" min="16" max="144" step="4" value="48" />
+        <output id="size-value" for="size">48px</output>
+      </label>
+      <label>
+        Names
+        <select id="locale">
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+          <option value="pt">Português</option>
+        </select>
+      </label>
+      <label>
+        Copy as
+        <select id="format">
+          <option value="html">&lt;img&gt;</option>
+          <option value="css">CSS class</option>
+          <option value="react">React</option>
+          <option value="element">Web Component</option>
+          <option value="import">ES import</option>
+        </select>
+      </label>
+      <button id="theme" type="button" aria-pressed="false">Dark theme</button>
+    </header>
+    <main>
+      <p id="count" aria-live="polite"></p>
+      <ul id="grid"></ul>
+    </main>
+    <div id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module">
+      const $ = (id) => document.getElementById(id);
+      const grid = $('grid');
+      const toast = $('toast');
+
+      let api;
+      try {
+        api = await import('../dist/index.js');
+      } catch {
+        grid.outerHTML =
+          '<p class="error">Could not load <code>../dist/index.js</code>. Run <code>npm run build</code> and serve the repository root over HTTP.</p>';
+        throw new Error('pennants dist not built');
+      }
+      const { codes, getPennantName } = api;
+
+      const snippets = {
+        html: (c, n) => `<img src="${api.pennantUrl(c)}" width="33" height="36" alt="${n}" />`,
+        css: (c) => `<span class="pn pn-${c}"></span>`,
+        react: (c, n) => `<Pennant code="${c}" size={32} title="${n}" />`,
+        element: (c, n) => `<pennant-flag code="${c}" size="32" label="${n}"></pennant-flag>`,
+        import: (c) => `import ${c.replace(/-/g, '_')} from 'pennants/flags/${c}';`,
+      };
+
+      function render() {
+        const locale = $('locale').value;
+        grid.replaceChildren(
+          ...codes.map((code) => {
+            const name = getPennantName(code, locale);
+            const li = document.createElement('li');
+            li.dataset.search = `${code} ${name} ${getPennantName(code)}`.toLowerCase();
+            li.innerHTML = `<button type="button"><img src="../svg/${code}.svg" alt="" loading="lazy" /><span class="code">${code}</span><span class="name"></span></button>`;
+            li.querySelector('.name').textContent = name;
+            const button = li.querySelector('button');
+            button.dataset.code = code;
+            button.dataset.name = name;
+            button.setAttribute('aria-label', `${name} (${code}), copy snippet`);
+            return li;
+          }),
+        );
+        filter();
+      }
+
+      function filter() {
+        const query = $('search').value.trim().toLowerCase();
+        let shown = 0;
+        for (const li of grid.children) {
+          const match = !query || li.dataset.search.includes(query);
+          li.hidden = !match;
+          if (match) shown++;
+        }
+        $('count').textContent = `${shown} of ${codes.length} pennants`;
+      }
+
+      let toastTimer;
+      async function copy(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          toast.textContent = `Copied: ${text}`;
+        } catch {
+          toast.textContent = text;
+        }
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+      }
+
+      grid.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-code]');
+        if (button) copy(snippets[$('format').value](button.dataset.code, button.dataset.name));
+      });
+
+      $('search').addEventListener('input', filter);
+      $('locale').addEventListener('change', render);
+      $('size').addEventListener('input', (event) => {
+        const px = `${event.target.value}px`;
+        document.documentElement.style.setProperty('--size', px);
+        $('size-value').textContent = px;
+      });
+
+      const themeButton = $('theme');
+      const systemDark = matchMedia('(prefers-color-scheme: dark)');
+      function applyTheme(theme) {
+        document.documentElement.dataset.theme = theme;
+        themeButton.setAttribute('aria-pressed', String(theme === 'dark'));
+      }
+      let stored = null;
+      try {
+        stored = localStorage.getItem('pennants-theme');
+      } catch {}
+      applyTheme(stored ?? (systemDark.matches ? 'dark' : 'light'));
+      themeButton.addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try {
+          localStorage.setItem('pennants-theme', next);
+        } catch {}
+      });
+
+      render();
+    </script>
+  </body>
+</html>
