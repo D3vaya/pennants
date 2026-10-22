@@ -1,0 +1,45 @@
+name: Bug report
+description: Something does not work as documented.
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What you expected and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal code or a link to a repository or sandbox.
+      render: js
+    validations:
+      required: true
+  - type: dropdown
+    id: entry
+    attributes:
+      label: Entry point
+      multiple: true
+      options:
+        - pennants (core API)
+        - pennants/flags/*
+        - pennants/react
+        - pennants/element
+        - CSS
+        - SVG / PNG / sprite files
+        - Other
+  - type: input
+    id: version
+    attributes:
+      label: pennants version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser or Node.js version, bundler, framework.
+      placeholder: Chrome 140, Vite 7, React 19

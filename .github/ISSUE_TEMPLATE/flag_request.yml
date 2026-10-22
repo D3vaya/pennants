@@ -1,0 +1,40 @@
+name: Flag request or correction
+description: Request a new flag or report an incorrect one.
+labels: [flag]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Flag designs come from [flag-icons](https://github.com/lipis/flag-icons). Wrong or
+        outdated designs should be fixed there first; this project picks them up on the next
+        flag-icons update. Problems with the pennant frame belong here.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Request type
+      options:
+        - New flag
+        - Incorrect flag design
+        - Pennant rendering problem (clipping, bar, size)
+    validations:
+      required: true
+  - type: input
+    id: code
+    attributes:
+      label: Code
+      description: ISO 3166-1 alpha-2 or ISO 3166-2 code, if any.
+      placeholder: es-an
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Name, official source for the design, screenshots.
+    validations:
+      required: true
+  - type: input
+    id: upstream
+    attributes:
+      label: flag-icons issue or PR
+      description: Link, if the design comes from or was reported to flag-icons.

@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    name: Verify (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        # The generator (scripts/generate.ts) relies on Node's built-in type
+        # stripping, unflagged since Node 22.18. Node 20 is covered by the
+        # smoke job below, which tests the packed tarball instead.
+        node: ['22', '24']
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run verify
+
+      - name: Upload coverage
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-node-${{ matrix.node }}
+          path: coverage/
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Pack tarball
+        if: matrix.node == '22'
+        run: npm pack
+
+      - name: Upload tarball
+        if: matrix.node == '22'
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-tarball
+          path: pennants-*.tgz
+          if-no-files-found: error
+          retention-days: 7
+
+  smoke-node20:
+    name: Smoke test packed package (Node 20.19)
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20.19'
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: package-tarball
+          path: ${{ runner.temp }}/pkg
+
+      - name: Install tarball into an empty project
+        working-directory: ${{ runner.temp }}
+        run: |
+          mkdir smoke
+          cd smoke
+          npm init -y > /dev/null
+          npm install --no-audit --no-fund ../pkg/pennants-*.tgz
+
+      - name: Import the public entry points
+        working-directory: ${{ runner.temp }}/smoke
+        run: |
+          cat > smoke.mjs <<'JS'
+          import assert from 'node:assert/strict';
+          import { existsSync } from 'node:fs';
+          import { fileURLToPath } from 'node:url';
+          import { codes, isPennantCode, loadPennant, getPennantName, pennantUrl } from 'pennants';
+          import ar from 'pennants/flags/ar';
+
+          assert.ok(codes.length > 249, 'codes list');
+          assert.ok(isPennantCode('AR'));
+          assert.match(ar, /^<svg/);
+          assert.equal(await loadPennant('ar'), ar);
+          assert.equal(getPennantName('ar'), 'Argentina');
+          assert.match(pennantUrl('ar'), /\/svg\/ar\.svg$/);
+          for (const specifier of ['pennants/svg/ar.svg', 'pennants/sprite', 'pennants/css']) {
+            assert.ok(existsSync(fileURLToPath(import.meta.resolve(specifier))), specifier);
+          }
+          console.log(`OK on Node ${process.version}`);
+          JS
+          node smoke.mjs
