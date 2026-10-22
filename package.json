@@ -81,13 +81,13 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "check:package": "publint && attw --pack . --profile esm-only",
+    "check:package": "publint && attw --pack . --profile esm-only --entrypoints . ./flags/ar ./react ./element ./element/register",
     "size": "size-limit",
     "verify": "npm run lint && npm run typecheck && npm run build && npm run coverage && npm run check:package && npm run size",
     "prepublishOnly": "npm run verify"
   },
   "peerDependencies": {
-    "react": ">=17"
+    "react": ">=18"
   },
   "peerDependenciesMeta": {
     "react": {
