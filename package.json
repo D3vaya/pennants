@@ -72,13 +72,41 @@
       "types": "./dist/element/register.d.ts",
       "default": "./dist/element/register.js"
     },
+    "./art/*": {
+      "types": "./dist/art/*.d.ts",
+      "default": "./dist/art/*.js"
+    },
     "./css": {
       "types": "./css/pennants.d.ts",
-      "default": "./css/pennants.min.css"
+      "default": "./css/pennant.min.css"
     },
     "./css/cdn": {
       "types": "./css/pennants.d.ts",
-      "default": "./css/pennants.cdn.min.css"
+      "default": "./css/pennant.cdn.min.css"
+    },
+    "./css/rect": {
+      "types": "./css/pennants.d.ts",
+      "default": "./css/rect.min.css"
+    },
+    "./css/rect/cdn": {
+      "types": "./css/pennants.d.ts",
+      "default": "./css/rect.cdn.min.css"
+    },
+    "./css/square": {
+      "types": "./css/pennants.d.ts",
+      "default": "./css/square.min.css"
+    },
+    "./css/square/cdn": {
+      "types": "./css/pennants.d.ts",
+      "default": "./css/square.cdn.min.css"
+    },
+    "./css/circle": {
+      "types": "./css/pennants.d.ts",
+      "default": "./css/circle.min.css"
+    },
+    "./css/circle/cdn": {
+      "types": "./css/pennants.d.ts",
+      "default": "./css/circle.cdn.min.css"
     },
     "./css/*": {
       "types": "./css/pennants.d.ts",
@@ -86,7 +114,7 @@
     },
     "./svg/*": "./svg/*",
     "./png/*": "./png/*",
-    "./sprite": "./sprite/pennants.svg",
+    "./sprite": "./sprite/pennant.svg",
     "./sprite/*": "./sprite/*",
     "./package.json": "./package.json"
   },

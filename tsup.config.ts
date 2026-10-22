@@ -27,6 +27,15 @@ const flagEntries = Object.fromEntries(
     .map((file) => [`flags/${file.slice(0, -3)}`, `src/generated/flags/${file}`]),
 );
 
+/** `pennants/art/<set>/<code>`: one artwork module per flag and set. */
+const artEntries = Object.fromEntries(
+  ['1x1', '4x3'].flatMap((set) =>
+    readdirSync(`src/generated/art/${set}`)
+      .filter((file) => file.endsWith('.ts'))
+      .map((file) => [`art/${set}/${file.slice(0, -3)}`, `src/generated/art/${set}/${file}`]),
+  ),
+);
+
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
@@ -37,6 +46,7 @@ export default defineConfig({
     'element/index': 'src/element/index.ts',
     'element/register': 'src/element/register.ts',
     ...flagEntries,
+    ...artEntries,
   },
   format: ['esm'],
   target: 'es2022',
