@@ -12,18 +12,18 @@ Build de producción con Vite 8.3.5. Cada fila es la diferencia contra una app v
 de React, contra una app de React vacía: 219,5 kB min / 67,7 kB gzip). Tamaños en
 min / gzip / brotli.
 
-| Qué usas                                   | JS de entrada                | CSS                             | Archivos JS diferidos ¹ |
-| ------------------------------------------ | ---------------------------- | ------------------------------- | ----------------------- |
-| `pennantUrl`                               | +2,0 kB / +801 B / +586 B    |                                 | 0                       |
-| `getPennantName`                           | +2,6 kB / +1,1 kB / +840 B   |                                 | 0                       |
-| Un módulo de bandera (`pennants/flags/ar`) | +3,2 kB / +1,0 kB / +933 B   |                                 | 0                       |
-| `loadPennant`                              | +15,4 kB / +5,1 kB / +3,8 kB |                                 | 271                     |
-| `pennants/element/register`                | +19,6 kB / +7,0 kB / +5,3 kB |                                 | 271                     |
-| React `<Pennant>`                          | +18,5 kB / +6,9 kB / +5,0 kB |                                 | 271                     |
-| React `<PennantSvg>` con una bandera       | +21,8 kB / +8,0 kB / +5,9 kB |                                 | 270                     |
-| CSS, con `assetsInlineLimit` ²             | +27 B                        | +14,8 kB / +3,7 kB / +2,7 kB    | 0                       |
-| CSS, `pennants/css/cdn`                    | +27 B                        | +23,2 kB / +1,9 kB / +1,1 kB    | 0                       |
-| CSS, configuración por defecto de Vite     | +27 B                        | +372,4 kB / +52,0 kB / +42,9 kB | 0                       |
+| Qué usas                               | JS de entrada                | CSS                             | Archivos JS diferidos ¹ |
+| -------------------------------------- | ---------------------------- | ------------------------------- | ----------------------- |
+| `pennantUrl`                           | +2,0 kB / +801 B / +586 B    |                                 | 0                       |
+| `getPennantName`                       | +2,6 kB / +1,1 kB / +840 B   |                                 | 0                       |
+| Una bandera, import estático (`ar`)    | +3,2 kB / +1,0 kB / +933 B   |                                 | 0                       |
+| `loadPennant`                          | +15,4 kB / +5,1 kB / +3,8 kB |                                 | 271                     |
+| `pennants/element/register`            | +19,6 kB / +7,0 kB / +5,3 kB |                                 | 271                     |
+| React `<Pennant>`                      | +18,5 kB / +6,9 kB / +5,0 kB |                                 | 271                     |
+| React `<PennantSvg>` con una bandera   | +21,8 kB / +8,0 kB / +5,9 kB |                                 | 270                     |
+| CSS, con `assetsInlineLimit` ²         | +27 B                        | +14,8 kB / +3,7 kB / +2,7 kB    | 0                       |
+| CSS, `pennants/css/cdn`                | +27 B                        | +23,2 kB / +1,9 kB / +1,1 kB    | 0                       |
+| CSS, configuración por defecto de Vite | +27 B                        | +372,4 kB / +52,0 kB / +42,9 kB | 0                       |
 
 ¹ Se generan en tu build, pero solo se descargan cuando se muestra esa bandera.
 ² Mira [Preguntas frecuentes: imports de assets](./faq#imports-de-assets-en-el-bundler).

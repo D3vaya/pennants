@@ -97,7 +97,7 @@ with `npm run bundle:budget`.
 | `<img>` / CDN, PNG                     | 0              | 0            |
 | CSS classes, `assetsInlineLimit` set ² | 3.7 kB CSS     | 0            |
 | CSS classes, `pennants/css/cdn`        | 1.9 kB CSS ³   | 0            |
-| One flag module (`pennants/flags/ar`)  | 1.0 kB JS      | 0            |
+| One flag, static import (`ar`)         | 1.0 kB JS      | 0            |
 | `getPennantName`                       | 1.1 kB JS      | 0            |
 | `loadPennant`                          | 5.1 kB JS      | 271          |
 | React `<Pennant>`                      | 6.9 kB JS      | 271          |

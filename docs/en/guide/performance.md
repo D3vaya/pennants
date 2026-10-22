@@ -10,18 +10,18 @@ All numbers on this page are measured, not estimated, and you can reproduce them
 Vite 8.3.5 production build. Each row is the difference against an empty app (React rows
 against an empty React app: 219.5 kB min / 67.7 kB gzip). Sizes are min / gzip / brotli.
 
-| You use                               | Entry JS                     | CSS                             | Lazy JS files ¹ |
-| ------------------------------------- | ---------------------------- | ------------------------------- | --------------- |
-| `pennantUrl`                          | +2.0 kB / +801 B / +586 B    |                                 | 0               |
-| `getPennantName`                      | +2.6 kB / +1.1 kB / +840 B   |                                 | 0               |
-| One flag module (`pennants/flags/ar`) | +3.2 kB / +1.0 kB / +933 B   |                                 | 0               |
-| `loadPennant`                         | +15.4 kB / +5.1 kB / +3.8 kB |                                 | 271             |
-| `pennants/element/register`           | +19.6 kB / +7.0 kB / +5.3 kB |                                 | 271             |
-| React `<Pennant>`                     | +18.5 kB / +6.9 kB / +5.0 kB |                                 | 271             |
-| React `<PennantSvg>` with one flag    | +21.8 kB / +8.0 kB / +5.9 kB |                                 | 270             |
-| CSS, `assetsInlineLimit` set ²        | +27 B                        | +14.8 kB / +3.7 kB / +2.7 kB    | 0               |
-| CSS, `pennants/css/cdn`               | +27 B                        | +23.2 kB / +1.9 kB / +1.1 kB    | 0               |
-| CSS, Vite defaults (flags inlined)    | +27 B                        | +372.4 kB / +52.0 kB / +42.9 kB | 0               |
+| You use                            | Entry JS                     | CSS                             | Lazy JS files ¹ |
+| ---------------------------------- | ---------------------------- | ------------------------------- | --------------- |
+| `pennantUrl`                       | +2.0 kB / +801 B / +586 B    |                                 | 0               |
+| `getPennantName`                   | +2.6 kB / +1.1 kB / +840 B   |                                 | 0               |
+| One flag, static import (`ar`)     | +3.2 kB / +1.0 kB / +933 B   |                                 | 0               |
+| `loadPennant`                      | +15.4 kB / +5.1 kB / +3.8 kB |                                 | 271             |
+| `pennants/element/register`        | +19.6 kB / +7.0 kB / +5.3 kB |                                 | 271             |
+| React `<Pennant>`                  | +18.5 kB / +6.9 kB / +5.0 kB |                                 | 271             |
+| React `<PennantSvg>` with one flag | +21.8 kB / +8.0 kB / +5.9 kB |                                 | 270             |
+| CSS, `assetsInlineLimit` set ²     | +27 B                        | +14.8 kB / +3.7 kB / +2.7 kB    | 0               |
+| CSS, `pennants/css/cdn`            | +27 B                        | +23.2 kB / +1.9 kB / +1.1 kB    | 0               |
+| CSS, Vite defaults (flags inlined) | +27 B                        | +372.4 kB / +52.0 kB / +42.9 kB | 0               |
 
 ¹ Emitted into your build, but downloaded only when that flag is shown.
 ² See [FAQ: bundler asset imports](./faq#bundler-asset-imports). Next.js 16 and Angular 22 do

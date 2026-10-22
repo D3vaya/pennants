@@ -34,7 +34,8 @@ Generated folders are not committed. Do not edit files under `src/generated/`; c
 
 Flag designs come from [flag-icons](https://github.com/lipis/flag-icons). Corrections to a
 flag's design belong upstream; once released there, bump the `flag-icons` dev dependency
-here. Changes to the pennant frame live in `scripts/lib/pennant.ts`.
+here. The frame geometry of every shape lives in `src/shapes.ts`, shared by the generator and
+the runtime.
 
 To preview changes, run `npm run build` and then `npm run docs:dev`: the docs site shows every
 flag in the gallery.
