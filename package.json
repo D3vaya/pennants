@@ -127,7 +127,7 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "check:package": "publint && attw --pack . --profile esm-only --entrypoints . ./flags/ar ./react ./element ./element/register",
+    "check:package": "publint && attw --pack . --profile esm-only --entrypoints . ./flags/ar ./fetch ./react ./react/static ./element ./element/register",
     "size": "size-limit",
     "examples:check": "node scripts/examples-check.ts",
     "bundle:budget": "node scripts/bundle-budget.ts",

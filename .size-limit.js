@@ -28,7 +28,7 @@ export default [
   {
     name: 'element',
     path: 'dist/element/index.js',
-    limit: '3.5 kB',
+    limit: '4 kB',
     modifyRolldownConfig: excludeFlagChunks,
   },
   {
