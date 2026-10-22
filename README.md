@@ -115,7 +115,7 @@ pennantUrl('ar', { format: 'png', scale: 2 }); // '.../png/2x/ar.png'
 | `getPennantName(code, locale?)`   | Localized name via `Intl.DisplayNames`; falls back to English (`eu`, `gb-eng`, ...). Default `'en'`.                  |
 | `toDataUri(svg)`                  | Encodes markup as a `data:image/svg+xml` URI.                                                                         |
 | `pennantUrl(code, options?)`      | URL of a static asset. Options: `base` (default `DEFAULT_CDN_BASE`), `format` (`'svg'` \| `'png'`), `scale` (1 \| 2). |
-| `toEmoji(code)`                   | Emoji flag for ISO codes; `''` when none exists (`xx`, `gb-eng`, `eu`).                                               |
+| `toEmoji(code)`                   | Emoji flag for ISO codes plus `eu` and `un`; `''` when none exists (`xx`, `gb-eng`).                                  |
 | `PENNANT_WIDTH`, `PENNANT_HEIGHT` | `66`, `72`.                                                                                                           |
 | `PENNANT_ASPECT_RATIO`            | `66 / 72`.                                                                                                            |
 | `DEFAULT_CDN_BASE`                | `https://cdn.jsdelivr.net/npm/pennants@<installed version>`, so URLs match the installed assets.                      |
