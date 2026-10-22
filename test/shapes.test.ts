@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   BAR_CLASS,
   BORDER_WIDTH,
+  CORNER_RADIUS,
+  PENNANT,
   circlePath,
   composeFlag,
   isShape,
@@ -47,7 +49,16 @@ describe('shape tables', () => {
 
 describe('paths', () => {
   it('pennant: rectangle under the bar ending in a centred point', () => {
-    expect(PENNANT_PATH).toBe('M0 9H66V50L33 72L0 50Z');
+    const { barHeight: bar, width: w, height: h, shoulderY: s } = PENNANT;
+    expect(PENNANT_PATH).toBe(`M0 ${bar}H${w}V${s}L${w / 2} ${h}L0 ${s}Z`);
+  });
+
+  it('literal shape paths match SHAPE_SIZE and CORNER_RADIUS', () => {
+    for (const shape of ['rect', 'square'] as const) {
+      const { width, height } = SHAPE_SIZE[shape];
+      expect(SHAPE_PATH[shape]).toBe(roundedRectPath(width, height, CORNER_RADIUS));
+    }
+    expect(SHAPE_PATH.circle).toBe(circlePath(SHAPE_SIZE.circle.width));
   });
 
   it('roundedRectPath draws four corner arcs', () => {

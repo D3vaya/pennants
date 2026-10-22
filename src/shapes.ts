@@ -32,8 +32,16 @@ export interface FlagArt {
   content: string;
 }
 
+/** Size in CSS pixels. */
+export interface ShapeSize {
+  /** Width in CSS pixels. */
+  width: number;
+  /** Height in CSS pixels. */
+  height: number;
+}
+
 /** Intrinsic size in CSS pixels of each shape's SVG. */
-export const SHAPE_SIZE: Readonly<Record<PennantShape, { width: number; height: number }>> = {
+export const SHAPE_SIZE: Readonly<Record<PennantShape, ShapeSize>> = {
   pennant: { width: 66, height: 72 },
   rect: { width: 64, height: 48 },
   square: { width: 48, height: 48 },
@@ -85,10 +93,12 @@ export const CORNER_RADIUS = 2;
  */
 export const BAR_CLASS = { light: 'pn-bar-l', dark: 'pn-bar-d' } as const;
 
-/** Outline of the pennant body: bar bottom edge, straight sides, V point. */
-export const PENNANT_PATH = `M0 ${PENNANT.barHeight}H${PENNANT.width}V${PENNANT.shoulderY}L${
-  PENNANT.width / 2
-} ${PENNANT.height}L0 ${PENNANT.shoulderY}Z`;
+/**
+ * Outline of the pennant body: bar bottom edge, straight sides, V point.
+ * Written out (tests check it against {@link PENNANT}) so the constant has
+ * no top-level computation that bundlers would keep when it is unused.
+ */
+export const PENNANT_PATH = 'M0 9H66V50L33 72L0 50Z';
 
 /** Path of a `width` x `height` rectangle with corner radius `r`. */
 export function roundedRectPath(width: number, height: number, r: number): string {
@@ -105,12 +115,16 @@ export function circlePath(size: number): string {
   return `M0 ${r}A${r} ${r} 0 1 1 ${size} ${r}A${r} ${r} 0 1 1 0 ${r}Z`;
 }
 
-/** Outline path each shape clips its artwork to (and strokes for the border). */
+/**
+ * Outline path each shape clips its artwork to (and strokes for the border).
+ * Sizes are literal and calls `@__PURE__` so unused shape data tree-shakes
+ * away; tests check the literals against {@link SHAPE_SIZE}.
+ */
 export const SHAPE_PATH: Readonly<Record<PennantShape, string>> = {
   pennant: PENNANT_PATH,
-  rect: roundedRectPath(SHAPE_SIZE.rect.width, SHAPE_SIZE.rect.height, CORNER_RADIUS),
-  square: roundedRectPath(SHAPE_SIZE.square.width, SHAPE_SIZE.square.height, CORNER_RADIUS),
-  circle: circlePath(SHAPE_SIZE.circle.width),
+  rect: /* @__PURE__ */ roundedRectPath(64, 48, 2),
+  square: /* @__PURE__ */ roundedRectPath(48, 48, 2),
+  circle: /* @__PURE__ */ circlePath(48),
 };
 
 const CODE_PATTERN = /^[a-z]{2,6}(-[a-z]{2,3})?$/;
