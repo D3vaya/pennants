@@ -2,13 +2,17 @@ import { getPennantName, isPennantCode, type PennantCode } from '../internal/cor
 import { loadMarkup, peekMarkup } from '../internal/cache.ts';
 import { prepareSvg } from '../internal/svg.ts';
 
+/** `detail` of the `pennant-load` event, fired once the flag is rendered. */
 export interface PennantLoadDetail {
+  /** Normalised code of the flag that was loaded. */
   code: PennantCode;
 }
 
+/** `detail` of the `pennant-error` event (unknown code, failed download or invalid fetched markup). */
 export interface PennantErrorDetail {
   /** The `code` attribute value that failed. */
   code: string;
+  /** The rejection reason: a `RangeError` for unknown codes, otherwise the load/fetch error. */
   error: unknown;
 }
 
@@ -22,10 +26,38 @@ declare global {
   }
 }
 
-const STYLE =
+/**
+ * Shadow styles. Includes the bar theming rule: document styles don't reach
+ * the shadow root, but custom properties inherit, so `--pennant-bar-light` /
+ * `--pennant-bar-dark` on any ancestor recolour the bar.
+ */
+export const PENNANT_ELEMENT_CSS =
   ':host{display:inline-block;height:var(--pennant-size,1em);aspect-ratio:66/72}' +
   ':host([hidden]){display:none}' +
-  'span,svg{display:block;width:100%;height:100%}';
+  'span,svg{display:block;width:100%;height:100%}' +
+  '.pn-bar-l{stop-color:var(--pennant-bar-light,#d5b97a)}' +
+  '.pn-bar-d{stop-color:var(--pennant-bar-dark,#8e713f)}';
+
+let sharedSheet: CSSStyleSheet | undefined;
+
+/**
+ * CSP-safe styling: one constructable stylesheet shared by every instance
+ * (allowed without `style-src 'unsafe-inline'`), falling back to a `<style>`
+ * element only where `adoptedStyleSheets` is unsupported.
+ */
+function applyStyles(root: ShadowRoot): void {
+  if ('adoptedStyleSheets' in ShadowRoot.prototype && 'replaceSync' in CSSStyleSheet.prototype) {
+    if (!sharedSheet) {
+      sharedSheet = new CSSStyleSheet();
+      sharedSheet.replaceSync(PENNANT_ELEMENT_CSS);
+    }
+    root.adoptedStyleSheets = [sharedSheet];
+    return;
+  }
+  const style = document.createElement('style');
+  style.textContent = PENNANT_ELEMENT_CSS;
+  root.prepend(style);
+}
 
 const PROPS = ['code', 'size', 'label', 'base'] as const;
 
@@ -38,6 +70,7 @@ const normalize = (value: string | null): PennantCode | undefined => {
   return isPennantCode(code) ? code : undefined;
 };
 
+/** Options of {@link definePennantElement}. */
 export interface DefinePennantElementOptions {
   /**
    * Fetch mode for every instance of this tag: load `<base>/svg/<code>.svg`
@@ -54,6 +87,7 @@ export interface DefinePennantElementOptions {
  * fetched from `<base>/svg/<code>.svg` instead of the bundled chunks.
  */
 export class PennantElement extends Base {
+  /** Attributes the element reacts to: `code`, `size`, `label`, `base`. */
   static readonly observedAttributes: readonly string[] = PROPS;
   /** Fetch base used when the element has no `base` attribute (set by `definePennantElement`). */
   static defaultBase: string | undefined;
@@ -65,20 +99,21 @@ export class PennantElement extends Base {
   #userSize = '';
   #failed = false;
 
+  /** Prefer `document.createElement('pennant-flag')` or the tag in HTML after `definePennantElement()`. */
   constructor() {
     super();
     const root = this.attachShadow({ mode: 'open' });
-    const style = document.createElement('style');
-    style.textContent = STYLE;
     this.#content = document.createElement('span');
     this.#content.setAttribute('part', 'svg');
-    root.append(style, this.#content);
+    root.append(this.#content);
+    applyStyles(root);
   }
 
   /** Flag code (any casing). Reflects the `code` attribute. */
   get code(): string | null {
     return this.getAttribute('code');
   }
+  /** Sets (or with `null` removes) the `code` attribute. */
   set code(value: string | null) {
     this.#reflect('code', value);
   }
@@ -87,6 +122,7 @@ export class PennantElement extends Base {
   get size(): string | null {
     return this.getAttribute('size');
   }
+  /** Sets the `size` attribute; numbers are pixels. `null` removes it. */
   set size(value: string | number | null) {
     this.#reflect('size', value);
   }
@@ -95,6 +131,7 @@ export class PennantElement extends Base {
   get label(): string | null {
     return this.getAttribute('label');
   }
+  /** Sets the `label` attribute; `""` marks it decorative, `null` restores the default name. */
   set label(value: string | null) {
     this.#reflect('label', value);
   }
@@ -103,10 +140,12 @@ export class PennantElement extends Base {
   get base(): string | null {
     return this.getAttribute('base');
   }
+  /** Sets the `base` attribute (fetch mode); `null` returns to the tag default. */
   set base(value: string | null) {
     this.#reflect('base', value);
   }
 
+  /** @internal Custom element lifecycle. */
   connectedCallback(): void {
     // Properties set before the element was upgraded shadow the accessors.
     for (const prop of PROPS) {
@@ -121,10 +160,12 @@ export class PennantElement extends Base {
     if (this.#shown === undefined || this.#shown !== this.#key(normalize(this.code))) this.#load();
   }
 
+  /** @internal Custom element lifecycle. */
   disconnectedCallback(): void {
     this.#token++; // ignore loads that finish while detached
   }
 
+  /** @internal Custom element lifecycle. */
   attributeChangedCallback(name: string, previous: string | null, value: string | null): void {
     if (previous === value) return;
     if (name === 'size') {

@@ -6,7 +6,7 @@ import * as load from '../src/internal/load.ts';
 import type * as Load from '../src/internal/load.ts';
 import { clearMarkupCache } from '../src/internal/cache.ts';
 import { clearFetchCache } from '../src/internal/fetch.ts';
-import { PennantElement, definePennantElement } from '../src/element/index.ts';
+import { PENNANT_ELEMENT_CSS, PennantElement, definePennantElement } from '../src/element/index.ts';
 import type { PennantErrorDetail, PennantLoadDetail } from '../src/element/index.ts';
 
 vi.mock('../src/internal/load.ts', async (importOriginal) => {
@@ -70,9 +70,10 @@ describe('definePennantElement', () => {
 });
 
 describe('<pennant-flag>', () => {
-  it('uses an open shadow root with sizing styles', () => {
+  it('uses an open shadow root with sizing styles (<style> fallback without adoptedStyleSheets)', () => {
     const el = create();
     const style = el.shadowRoot?.querySelector('style')?.textContent ?? '';
+    expect(style).toBe(PENNANT_ELEMENT_CSS);
     expect(style).toContain(
       ':host{display:inline-block;height:var(--pennant-size,1em);aspect-ratio:66/72}',
     );
