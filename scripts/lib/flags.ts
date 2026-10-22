@@ -32,21 +32,25 @@ export async function readFlagSources(root = flagIconsRoot()): Promise<FlagSourc
     .sort((a, b) => a.code.localeCompare(b.code));
 }
 
-/**
- * Integer coordinates in the 512-unit source artwork. The body is drawn at
- * 66 px, so rounding moves edges by < 0.07 px (< 0.3 px at 4x) while roughly
- * halving the size of detailed coats of arms.
- */
-export const FLOAT_PRECISION = 0;
+/** svgo's default precision; used as the lossless reference. */
+export const DEFAULT_PRECISION = 3;
 
-/** Minifies a source flag and namespaces its ids so it can be embedded safely. */
-export function optimizeFlag(code: string, svg: string): FlagArtwork {
+/**
+ * Minifies a source flag and namespaces its ids so it can be embedded safely.
+ * `precision` is the number of decimals kept in coordinates (see
+ * `pickPrecision`: lower is smaller but can destroy tiny `<use>`-scaled shapes).
+ */
+export function optimizeFlag(
+  code: string,
+  svg: string,
+  precision = DEFAULT_PRECISION,
+): FlagArtwork {
   assertValidCode(code);
   const { data } = optimize(svg, {
     multipass: true,
-    floatPrecision: FLOAT_PRECISION,
+    floatPrecision: precision,
     plugins: [
-      { name: 'preset-default', params: { floatPrecision: FLOAT_PRECISION } },
+      { name: 'preset-default', params: { floatPrecision: precision } },
       'removeDimensions',
       'removeXlink',
       { name: 'prefixIds', params: { prefix: `pn-${code}`, delim: '-' } },
@@ -55,7 +59,16 @@ export function optimizeFlag(code: string, svg: string): FlagArtwork {
   return { code, ...unwrapSvg(data) };
 }
 
-export async function loadFlagArtwork(code: string, root = flagIconsRoot()): Promise<FlagArtwork> {
-  const svg = await readFile(join(root, 'flags', '1x1', `${code}.svg`), 'utf8');
-  return optimizeFlag(code, svg);
+/** Raw source SVG of one flag (square 1x1 artwork). */
+export async function readFlagSvg(code: string, root = flagIconsRoot()): Promise<string> {
+  assertValidCode(code);
+  return readFile(join(root, 'flags', '1x1', `${code}.svg`), 'utf8');
+}
+
+export async function loadFlagArtwork(
+  code: string,
+  root = flagIconsRoot(),
+  precision = DEFAULT_PRECISION,
+): Promise<FlagArtwork> {
+  return optimizeFlag(code, await readFlagSvg(code, root), precision);
 }

@@ -7,6 +7,7 @@ import {
   loadFlagArtwork,
   optimizeFlag,
   readFlagSources,
+  readFlagSvg,
 } from '../scripts/lib/flags.ts';
 
 describe('readFlagSources', () => {
@@ -40,12 +41,11 @@ describe('optimizeFlag', () => {
     expect(art.content).not.toMatch(/id="a"/);
   });
 
-  it('rounds coordinates to integers to keep detailed flags small', () => {
-    const art = optimizeFlag(
-      'xx',
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path d="M1.26 2.74L7.51 8.49"/></svg>',
-    );
-    expect(art.content).toBe('<path d="m1 3 7 5"/>');
+  it('rounds coordinates to the requested precision (lossless by default)', () => {
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path d="M1.26 2.74L7.51 8.49"/></svg>';
+    expect(optimizeFlag('xx', svg, 0).content).toBe('<path d="m1 3 7 5"/>');
+    expect(optimizeFlag('xx', svg).content).toBe('<path d="m1.26 2.74 6.25 5.75"/>');
   });
 
   it('rejects invalid codes', () => {
@@ -68,6 +68,10 @@ describe('loadFlagArtwork', () => {
       '<svg viewBox="0 0 2 2"><path d="M0 0h2v2H0z"/></svg>',
     );
     expect((await loadFlagArtwork('zz', root)).viewBox).toBe('0 0 2 2');
+  });
+
+  it('rejects path traversal in readFlagSvg', async () => {
+    await expect(readFlagSvg('../x')).rejects.toThrow('Invalid flag code');
   });
 
   it('resolves the flag-icons package', () => {

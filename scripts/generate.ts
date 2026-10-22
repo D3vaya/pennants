@@ -14,12 +14,13 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { availableParallelism } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { loadFlagArtwork, readFlagSources } from './lib/flags.ts';
+import { DEFAULT_PRECISION, optimizeFlag, readFlagSources, readFlagSvg } from './lib/flags.ts';
 import { buildPennant } from './lib/pennant.ts';
 import { codesModule, flagModule, loadersModule, namesModule } from './lib/modules.ts';
 import { minifyCss, pennantsCss } from './lib/css.ts';
 import { mapLimit, PNG_SCALES, renderPng } from './lib/png.ts';
 import { buildSprite } from './lib/sprite.ts';
+import { pickPrecision } from './lib/precision.ts';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const out = {
@@ -39,9 +40,14 @@ async function main(): Promise<void> {
   await Promise.all(Object.values(out).map((dir) => mkdir(dir, { recursive: true })));
 
   const sources = await readFlagSources();
-  const pennants = await Promise.all(
-    sources.map(async ({ code }) => ({ code, svg: buildPennant(await loadFlagArtwork(code)) })),
-  );
+  // Each flag gets the lowest coordinate precision that renders identically.
+  const pennants = await mapLimit(sources, availableParallelism(), async ({ code }) => {
+    const source = await readFlagSvg(code);
+    const build = (precision: number): string =>
+      buildPennant(optimizeFlag(code, source, precision));
+    const { svg } = await pickPrecision(build, DEFAULT_PRECISION);
+    return { code, svg };
+  });
 
   await Promise.all(
     pennants.flatMap(({ code, svg }) => [
