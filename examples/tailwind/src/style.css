@@ -1,3 +1,4 @@
 @import 'tailwindcss';
 /* In the components layer, so utilities such as h-12 or w-auto can override .pn. */
 @import 'pennants/css' layer(components);
+@import 'pennants/css/circle' layer(components);

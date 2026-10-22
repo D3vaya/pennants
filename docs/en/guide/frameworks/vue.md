@@ -76,7 +76,8 @@ const circle = renderFlag(ar, { shape: 'circle' });
 </style>
 ```
 
-To use the `pn pn-xx` classes, import `pennants/css` (or `pennants/css/circle`...) and add
+To use the `pn pn-xx` classes, import `pennants/css` and any other shapes you need (`pennants/css/circle` for
+`pn-circle pn-xx`...), and add
 the `assetsInlineLimit` option from the [Vite guide](./vite#stop-vite-from-inlining-the-flags).
 
 ## Bundle and SSR

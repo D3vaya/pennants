@@ -33,10 +33,16 @@ Fija siempre la versión en las URLs de la CDN.
 <pennant-flag code="de" shape="circle" size="48" label="Alemania"></pennant-flag>
 ```
 
-Hay una hoja de estilos por forma: `css/pennant.min.css`, `css/rect.min.css`,
-`css/square.min.css` y `css/circle.min.css`. Todas usan las mismas clases `pn pn-<código>`,
-así que carga solo una por página. Para otras formas en la misma página, usa imágenes o
-`<pennant-flag shape="...">`.
+Hay una hoja de estilos por forma, y cada una tiene su clase base: `css/pennant.min.css`
+(`pn`), `css/rect.min.css` (`pn-rect`), `css/square.min.css` (`pn-square`) y
+`css/circle.min.css` (`pn-circle`). Carga las que necesites y combínalas en la misma página:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.0/css/circle.min.css" />
+
+<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
+```
 
 ## En tu propio servidor
 
@@ -64,7 +70,7 @@ referencias `<use>` de otros orígenes.
 
 ## Peso
 
-- Cada hoja de estilos ocupa unos 14 KB minificada (menos de 2 KB con gzip). Cada imagen se
+- Cada hoja de estilos ocupa entre 15 y 17 KB minificada (menos de 2 KB con gzip). Cada imagen se
   descarga solo cuando algún elemento de la página usa su clase.
 - El Web Component ocupa <Size probe="element" /> con gzip en la primera carga. Cada bandera
   es un chunk aparte de pocos KB que se pide al usarla.

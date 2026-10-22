@@ -20,7 +20,7 @@ import { App } from './app/app';
 bootstrapApplication(App).catch((error: unknown) => console.error(error));
 ```
 
-Para usar las clases `pn pn-xx`, añade la hoja de una forma a `angular.json`. Angular solo
+Para usar las clases `pn pn-xx`, añade a `angular.json` la hoja de cada forma que uses. Angular solo
 acepta aquí rutas que terminan en `.css`, así que usa el nombre del archivo
 (`pennant.min.css`, `rect.min.css`, `square.min.css` o `circle.min.css`). Angular emite los
 SVG como archivos en `media/`, así que cada bandera se descarga solo cuando se usa:

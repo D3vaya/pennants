@@ -11,11 +11,12 @@ npm install pennants
 
 ## Configuración
 
-Importa la hoja de una forma en la capa `components` de Tailwind:
+Importa la hoja de cada forma que uses en la capa `components` de Tailwind:
 
 ```css [src/style.css]
 @import 'tailwindcss';
-@import 'pennants/css' layer(components); /* o pennants/css/circle, /rect, /square */
+@import 'pennants/css' layer(components); /* class="pn pn-ar" */
+@import 'pennants/css/circle' layer(components); /* class="pn-circle pn-ar" */
 ```
 
 La capa importa. Sin ella, `.pn` queda como CSS sin capa, que gana a cualquier utilidad de
@@ -27,13 +28,15 @@ de tu CSS.
 
 ## Tamaño
 
-`.pn` mide `1em` de alto, y su ancho depende de la forma (`11/12em` el banderín, `4/3em`
-rect, `1em` square y circle). Dale tamaño con utilidades de font-size:
+Cada clase base (`pn`, `pn-rect`, `pn-square`, `pn-circle`) mide `1em` de alto, y su ancho
+depende de la forma (`11/12em` el banderín, `4/3em` rect, `1em` square y circle). Dale tamaño
+con utilidades de font-size:
 
 ```html
 <span class="pn pn-ar text-[32px]" role="img" aria-label="Argentina"></span>
 <span class="pn pn-br text-5xl" role="img" aria-label="Brasil"></span>
 <!-- Sigue al texto que la rodea -->
+<span class="pn-circle pn-de text-5xl" role="img" aria-label="Alemania"></span>
 <span class="text-xl"><span class="pn pn-mx" aria-hidden="true"></span> México</span>
 ```
 
@@ -53,6 +56,6 @@ rect y `aspect-square` para square y circle. Con square y circle también sirve 
 
 ## Peso
 
-Las reglas de una forma suman unos 14 KB minificadas (menos de 2 KB con gzip) a tu CSS.
+Las reglas de cada forma suman entre 15 y 17 KB minificadas (menos de 2 KB con gzip) a tu CSS.
 Tailwind no elimina las reglas sin usar del CSS importado, pero cada imagen se descarga solo
 cuando se usa.

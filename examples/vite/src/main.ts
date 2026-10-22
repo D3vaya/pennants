@@ -1,5 +1,9 @@
 // Side-effect import: Vite bundles the stylesheet and the flag images it uses.
 import 'pennants/css';
+// Each shape has its own stylesheet and base class (pn-rect, pn-square, pn-circle),
+// so shapes mix on one page.
+import 'pennants/css/rect';
+import 'pennants/css/circle';
 import './style.css';
 // Flag artwork: only the flags you import end up in the bundle. 1x1 art draws
 // pennant, square and circle; 4x3 art draws rect.

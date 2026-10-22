@@ -154,6 +154,15 @@ const PROBES: Probe[] = [
   },
   ...SHAPES.flatMap((shape) => [cssProbe(shape, false), cssProbe(shape, true)]),
   {
+    name: 'css-mixed',
+    label: 'CSS `pennants/css` + `pennants/css/circle` on one page, `assetsInlineLimit` set',
+    baseline: 'empty',
+    config: NO_INLINE,
+    main:
+      `import 'pennants/css';\nimport 'pennants/css/circle';\n` +
+      `document.body.innerHTML = '<span class="pn pn-ar"></span><span class="pn-circle pn-ar"></span>';`,
+  },
+  {
     name: 'css-default',
     label: 'CSS `pennants/css`, Vite defaults (inlined flags)',
     baseline: 'empty',

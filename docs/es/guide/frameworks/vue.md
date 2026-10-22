@@ -85,7 +85,8 @@ const circle = renderFlag(ar, { shape: 'circle' });
 El `label` de `<pennant-flag>` es opcional. Sin él, el nombre accesible es el nombre en
 inglés de la bandera.
 
-Para las clases `pn pn-xx`, importa `pennants/css` (o `pennants/css/circle`...) y añade la
+Para las clases `pn pn-xx`, importa `pennants/css` y las demás formas que necesites (`pennants/css/circle` para
+`pn-circle pn-xx`...), y añade la
 opción `assetsInlineLimit` de la [guía de Vite](./vite#evita-que-vite-incruste-las-banderas).
 
 ## Bundle y SSR

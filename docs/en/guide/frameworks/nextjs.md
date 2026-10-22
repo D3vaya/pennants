@@ -10,11 +10,15 @@ npm install pennants
 
 ## Stylesheet
 
-Import one shape's stylesheet once, in the root layout, to use the `pn pn-xx` classes anywhere:
+Import the stylesheet of each shape you use once, in the root layout:
 
 ```tsx [app/layout.tsx]
-import 'pennants/css'; // or 'pennants/css/circle', 'pennants/css/rect', 'pennants/css/square'
+import 'pennants/css'; // className="pn pn-ar"
+import 'pennants/css/circle'; // className="pn-circle pn-ar"
 ```
+
+`pennants/css/rect` and `pennants/css/square` work the same way, with the `pn-rect` and
+`pn-square` base classes.
 
 Next.js emits the 271 flag SVGs as separate files under `/_next/static/media/`. Each flag image
 is downloaded only when it is used.

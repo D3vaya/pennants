@@ -20,7 +20,7 @@ import { App } from './app/app';
 bootstrapApplication(App).catch((error: unknown) => console.error(error));
 ```
 
-To use the `pn pn-xx` classes, add one shape's stylesheet to `angular.json`. Angular only
+To use the `pn pn-xx` classes, add the stylesheet of each shape you use to `angular.json`. Angular only
 accepts paths that end in `.css` here, so use the file name (`pennant.min.css`,
 `rect.min.css`, `square.min.css` or `circle.min.css`). Angular emits the flag SVGs as
 separate files under `media/`, so each flag is downloaded only when it is used:

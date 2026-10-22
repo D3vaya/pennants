@@ -33,10 +33,16 @@ Always pin the version in CDN URLs.
 <pennant-flag code="de" shape="circle" size="48"></pennant-flag>
 ```
 
-There is one stylesheet per shape: `css/pennant.min.css`, `css/rect.min.css`,
-`css/square.min.css` and `css/circle.min.css`. They all use the same `pn pn-<code>` class
-names, so load only one per page. For other shapes on the same page, use images or
-`<pennant-flag shape="...">`.
+There is one stylesheet per shape, and each has its own base class: `css/pennant.min.css`
+(`pn`), `css/rect.min.css` (`pn-rect`), `css/square.min.css` (`pn-square`) and
+`css/circle.min.css` (`pn-circle`). Load the ones you need and mix them on one page:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.0/css/circle.min.css" />
+
+<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
+```
 
 ## Self-hosted
 
@@ -64,7 +70,7 @@ references from other origins.
 
 ## Weight
 
-- A stylesheet is about 14 KB minified (under 2 KB gzip). Each flag image is downloaded only
+- Each stylesheet is 15–17 KB minified (under 2 KB gzip). Each flag image is downloaded only
   when an element on the page uses its class.
 - The Web Component is about <Size probe="element" metric="gzip" /> gzip on first load. Each
   flag is a separate chunk of a few KB, fetched on demand.

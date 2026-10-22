@@ -10,12 +10,15 @@ npm install pennants
 
 ## Hoja de estilos
 
-Importa la hoja de una forma una sola vez, en el layout raíz, para usar las clases
-`pn pn-xx` en cualquier página:
+Importa una sola vez, en el layout raíz, la hoja de cada forma que uses:
 
 ```tsx [app/layout.tsx]
-import 'pennants/css'; // o 'pennants/css/circle', 'pennants/css/rect', 'pennants/css/square'
+import 'pennants/css'; // className="pn pn-ar"
+import 'pennants/css/circle'; // className="pn-circle pn-ar"
 ```
+
+`pennants/css/rect` y `pennants/css/square` funcionan igual, con las clases base `pn-rect` y
+`pn-square`.
 
 Next.js emite los 271 SVG como archivos en `/_next/static/media/`. Cada imagen se descarga
 solo cuando se usa.

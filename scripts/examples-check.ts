@@ -54,7 +54,16 @@ const EXAMPLES: Example[] = [
     expect: [
       { dir: 'dist/assets', ext: '.js', includes: ['0 0 512 512', '0 0 640 480', '#pn-mx'] },
       // Flags referenced by the CSS are emitted as files, not inlined.
-      { dir: 'dist/assets', ext: '.css', includes: ['.pn-ar{background-image:url(/assets/ar-'] },
+      {
+        dir: 'dist/assets',
+        ext: '.css',
+        includes: [
+          '.pn.pn-ar{background-image:url(/assets/ar-',
+          '.pn-rect.pn-ar{background-image:url(/assets/ar-',
+          '.pn-circle.pn-ar{background-image:url(/assets/ar-',
+        ],
+      },
+      { dir: 'dist', ext: '.html', includes: ['class="pn-circle pn-ar'] },
       { dir: 'dist/assets', ext: '.svg', includes: ['id="pn-mx"'] },
     ],
   },
@@ -120,7 +129,12 @@ const EXAMPLES: Example[] = [
       {
         dir: 'dist/assets',
         ext: '.css',
-        includes: ['@layer components{.pn{', '.pn-ar{background-image:url(/assets/ar-', '.h-12{'],
+        includes: [
+          '@layer components{.pn{',
+          '.pn.pn-ar{background-image:url(/assets/ar-',
+          '.pn-circle.pn-br{background-image:url(/assets/br-',
+          '.h-12{',
+        ],
       },
       { dir: 'dist', ext: '.html', includes: ['pn pn-ar'] },
     ],

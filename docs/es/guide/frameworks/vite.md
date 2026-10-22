@@ -64,8 +64,12 @@ document.querySelector<HTMLImageElement>('#img')!.src = deUrl;
 document.querySelector('#sprite')!.setAttribute('href', `${spriteUrl}#pn-mx`);
 ```
 
+Cada forma tiene su propia hoja y su clase base, así que se pueden combinar en una página.
+Añade `import 'pennants/css/circle'` y luego:
+
 ```html
 <span class="pn pn-ar pn-2x" role="img" aria-label="Argentina"></span>
+<span class="pn-circle pn-ar pn-2x" role="img" aria-label="Argentina"></span>
 <svg width="33" height="36" role="img" aria-label="México"><use id="sprite" /></svg>
 ```
 
