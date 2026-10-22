@@ -1,6 +1,12 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["../src/index.ts", "../src/react/index.tsx", "../src/element/index.ts"],
+  "entryPoints": [
+    "../src/index.ts",
+    "../src/fetch.ts",
+    "../src/react/index.ts",
+    "../src/react/static.ts",
+    "../src/element/index.ts"
+  ],
   "tsconfig": "../tsconfig.json",
   "plugin": ["typedoc-plugin-markdown"],
   "out": "en/api",

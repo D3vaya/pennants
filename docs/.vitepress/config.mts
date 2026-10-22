@@ -76,7 +76,9 @@ function themeFor(locale: 'en' | 'es'): DefaultTheme.Config {
   const apiItems: DefaultTheme.SidebarItem[] = [
     ...(locale === 'es' ? [{ text: 'Resumen', link: '/es/api/' }] : []),
     { text: 'pennants', link: '/api/' },
+    { text: 'pennants/fetch', link: '/api/fetch' },
     { text: 'pennants/react', link: '/api/react' },
+    { text: 'pennants/react/static', link: '/api/react/static' },
     { text: 'pennants/element', link: '/api/element' },
   ];
   return {

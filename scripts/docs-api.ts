@@ -15,9 +15,19 @@ const pages: Record<string, { title: string; intro: string }> = {
     title: 'pennants',
     intro: "Core API. `import { loadPennant, getPennantName } from 'pennants'`.",
   },
+  'fetch.md': {
+    title: 'pennants/fetch',
+    intro:
+      "Fetch mode: load flags over HTTP instead of bundling a loader map. `import { fetchPennant } from 'pennants/fetch'`.",
+  },
   'react.md': {
     title: 'pennants/react',
     intro: "React components. `import { Pennant, PennantSvg } from 'pennants/react'`.",
+  },
+  'react/static.md': {
+    title: 'pennants/react/static',
+    intro:
+      "Server-safe React entry without the client loader. `import { PennantSvg } from 'pennants/react/static'`.",
   },
   'element.md': {
     title: 'pennants/element',
@@ -26,8 +36,11 @@ const pages: Record<string, { title: string; intro: string }> = {
   },
 };
 
-const codeLink = (file: string): string =>
-  file === 'index.md' ? '[`PennantCode`](#pennantcode)' : '[`PennantCode`](./index.md#pennantcode)';
+const codeLink = (file: string): string => {
+  if (file === 'index.md') return '[`PennantCode`](#pennantcode)';
+  const up = file.includes('/') ? '../' : './';
+  return `[\`PennantCode\`](${up}index.md#pennantcode)`;
+};
 
 /**
  * Collapses long unions of quoted codes, whether rendered inline, one per

@@ -100,6 +100,13 @@ export function siteName(code: string, lang: Lang): string {
 /** URL of an asset copied into docs/public by scripts/docs-assets.ts. */
 export const asset = (path: string): string => withBase(`/${path}`);
 
+/** Bytes as the docs print them: `933 B`, `5.1 kB` (`5,1 kB` in Spanish). */
+export function formatBytes(bytes: number, lang: Lang): string {
+  if (Math.abs(bytes) < 1000) return `${bytes} B`;
+  const kb = (bytes / 1000).toFixed(1);
+  return `${lang === 'es' ? kb.replace('.', ',') : kb} kB`;
+}
+
 /** `gb-eng` -> `gbEng`, a valid identifier for import snippets. */
 export const identifier = (code: string): string =>
   code.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());

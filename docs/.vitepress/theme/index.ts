@@ -7,6 +7,8 @@ import FormatPicker from './components/FormatPicker.vue';
 import HeroBunting from './components/HeroBunting.vue';
 import MigrationCompare from './components/MigrationCompare.vue';
 import PennantGallery from './components/PennantGallery.vue';
+import Size from './components/Size.vue';
+import SizeTable from './components/SizeTable.vue';
 import ThemePlayground from './components/ThemePlayground.vue';
 import './style.css';
 
@@ -19,6 +21,8 @@ export default {
     app.component('FormatPicker', FormatPicker);
     app.component('MigrationCompare', MigrationCompare);
     app.component('PennantGallery', PennantGallery);
+    app.component('Size', Size);
+    app.component('SizeTable', SizeTable);
     app.component('ThemePlayground', ThemePlayground);
     // Registers <pennant-flag> in the browser only; the module is SSR-safe anyway.
     if (!import.meta.env.SSR) {

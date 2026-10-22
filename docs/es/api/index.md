@@ -5,7 +5,10 @@ fuente, por eso está en inglés:
 
 - [`pennants`](/api/): API principal (`loadPennant`, `getPennantName`, `pennantUrl`, `codes`,
   ...).
+- [`pennants/fetch`](/api/fetch): `fetchPennant`, para cargar las banderas por HTTP en lugar de
+  incluir el mapa de carga.
 - [`pennants/react`](/api/react): componentes `<Pennant>` y `<PennantSvg>`.
+- [`pennants/react/static`](/api/react/static): entrada de React segura para el servidor.
 - [`pennants/element`](/api/element): el Web Component `<pennant-flag>`.
 
 ## Resumen
