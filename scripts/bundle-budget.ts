@@ -8,6 +8,7 @@
  *   node scripts/bundle-budget.ts --no-build   # reuse the current build
  *   node scripts/bundle-budget.ts --update     # rewrite budgets from this run (+5%)
  *   node scripts/bundle-budget.ts --keep       # keep the temp dir
+ *   node scripts/bundle-budget.ts --json out.json  # also write the measurements as JSON
  */
 import { spawn } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
@@ -126,7 +127,26 @@ const PROBES: Probe[] = [
   },
 ];
 
-const args = new Set(process.argv.slice(2));
+const argv = process.argv.slice(2);
+const args = new Set(argv);
+const jsonIndex = argv.indexOf('--json');
+const jsonPath = jsonIndex === -1 ? undefined : argv[jsonIndex + 1];
+if (jsonIndex !== -1 && (jsonPath === undefined || jsonPath.startsWith('--'))) {
+  throw new Error('--json needs a file path');
+}
+
+interface Triple {
+  min: number;
+  gzip: number;
+  brotli: number;
+}
+interface ProbeRecord {
+  label: string;
+  baseline: Baseline | null;
+  entry: Triple;
+  css: Triple | null;
+  lazyFiles: number;
+}
 
 function run(command: string, commandArgs: string[], cwd: string): Promise<string> {
   return new Promise((resolvePromise, reject) => {
@@ -241,6 +261,12 @@ const budgets = JSON.parse(await readFile(budgetPath, 'utf8').catch(() => '{}'))
 const next: Budgets = {};
 const failures: string[] = [];
 const rows: string[] = [];
+const records: Record<string, ProbeRecord> = {};
+const triple = (sizes: Sizes, kind: 'js' | 'css'): Triple => ({
+  min: sizes[`${kind}Min`] ?? 0,
+  gzip: sizes[`${kind}Gzip`] ?? 0,
+  brotli: sizes[`${kind}Brotli`] ?? 0,
+});
 
 for (const probe of PROBES) {
   const result = results.get(probe.name);
@@ -257,13 +283,20 @@ for (const probe of PROBES) {
       ]),
     );
     const signed = probe.baseline !== undefined;
-    const triple = (kind: string): string =>
+    const cell = (kind: string): string =>
       [`${kind}Min`, `${kind}Gzip`, `${kind}Brotli`]
         .map((metric) => kB(delta[metric] ?? 0, signed))
         .join(' / ');
-    const css = delta.cssMin ? triple('css') : '—';
-    const js = triple('js');
+    const css = delta.cssMin ? cell('css') : '—';
+    const js = cell('js');
     rows.push(`| ${probe.label} | ${js} | ${css} | ${delta.lazyFiles} |`);
+    records[probe.name] = {
+      label: probe.label,
+      baseline: probe.baseline ?? null,
+      entry: triple(delta, 'js'),
+      css: delta.cssMin ? triple(delta, 'css') : null,
+      lazyFiles: delta.lazyFiles ?? 0,
+    };
     if (probe.baseline !== undefined) {
       next[probe.name] = Object.fromEntries(
         METRICS.filter((metric) => metric === 'lazyFiles' || (delta[metric] ?? 0) > 0).map(
@@ -298,6 +331,12 @@ console.info(
 console.info('| Probe | Entry JS | CSS | Lazy JS files |');
 console.info('| ----- | -------- | --- | ------------- |');
 for (const row of rows) console.info(row);
+
+if (jsonPath !== undefined) {
+  const snapshot = { vite: vite.version, generated: new Date().toISOString(), probes: records };
+  await writeFile(resolve(jsonPath), `${JSON.stringify(snapshot, null, 2)}\n`);
+  console.info(`\nMeasurements written to ${resolve(jsonPath)}`);
+}
 
 if (args.has('--update')) {
   await writeFile(budgetPath, `${JSON.stringify(next, null, 2)}\n`);
