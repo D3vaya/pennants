@@ -15,6 +15,7 @@ export {
   type ArtSet,
   type FlagArt,
   type PennantShape,
+  type ShapeSize,
 } from '../shapes.ts';
 
 /** Intrinsic width of every pennant, in CSS pixels (SVG `viewBox` units). */
