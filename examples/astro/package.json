@@ -10,7 +10,7 @@
   "dependencies": {
     "@astrojs/react": "^7.1.0",
     "astro": "^7.4.0",
-    "pennants": "^0.1.0",
+    "pennants": "^0.2.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },

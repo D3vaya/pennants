@@ -62,11 +62,11 @@ bundled once however many shapes you render it in. Pick the artwork set the shap
 ```js
 import { renderFlag } from 'pennants';
 import cl from 'pennants/art/1x1/cl';
-import arWide from 'pennants/art/4x3/cl';
+import cl4x3 from 'pennants/art/4x3/cl';
 
 renderFlag(cl); // pennant
 renderFlag(cl, { shape: 'circle' });
-renderFlag(arWide, { shape: 'rect' });
+renderFlag(cl4x3, { shape: 'rect' });
 ```
 
 ```jsx
@@ -120,8 +120,8 @@ Copy what you need into your public folder. Sprites must be served from the same
 page, because browsers don't load `<use>` references across origins:
 
 ```html
-<svg width="33" height="36" role="img" aria-label="Mexico">
-  <use href="/flags/pennant.svg#pn-mx" />
+<svg width="33" height="36" role="img" aria-label="Chile">
+  <use href="/flags/pennant.svg#pn-cl" />
 </svg>
 ```
 

@@ -33,7 +33,7 @@ declare const __PENNANTS_VERSION__: string;
 
 /**
  * Default `base` of {@link pennantUrl} and `fetchPennant`: the jsDelivr CDN
- * pinned to this package version, e.g. `https://cdn.jsdelivr.net/npm/pennants@0.1.0`.
+ * pinned to this package version, e.g. `https://cdn.jsdelivr.net/npm/pennants@0.2.0`.
  */
 export const DEFAULT_CDN_BASE = `https://cdn.jsdelivr.net/npm/pennants@${__PENNANTS_VERSION__}`;
 

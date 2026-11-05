@@ -94,7 +94,7 @@ import markup from 'pennants/svg/pennant/cl.svg?raw'; // Vite: el SVG como texto
   incrusten. El motivo: Vite incrusta como data URI los assets de
   menos de 4 KiB, así que la mayoría de las 271 banderas termina dentro de tu CSS: <Size probe="css-default" part="css" metric="min" /> min /
   <Size probe="css-default" part="css" /> con gzip, en lugar de
-  <Size probe="css" part="css" metric="min" /> / <Size probe="css" part="css" />. Para mantenerlas como archivos (en
+  <Size probe="css" part="css" metric="min" /> / <Size probe="css" part="css" />. Mantenlas como archivos (en
   Astro, la opción va dentro de `vite.build`). Next.js y Angular no las incrustan.
 
 ```js

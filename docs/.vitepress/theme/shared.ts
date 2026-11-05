@@ -187,23 +187,22 @@ export function snippets(code: string, lang: Lang, shape: PennantShape = 'pennan
   const isPennant = shape === 'pennant';
   const css = isPennant ? 'pennants/css' : `pennants/css/${shape}`;
   const { width, height } = shapeBox(shape, 36);
-  const png1 = pennantUrl(code, { shape, format: 'png' });
   const opt = isPennant ? '' : `, { shape: '${shape}' }`;
   const attr = isPennant ? '' : ` shape="${shape}"`;
   const locale = lang === 'en' ? '' : ` locale="${lang}"`;
   const label = lang === 'en' ? '' : ` label="${name}"`;
-  const sprite = isPennant
-    ? `<!-- copy node_modules/pennants/sprite/pennant.svg to /assets -->`
-    : lang === 'es'
-      ? `<!-- sprite/${shape}.svg no se publica en npm: genéralo con npm run generate (ver Formas) -->`
-      : `<!-- sprite/${shape}.svg is not published to npm: build it with npm run generate (see Shapes) -->`;
+  // Sprites, and PNGs of shapes other than the pennant, ship in the release zip, not on npm.
+  const releaseAsset = (path: string): string =>
+    lang === 'es'
+      ? `<!-- copia ${path} de pennants-assets-vX.Y.Z.zip (release de GitHub) a /assets -->`
+      : `<!-- copy ${path} from pennants-assets-vX.Y.Z.zip (GitHub release) to /assets -->`;
   const all: Record<FormatId, string> = {
     css: `import '${css}';\n\n<span class="${shapeClass(shape)} pn-${code}" role="img" aria-label="${name}"></span>`,
     img: `<img src="${pennantUrl(code, { shape })}" width="${width}" height="${height}" alt="${name}" />`,
     png: isPennant
-      ? `<img\n  src="${png1}"\n  srcset="${pennantUrl(code, { shape, format: 'png', scale: 2 })} 2x"\n  width="${width}" height="${height}" alt="${name}" />`
-      : `<img src="${png1}" width="${width}" height="${height}" alt="${name}" />`,
-    sprite: `${sprite}\n<svg width="${width}" height="${height}" role="img" aria-label="${name}">\n  <use href="/assets/${shape}.svg#pn-${code}" />\n</svg>`,
+      ? `<img\n  src="${pennantUrl(code, { format: 'png' })}"\n  srcset="${pennantUrl(code, { format: 'png', scale: 2 })} 2x"\n  width="${width}" height="${height}" alt="${name}" />`
+      : `${releaseAsset(`png/${shape}/1x/${code}.png`)}\n<img src="/assets/${code}.png" width="${width}" height="${height}" alt="${name}" />`,
+    sprite: `${releaseAsset(`sprite/${shape}.svg`)}\n<svg width="${width}" height="${height}" role="img" aria-label="${name}">\n  <use href="/assets/${shape}.svg#pn-${code}" />\n</svg>`,
     module: `import { renderFlag } from 'pennants';\nimport ${id} from 'pennants/art/${SHAPE_ART[shape]}/${code}';\n\nelement.innerHTML = renderFlag(${id}${opt}); // trusted SVG markup`,
     lazy: `import { loadFlag } from 'pennants';\n\nelement.innerHTML = await loadFlag('${code}'${opt});`,
     fetch: `import { fetchPennant } from 'pennants/fetch';\n\nelement.innerHTML = await fetchPennant('${code}'${opt});`,

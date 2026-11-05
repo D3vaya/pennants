@@ -1,7 +1,8 @@
 /**
  * Flag shapes: the single source of truth for frame geometry and SVG
  * composition. Used at runtime (components, `renderFlag`) and by the
- * generator for the static `svg/`, `png/`, `sprite/` and `css/` assets, so
+ * generator for the static `svg/`, `png/`, `sprite/` and `css/` assets (npm
+ * ships `svg/`, `png/pennant/` and `css/`; the rest are release assets), so
  * both produce byte-identical markup.
  *
  * Every shape shares one design language: the artwork is clipped to the
