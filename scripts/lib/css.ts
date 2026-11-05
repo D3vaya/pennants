@@ -2,14 +2,14 @@
  * Stylesheets with a flag-icons-like API, one per shape, composable on one
  * page:
  *
- *   <span class="pn pn-ar"></span>         pennant   (css/pennant.css)
- *   <span class="pn-rect pn-ar"></span>    4:3 rect  (css/rect.css)
- *   <span class="pn-square pn-ar"></span>  square    (css/square.css)
- *   <span class="pn-circle pn-ar"></span>  circle    (css/circle.css)
+ *   <span class="pn pn-cl"></span>         pennant   (css/pennant.css)
+ *   <span class="pn-rect pn-cl"></span>    4:3 rect  (css/rect.css)
+ *   <span class="pn-square pn-cl"></span>  square    (css/square.css)
+ *   <span class="pn-circle pn-cl"></span>  circle    (css/circle.css)
  *
  * The base class is 1em tall and keeps the shape's aspect ratio, so it
  * scales with `font-size`. Flag rules are scoped to their base
- * (`.pn-circle.pn-ar`), so several stylesheets can load together; use one
+ * (`.pn-circle.pn-cl`), so several stylesheets can load together; use one
  * base class per element. Size helpers (`.pn-lg`, `.pn-2x`…) work with all.
  */
 import { BAR_CLASS, PENNANT, SHAPE_SIZE, type PennantShape } from '../../src/shapes.ts';

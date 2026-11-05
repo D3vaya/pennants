@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component, inject, signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import ar from 'pennants/art/1x1/ar';
+import cl from 'pennants/art/1x1/cl';
 import { SHAPES, renderFlag, type PennantCode, type PennantShape } from 'pennants';
 
 @Component({
@@ -18,7 +18,7 @@ import { SHAPES, renderFlag, type PennantCode, type PennantShape } from 'pennant
     }
 
     <h2>Art module + renderFlag (bundled)</h2>
-    <span class="flag" role="img" aria-label="Argentina" [innerHTML]="circle"></span>
+    <span class="flag" role="img" aria-label="Chile" [innerHTML]="circle"></span>
 
     <h2>CSS classes</h2>
     <span class="pn pn-de pn-2x" role="img" aria-label="Germany"></span>
@@ -43,6 +43,6 @@ export class App {
   // Angular strips <svg> from [innerHTML]. The markup is composed from
   // pennants/art/* (trusted, never user input), so bypassing the sanitizer is safe.
   protected readonly circle = inject(DomSanitizer).bypassSecurityTrustHtml(
-    renderFlag(ar, { shape: 'circle' }),
+    renderFlag(cl, { shape: 'circle' }),
   );
 }

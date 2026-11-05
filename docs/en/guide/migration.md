@@ -11,11 +11,11 @@ codes and the flag designs are the same. You can keep the rectangular look with 
 | flag-icons                                   | pennants                                                     |
 | -------------------------------------------- | ------------------------------------------------------------ |
 | `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css/rect'`                                 |
-| `fi fi-ar` (4:3)                             | `pn-rect pn-ar` with `pennants/css/rect`                     |
-| `fi fi-ar fis` (1:1)                         | `pn-square pn-ar` with `pennants/css/square`                 |
-| `fib fi-ar` (background only)                | `pn-rect pn-ar` (every base sets `background-size: contain`) |
-| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/rect/ar.svg`                                   |
-| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/square/ar.svg`                                 |
+| `fi fi-cl` (4:3)                             | `pn-rect pn-cl` with `pennants/css/rect`                     |
+| `fi fi-cl fis` (1:1)                         | `pn-square pn-cl` with `pennants/css/square`                 |
+| `fib fi-cl` (background only)                | `pn-rect pn-cl` (every base sets `background-size: contain`) |
+| `flag-icons/flags/4x3/cl.svg`                | `pennants/svg/rect/cl.svg`                                   |
+| `flag-icons/flags/1x1/cl.svg`                | `pennants/svg/square/cl.svg`                                 |
 
 `.pn-rect` is `1em` high and `1.333em` wide, the same box as flag-icons'
 `.fi`, so layouts keep their spacing. The rect and square shapes add a thin darkening border and
@@ -55,7 +55,7 @@ had `fis` classes).
 
 ## What you gain
 
-- PNG files and an SVG sprite, in addition to SVG and CSS.
+- PNG files (and SVG sprites as release assets), in addition to SVG and CSS.
 - Artwork modules per flag, a lazy `loadFlag`, fetch mode, React components and a Web
   Component.
 - TypeScript types for every code (`PennantCode`), `getPennantName` with localized names,
@@ -67,5 +67,5 @@ You can keep both packages during a migration; the class prefixes (`fi` and `pn`
 collide.
 
 ```html
-<span class="fi fi-ar"></span> <span class="pn pn-ar"></span>
+<span class="fi fi-cl"></span> <span class="pn pn-cl"></span>
 ```

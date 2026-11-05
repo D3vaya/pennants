@@ -3,7 +3,7 @@ import 'pennants/css';
 import { Image } from 'astro:assets';
 import { Pennant } from 'pennants/react';
 import { renderFlag } from 'pennants';
-import ar from 'pennants/art/1x1/ar';
+import cl from 'pennants/art/1x1/cl';
 import jp from 'pennants/svg/circle/jp.svg';
 ---
 
@@ -19,7 +19,7 @@ import jp from 'pennants/svg/circle/jp.svg';
 
     <h2>Zero JS: inline SVG from an art module</h2>
     <!-- Trusted markup composed from pennants/art/*; never user input. -->
-    <span class="flag" role="img" aria-label="Argentina" set:html={renderFlag(ar, { shape: 'square' })} />
+    <span class="flag" role="img" aria-label="Chile" set:html={renderFlag(cl, { shape: 'square' })} />
 
     <h2>Zero JS: image</h2>
     <Image src={jp} alt="Japan" height={48} />

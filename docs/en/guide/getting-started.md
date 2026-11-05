@@ -26,10 +26,10 @@ Or skip the install and load files from jsDelivr. Pin the version in production:
 
 ```html
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/ar.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.2.0/svg/pennant/cl.svg"
   width="33"
   height="36"
-  alt="Argentina"
+  alt="Chile"
 />
 ```
 
@@ -54,9 +54,9 @@ import 'pennants/css/circle'; // optional, any other shape: class pn-circle (or 
 ```
 
 ```html
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
 <span class="pn pn-jp pn-2x" aria-hidden="true"></span>
-<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn-circle pn-cl" role="img" aria-label="Chile"></span>
 ```
 
 Each base class (`pn`, `pn-rect`, `pn-square`, `pn-circle`) is `1em` high, so it follows
@@ -74,13 +74,13 @@ inline them.
 ### Images
 
 ```html
-<img src="/assets/pennants/svg/pennant/ar.svg" width="33" height="36" alt="Argentina" />
+<img src="/assets/pennants/svg/pennant/cl.svg" width="33" height="36" alt="Chile" />
 <img
-  src="/assets/pennants/png/pennant/1x/ar.png"
-  srcset="/assets/pennants/png/pennant/2x/ar.png 2x"
+  src="/assets/pennants/png/pennant/1x/cl.png"
+  srcset="/assets/pennants/png/pennant/2x/cl.png 2x"
   width="66"
   height="72"
-  alt="Argentina"
+  alt="Chile"
 />
 ```
 
@@ -93,9 +93,9 @@ Each flag's artwork is its own module, tree-shaken; `renderFlag` frames it in an
 
 ```js
 import { renderFlag } from 'pennants';
-import ar from 'pennants/art/1x1/ar';
+import cl from 'pennants/art/1x1/cl';
 
-element.innerHTML = renderFlag(ar); // or renderFlag(ar, { shape: 'circle' })
+element.innerHTML = renderFlag(cl); // or renderFlag(cl, { shape: 'circle' })
 ```
 
 ### Lazy loading
@@ -116,11 +116,11 @@ the `svg/` folder.
 ```js
 import { fetchPennant } from 'pennants/fetch';
 
-const svg = await fetchPennant('ar'); // or fetchPennant('ar', { base: '/assets/pennants' })
+const svg = await fetchPennant('cl'); // or fetchPennant('cl', { base: '/assets/pennants' })
 ```
 
-The same mode exists in the components: `<Pennant code="ar" mode="fetch" />` and
-`<pennant-flag code="ar" base="https://cdn.jsdelivr.net/npm/pennants@0.1.1">`.
+The same mode exists in the components: `<Pennant code="cl" mode="fetch" />` and
+`<pennant-flag code="cl" base="https://cdn.jsdelivr.net/npm/pennants@0.2.0">`.
 Responses are cached per URL and sanitized before use: the response is parsed with
 `DOMParser` and rejected unless it is a single SVG made only of allowlisted elements and
 attributes with local `#id` references, then re-serialized. Scripts, event handlers, `style`,
@@ -134,8 +134,8 @@ server use `loadFlag` or `renderFlag`.
 ```jsx
 import { Pennant } from 'pennants/react';
 
-<Pennant code="ar" size={32} />;
-<Pennant code="ar" shape="circle" size={32} />;
+<Pennant code="cl" size={32} />;
+<Pennant code="cl" shape="circle" size={32} />;
 ```
 
 ### Web Component
@@ -145,8 +145,8 @@ import 'pennants/element/register';
 ```
 
 ```html
-<pennant-flag code="ar" size="32"></pennant-flag>
-<pennant-flag code="ar" shape="rect" size="32"></pennant-flag>
+<pennant-flag code="cl" size="32"></pennant-flag>
+<pennant-flag code="cl" shape="rect" size="32"></pennant-flag>
 ```
 
 ## Next steps

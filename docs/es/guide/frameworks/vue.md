@@ -44,13 +44,13 @@ createApp(App).mount('#app');
 ```vue [src/App.vue]
 <script setup lang="ts">
 import { ref } from 'vue';
-import ar from 'pennants/art/1x1/ar';
+import cl from 'pennants/art/1x1/cl';
 import { renderFlag, type PennantCode, type PennantShape } from 'pennants';
 
 const code = ref<PennantCode>('br');
 const shape = ref<PennantShape>('pennant');
 // Markup de confianza compuesto desde pennants/art/*; nunca pases datos del usuario a v-html.
-const circle = renderFlag(ar, { shape: 'circle' });
+const circle = renderFlag(cl, { shape: 'circle' });
 </script>
 
 <template>
@@ -66,7 +66,7 @@ const circle = renderFlag(ar, { shape: 'circle' });
   <button type="button" @click="shape = 'circle'">Círculo</button>
 
   <!-- Empaquetado -->
-  <span class="flag" role="img" aria-label="Argentina" v-html="circle" />
+  <span class="flag" role="img" aria-label="Chile" v-html="circle" />
 </template>
 
 <style scoped>

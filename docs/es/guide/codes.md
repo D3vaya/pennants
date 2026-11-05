@@ -9,7 +9,7 @@ import { codes, isoCodes, isPennantCode, toPennantCode } from 'pennants';
 
 codes.length; // 271
 isoCodes.length; // 249
-isPennantCode('ar'); // true; coincidencia exacta en minúsculas
+isPennantCode('cl'); // true; coincidencia exacta en minúsculas
 toPennantCode(' GB-ENG '); // 'gb-eng'; lanza RangeError si el código no existe
 ```
 

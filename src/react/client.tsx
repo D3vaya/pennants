@@ -17,7 +17,7 @@ import { imgStyle, round, type PennantHtmlAttributes, type PennantCommonProps } 
 /** Props of {@link Pennant}. Other HTML attributes and `ref` are forwarded. */
 export interface PennantProps extends PennantHtmlAttributes, PennantCommonProps {
   /**
-   * Flag code, lowercase or uppercase (`"ar"`, `"AR"`, `"gb-eng"`, `"GB-ENG"`);
+   * Flag code, lowercase or uppercase (`"cl"`, `"CL"`, `"gb-eng"`, `"GB-ENG"`);
    * normalised with `toPennantCode`. Unknown codes throw a `RangeError`.
    */
   code: PennantCode | Uppercase<PennantCode>;

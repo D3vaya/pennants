@@ -1,6 +1,6 @@
 # Accesibilidad
 
-Una bandera puede aportar información ("Envíos a Argentina") o decorar un texto que ya dice el
+Una bandera puede aportar información ("Envíos a Chile") o decorar un texto que ya dice el
 nombre del país. Decide cuál de los dos casos es en cada uso.
 
 ## Los componentes ponen el nombre por ti
@@ -34,13 +34,13 @@ siempre `label`:
 Agrega el nombre tú mismo:
 
 ```html
-<img src="/flags/ar.svg" alt="Argentina" width="33" height="36" />
-<img src="/flags/ar.svg" alt="" width="33" height="36" /> Argentina
+<img src="/flags/cl.svg" alt="Chile" width="33" height="36" />
+<img src="/flags/cl.svg" alt="" width="33" height="36" /> Chile
 
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
-<span class="pn pn-ar" aria-hidden="true"></span> Argentina
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
+<span class="pn pn-cl" aria-hidden="true"></span> Chile
 
-<svg role="img" aria-label="Argentina"><use href="/pennant.svg#pn-ar" /></svg>
+<svg role="img" aria-label="Chile"><use href="/pennant.svg#pn-cl" /></svg>
 ```
 
 ## Nombres traducidos

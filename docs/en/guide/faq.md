@@ -3,7 +3,7 @@
 ## Duplicate ids when inlining a flag more than once
 
 Each SVG defines ids for its clip path, gradient and artwork. They are namespaced per flag and
-per shape (`pn-ar-clip` for the pennant, `pn-ar-circle-clip` for the circle), so different
+per shape (`pn-cl-clip` for the pennant, `pn-cl-circle-clip` for the circle), so different
 flags and different shapes of the same flag never clash. Inserting the **same** markup twice
 still yields duplicate ids. Browsers usually render it anyway, until the first copy is hidden
 with `display: none`: the other copies then lose their clip path and gradient.
@@ -11,8 +11,8 @@ with `display: none`: the other copies then lose their clip path and gradient.
 - `<Pennant>` and `<PennantSvg>` rewrite the ids per instance (`pn<scope>-<code>[-<shape>]-`,
   from `useId`), so several copies, shapes or React roots never share ids.
 - `<pennant-flag>` keeps them inside its shadow root.
-- For manual `innerHTML`, pass a unique prefix: `renderFlag(ar, { idPrefix: 'hero' })` or
-  `loadFlag('ar', { shape: 'circle', idPrefix: 'row-3' })`. An `<img>` (for example with
+- For manual `innerHTML`, pass a unique prefix: `renderFlag(cl, { idPrefix: 'hero' })` or
+  `loadFlag('cl', { shape: 'circle', idPrefix: 'row-3' })`. An `<img>` (for example with
   `toDataUri`) also isolates the ids.
 
 ## Content Security Policy
@@ -46,7 +46,7 @@ mode="img">` with a CSS-length `size` (use a number), and any `style` prop you p
   the lazy chunks anyway.
 - `<Pennant>` (inline mode) renders a correctly sized empty `<svg>` on the server and loads the
   flag after hydration. No hydration mismatch, no layout shift, but no flag in the HTML.
-- For flags in the server HTML, use `mode="img"`, or `<PennantSvg art={ar} />` with a static
+- For flags in the server HTML, use `mode="img"`, or `<PennantSvg art={cl} />` with a static
   import.
 - `fetchPennant` and fetch mode run in the browser only: they need `DOMParser` to sanitize the
   response, so on the server `fetchPennant` rejects. Use `renderFlag` with static art,
@@ -74,8 +74,8 @@ On older runtimes use `import()`. In TypeScript, use `moduleResolution: "bundler
 Importing an asset file returns whatever your bundler is configured to return:
 
 ```js
-import url from 'pennants/svg/pennant/ar.svg'; // Vite: URL string
-import markup from 'pennants/svg/pennant/ar.svg?raw'; // Vite: SVG markup
+import url from 'pennants/svg/pennant/cl.svg'; // Vite: URL string
+import markup from 'pennants/svg/pennant/cl.svg?raw'; // Vite: SVG markup
 ```
 
 - **webpack 5:** add a rule with `type: 'asset/resource'` for `.svg` under `node_modules/pennants`.

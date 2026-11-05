@@ -7,6 +7,27 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-05
+
+Smaller install: 1.96 MB packed / 7.56 MB unpacked, down from 2.81 MB / 9.31 MB.
+
+### Removed
+
+- **Breaking:** `pennants/sprite` and `pennants/sprite/pennant.svg`.
+- **Breaking:** `png/rect/`, `png/square/` and `png/circle/` are no longer in the npm package (nor
+  on jsDelivr/unpkg). Pennant PNGs (`png/pennant/1x/`, `png/pennant/2x/`) still ship.
+- **Breaking:** `pennantUrl` throws a `RangeError` for `format: 'png'` with any shape other than
+  `pennant`.
+
+### Added
+
+- Each GitHub release attaches `pennants-assets-vX.Y.Z.zip` with every PNG (all shapes) and every
+  sprite (`sprite/<shape>.svg`), plus the SVG files.
+
+### Changed
+
+- Publishing uses npm trusted publishing (OIDC); the repository holds no npm token.
+
 ## [0.1.1] - 2026-11-05
 
 ### Fixed
@@ -53,6 +74,7 @@ First release.
 - Pennant bar theming with `--pennant-bar-light` / `--pennant-bar-dark` through
   `pennants/css/theme.css` (included in the pennant stylesheets), CSP-safe.
 
-[Unreleased]: https://github.com/D3vaya/pennants/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/D3vaya/pennants/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/D3vaya/pennants/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/D3vaya/pennants/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/D3vaya/pennants/releases/tag/v0.1.0

@@ -77,7 +77,7 @@ function fetchPackage(spec: string, into: string): { dir: string; tarball: numbe
   return { dir: join(dir, 'package'), tarball: statSync(tarball).size };
 }
 
-for (const required of ['svg/pennant', 'svg/rect', 'css/pennant.min.css', 'dist/art/1x1/ar.js']) {
+for (const required of ['svg/pennant', 'svg/rect', 'css/pennant.min.css', 'dist/art/1x1/cl.js']) {
   if (!existsSync(join(root, required))) {
     console.error(`Missing ${required}. Run \`npm run build\` first.`);
     process.exit(1);
@@ -134,8 +134,8 @@ try {
       'country-flag-icons': measure([join(countryFlagIcons.dir, '3x2/flags.css')]),
     },
     oneFlagModule: {
-      'pennants (art/1x1/ar)': measure([join(root, 'dist/art/1x1/ar.js')]),
-      'country-flag-icons': measure([join(countryFlagIcons.dir, 'string/3x2/AR.js')]),
+      'pennants (art/1x1/cl)': measure([join(root, 'dist/art/1x1/cl.js')]),
+      'country-flag-icons': measure([join(countryFlagIcons.dir, 'string/3x2/CL.js')]),
     },
     tarball: {
       pennants: { packed: pack[0]?.size ?? 0, unpacked: pack[0]?.unpackedSize ?? 0 },
@@ -174,7 +174,7 @@ try {
       ),
       ...Object.entries(results.oneFlagModule).map(
         ([name, s]) =>
-          `| One flag string module (ar), raw / gzip / brotli | ${name} | ${size(s)} |`,
+          `| One flag string module (cl), raw / gzip / brotli | ${name} | ${size(s)} |`,
       ),
       ...Object.entries(results.tarball).map(
         ([name, t]) =>

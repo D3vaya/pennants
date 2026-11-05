@@ -39,23 +39,23 @@ What these numbers mean in practice:
 
 ## Flag files
 
-Measured on the 0.1.0 build with `node scripts/docs-compare.ts` (brotli is the sum of
+Measured on the 0.2.0 build with `node scripts/docs-compare.ts` (brotli is the sum of
 individually compressed files).
 
 | Set                                 | Raw                   | Brotli             |
 | ----------------------------------- | --------------------- | ------------------ |
 | All 271 pennant SVGs                | 1.16 MB               | 362 kB             |
 | All 271 rect / square / circle SVGs | 1.10 / 1.11 / 1.09 MB | 335 / 336 / 332 kB |
-| Median SVG (pennant / rect)         | —                     | 525 B / 430 B      |
+| Median SVG (pennant / rect)         | —                     | 525 B / 436 B      |
 | Largest SVG (`rs`, Serbia)          | 62 kB                 | 15 kB              |
-| Sprite (`sprite/pennant.svg`)       | 1.15 MB               | 248 kB             |
+| Sprite (pennant, release asset)     | 1.15 MB               | 248 kB             |
 
-PNG files average 0.9 kB (pennant 1x), 1.6 kB (pennant 2x) and 0.6–1.0 kB (other shapes, 1x
-only). Country names cost nothing: ISO names come from the runtime's `Intl.DisplayNames`; only
+PNG files average 0.9 kB (pennant 1x) and 1.6 kB (pennant 2x); PNGs of the other shapes
+(0.6–1.0 kB, 1x) are [release assets](./shapes#release-assets). Country names cost nothing: ISO names come from the runtime's `Intl.DisplayNames`; only
 the 22 non-ISO names (`gb-eng`, `asean`, ...) are bundled.
 
-The npm tarball is 2.80 MB (9.29 MB unpacked) because it contains four shapes in every format.
-What reaches your users depends only on what you import.
+The npm tarball is 1.96 MB (7.56 MB unpacked): SVG files and JS modules for four shapes, CSS,
+and pennant PNGs. What reaches your users depends only on what you import.
 
 ## How lazy chunks work
 

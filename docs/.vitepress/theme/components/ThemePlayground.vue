@@ -15,7 +15,7 @@ const presets = [
 ];
 const light = ref(defaults.light);
 const dark = ref(defaults.dark);
-const flags = ['ar', 'uy', 'gr', 'fi'];
+const flags = ['cl', 'uy', 'gr', 'fi'];
 // Two more through the Web Component: its shadow stylesheet maps the same properties.
 const elementFlags = ['ca', 'kr'];
 // Inline SVG, themed by the .pn-bar-l/.pn-bar-d rule from the site's pennants CSS.

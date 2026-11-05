@@ -6,7 +6,7 @@ titleTemplate: Banderas de países con forma de banderín
 hero:
   name: pennants
   text: Todas las banderas, todas las formas, una sola API
-  tagline: '271 banderas de países como banderines (el estilo propio), rectángulos, cuadrados y círculos. SVG, PNG, CSS, sprite, JS con tree-shaking, React y Web Component; solo envías las banderas que muestras.'
+  tagline: '271 banderas de países como banderines (el estilo propio), rectángulos, cuadrados y círculos. SVG, PNG, CSS, JS con tree-shaking, React y Web Component; solo envías las banderas que muestras.'
   actions:
     - theme: brand
       text: Empezar
@@ -25,7 +25,7 @@ features:
   - title: Cuatro formas
     details: Banderín por defecto, más rectángulo 4:3, cuadrado y círculo. Los mismos códigos y la misma API; eliges la forma con una opción.
   - title: Todos los formatos
-    details: SVG y PNG estáticos, clases CSS, un sprite SVG, un módulo ES por bandera, un componente de React y un custom element sin framework.
+    details: SVG y PNG estáticos, clases CSS, un módulo ES por bandera, un componente de React y un custom element sin framework.
   - title: Pagas solo lo que muestras
     details: Cada bandera es su propio módulo y su propio chunk diferido, así que solo envías las banderas que muestras. Los nombres salen de Intl.DisplayNames, sin datos extra.
   - title: Tipado y traducido
@@ -49,7 +49,7 @@ import 'pennants/css';
 ```
 
 ```html
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
 ```
 
 ## Elige un formato

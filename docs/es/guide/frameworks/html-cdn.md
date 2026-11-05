@@ -10,19 +10,19 @@ archivos de `node_modules/pennants` a tu servidor.
 Fija siempre la versión en las URLs de la CDN.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.1/css/pennant.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.2.0/css/pennant.min.css" />
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/dist/element/register.js"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.2.0/dist/element/register.js"
 ></script>
 
 <!-- Clases CSS: sin JavaScript -->
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
 <span class="pn pn-br pn-2x" role="img" aria-label="Brasil"></span>
 
 <!-- Imagen: svg/<forma>/<código>.svg -->
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/jp.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.2.0/svg/pennant/jp.svg"
   width="33"
   height="36"
   alt="Japón"
@@ -38,13 +38,13 @@ Hay una hoja de estilos por forma, y cada una tiene su clase base: `css/pennant.
 `css/circle.min.css` (`pn-circle`). Carga las que necesites y combínalas en la misma página:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.1/css/circle.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.2.0/css/circle.min.css" />
 
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
-<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
+<span class="pn-circle pn-cl" role="img" aria-label="Chile"></span>
 ```
 
-Usa una sola clase base por elemento: `pn-circle pn-ar`, no `pn pn-circle pn-ar`. Las reglas
+Usa una sola clase base por elemento: `pn-circle pn-cl`, no `pn pn-circle pn-cl`. Las reglas
 de distintas hojas tienen la misma especificidad, así que ganaría la última hoja cargada.
 
 ## En tu propio servidor
@@ -53,7 +53,7 @@ de distintas hojas tienen la misma especificidad, así que ganaría la última h
 npm install pennants
 ```
 
-Copia `css/`, `svg/`, `sprite/` y `dist/` de `node_modules/pennants` a una carpeta pública
+Copia `css/`, `svg/` y `dist/` de `node_modules/pennants` a una carpeta pública
 (el `build.js` del ejemplo los copia a `dist/pennants/`). Deja `css/` y `svg/` en la misma
 carpeta: las hojas de estilos cargan `../svg/<forma>/<código>.svg`.
 
@@ -62,14 +62,10 @@ carpeta: las hojas de estilos cargan `../svg/<forma>/<código>.svg`.
 <script type="module" src="./pennants/dist/element/register.js"></script>
 
 <img src="./pennants/svg/pennant/jp.svg" width="33" height="36" alt="Japón" />
-
-<svg width="33" height="36" role="img" aria-label="México">
-  <use href="./pennants/sprite/pennant.svg#pn-mx" />
-</svg>
 ```
 
-El sprite tiene que servirse desde el mismo origen que la página: los navegadores no cargan
-referencias `<use>` de otros orígenes.
+Para un sprite SVG (todas las banderas en un archivo, usado con `<use href>`), descárgalo de los
+[assets del release](../shapes#assets-del-release).
 
 ## Peso
 
@@ -77,5 +73,4 @@ referencias `<use>` de otros orígenes.
   descarga solo cuando algún elemento de la página usa su clase.
 - El Web Component ocupa <Size probe="element" /> con gzip en la primera carga. Cada bandera
   es un chunk aparte de pocos KB que se pide al usarla.
-- `<img>` y el sprite no necesitan JavaScript. El sprite reúne todas las banderas en un
-  archivo de alrededor de 1 MB: úsalo solo si muestras muchas.
+- `<img>` no necesita JavaScript.

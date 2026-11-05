@@ -53,6 +53,18 @@ jobs:
           case "${GITHUB_REF_NAME}" in *-*) tag=next ;; esac
           npm publish --provenance --access public --ignore-scripts --tag "$tag"
 
+      # Assets left out of the npm package to keep installs small (PNGs of every
+      # shape, every sprite), attached to the GitHub release instead.
+      - name: Zip release assets
+        run: zip -qr "pennants-assets-${GITHUB_REF_NAME}.zip" svg png sprite LICENSE NOTICE
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-assets
+          path: pennants-assets-*.zip
+          if-no-files-found: error
+          retention-days: 7
+
   github-release:
     name: Create GitHub release
     needs: publish
@@ -61,6 +73,10 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-assets
+
       - name: Create release
         run: |
           flags=""
@@ -70,6 +86,7 @@ jobs:
             --title "${GITHUB_REF_NAME}" \
             --generate-notes \
             --verify-tag \
-            $flags
+            $flags \
+            pennants-assets-*.zip
         env:
           GH_TOKEN: ${{ github.token }}

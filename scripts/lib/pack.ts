@@ -2,8 +2,8 @@
  * Install-size budget for the published package (`npm pack --dry-run`).
  */
 
-/** Maximum unpacked size: users care about install weight (10 MB, decimal like npm). */
-export const UNPACKED_BUDGET = 10_000_000;
+/** Maximum unpacked size: users care about install weight (8 MB, decimal like npm). */
+export const UNPACKED_BUDGET = 8_000_000;
 
 export interface PackSummary {
   size: number;

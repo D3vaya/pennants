@@ -33,7 +33,7 @@ export default defineConfig({
 import 'pennants/css';
 import { Image } from 'astro:assets';
 import { renderFlag } from 'pennants';
-import ar from 'pennants/art/1x1/ar';
+import cl from 'pennants/art/1x1/cl';
 import jp from 'pennants/svg/circle/jp.svg';
 ---
 
@@ -41,7 +41,7 @@ import jp from 'pennants/svg/circle/jp.svg';
 <span class="pn pn-de pn-2x" role="img" aria-label="Germany"></span>
 
 <!-- Inline SVG in the HTML, any shape. Trusted markup composed from pennants/art/*. -->
-<span class="flag" role="img" aria-label="Argentina" set:html={renderFlag(ar, { shape: 'square' })} />
+<span class="flag" role="img" aria-label="Chile" set:html={renderFlag(cl, { shape: 'square' })} />
 
 <!-- Image: emitted to /_astro/ with width and height set -->
 <Image src={jp} alt="Japan" height={48} />

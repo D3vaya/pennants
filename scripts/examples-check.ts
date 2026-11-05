@@ -42,29 +42,30 @@ const EXAMPLES: Example[] = [
       {
         dir: 'dist',
         ext: '.html',
-        includes: [`pennants@${version}/`, 'class="pn pn-ar"', '<pennant-flag'],
+        includes: [`pennants@${version}/`, 'class="pn pn-cl"', '<pennant-flag'],
       },
-      { dir: 'dist/pennants/css', ext: '.css', includes: ['.pn-ar{'] },
-      { dir: 'dist/pennants/svg', ext: '.svg', includes: ['pn-ar-clip'] },
+      { dir: 'dist/pennants/css', ext: '.css', includes: ['.pn-cl{'] },
+      { dir: 'dist/pennants/svg', ext: '.svg', includes: ['pn-cl-clip'] },
       { dir: 'dist/pennants/dist/element', ext: '.js', includes: ['definePennantElement'] },
     ],
   },
   {
     name: 'vite',
     expect: [
-      { dir: 'dist/assets', ext: '.js', includes: ['0 0 512 512', '0 0 640 480', '#pn-mx'] },
+      { dir: 'dist/assets', ext: '.js', includes: ['0 0 512 512', '0 0 640 480'] },
       // Flags referenced by the CSS are emitted as files, not inlined.
       {
         dir: 'dist/assets',
         ext: '.css',
         includes: [
-          '.pn.pn-ar{background-image:url(/assets/ar-',
-          '.pn-rect.pn-ar{background-image:url(/assets/ar-',
-          '.pn-circle.pn-ar{background-image:url(/assets/ar-',
+          '.pn.pn-cl{background-image:url(/assets/cl-',
+          '.pn-rect.pn-cl{background-image:url(/assets/cl-',
+          '.pn-circle.pn-cl{background-image:url(/assets/cl-',
         ],
       },
-      { dir: 'dist', ext: '.html', includes: ['class="pn-circle pn-ar'] },
-      { dir: 'dist/assets', ext: '.svg', includes: ['id="pn-mx"'] },
+      { dir: 'dist', ext: '.html', includes: ['class="pn-circle pn-cl'] },
+      // The `?url` import of svg/pennant/de.svg is emitted as a file.
+      { dir: 'dist/assets', ext: '.svg', includes: ['viewBox="0 0 66 72"'] },
     ],
   },
   {
@@ -74,8 +75,8 @@ const EXAMPLES: Example[] = [
         dir: '.next/server/app',
         ext: '.html',
         includes: [
-          'data-pennant="ar"',
-          '-ar-clip',
+          'data-pennant="cl"',
+          '-cl-clip',
           'data-shape="rect"',
           'data-shape="circle"',
           'data-pennant="br"',
@@ -95,7 +96,7 @@ const EXAMPLES: Example[] = [
       {
         dir: 'build',
         ext: '.html',
-        includes: ['id="pn-ar-circle-clip"', 'class="pn pn-de', '<pennant-flag code="br"'],
+        includes: ['id="pn-cl-circle-clip"', 'class="pn pn-de', '<pennant-flag code="br"'],
       },
     ],
   },
@@ -113,7 +114,7 @@ const EXAMPLES: Example[] = [
         dir: 'dist',
         ext: '.html',
         includes: [
-          'id="pn-ar-square-clip"',
+          'id="pn-cl-square-clip"',
           'class="pn pn-de',
           'data-pennant="br"',
           'data-shape="circle"',
@@ -131,12 +132,12 @@ const EXAMPLES: Example[] = [
         ext: '.css',
         includes: [
           '@layer components{.pn{',
-          '.pn.pn-ar{background-image:url(/assets/ar-',
+          '.pn.pn-cl{background-image:url(/assets/cl-',
           '.pn-circle.pn-br{background-image:url(/assets/br-',
           '.h-12{',
         ],
       },
-      { dir: 'dist', ext: '.html', includes: ['pn pn-ar'] },
+      { dir: 'dist', ext: '.html', includes: ['pn pn-cl'] },
     ],
   },
 ];

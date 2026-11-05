@@ -3,7 +3,7 @@ import { SHAPES } from 'pennants';
 import { flagAsset, shapeBox, shapeLabels, siteName, useLang } from '../shared';
 
 const { lang } = useLang();
-const samples = ['ar', 'jp', 'br', 'gb-sct', 'za'];
+const samples = ['cl', 'jp', 'br', 'gb-sct', 'za'];
 </script>
 
 <template>

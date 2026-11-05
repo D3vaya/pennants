@@ -17,19 +17,19 @@ pennant can be [themed](./theming).
 
 ## Choosing a shape, per format
 
-| Format         | Pennant (default)                        | Other shapes                                          |
-| -------------- | ---------------------------------------- | ----------------------------------------------------- |
-| CSS classes    | `pennants/css`, class `pn pn-ar`         | `pennants/css/rect`, class `pn-rect pn-ar`            |
-| CSS from CDN   | `import 'pennants/css/cdn'`              | `import 'pennants/css/rect/cdn'`                      |
-| SVG files      | `pennants/svg/pennant/ar.svg`            | `pennants/svg/rect/ar.svg`                            |
-| PNG files      | `png/pennant/1x/` and `png/pennant/2x/`  | `png/rect/1x/` (1x only)                              |
-| SVG sprite     | `pennants/sprite` (`sprite/pennant.svg`) | not published, see [below](#sprites-for-other-shapes) |
-| URLs           | `pennantUrl('ar')`                       | `pennantUrl('ar', { shape: 'rect' })`                 |
-| Lazy SVG       | `loadFlag('ar')`                         | `loadFlag('ar', { shape: 'circle' })`                 |
-| Fetch mode     | `fetchPennant('ar')`                     | `fetchPennant('ar', { shape: 'square' })`             |
-| Static artwork | `renderFlag(ar)`                         | `renderFlag(ar, { shape: 'circle' })`                 |
-| React          | `<Pennant code="ar" />`                  | `<Pennant code="ar" shape="circle" />`                |
-| Web Component  | `<pennant-flag code="ar">`               | `<pennant-flag code="ar" shape="rect">`               |
+| Format         | Pennant (default)                       | Other shapes                               |
+| -------------- | --------------------------------------- | ------------------------------------------ |
+| CSS classes    | `pennants/css`, class `pn pn-cl`        | `pennants/css/rect`, class `pn-rect pn-cl` |
+| CSS from CDN   | `import 'pennants/css/cdn'`             | `import 'pennants/css/rect/cdn'`           |
+| SVG files      | `pennants/svg/pennant/cl.svg`           | `pennants/svg/rect/cl.svg`                 |
+| PNG files      | `png/pennant/1x/` and `png/pennant/2x/` | [release assets](#release-assets) (1x)     |
+| SVG sprite     | [release assets](#release-assets)       | [release assets](#release-assets)          |
+| URLs           | `pennantUrl('cl')`                      | `pennantUrl('cl', { shape: 'rect' })`      |
+| Lazy SVG       | `loadFlag('cl')`                        | `loadFlag('cl', { shape: 'circle' })`      |
+| Fetch mode     | `fetchPennant('cl')`                    | `fetchPennant('cl', { shape: 'square' })`  |
+| Static artwork | `renderFlag(cl)`                        | `renderFlag(cl, { shape: 'circle' })`      |
+| React          | `<Pennant code="cl" />`                 | `<Pennant code="cl" shape="circle" />`     |
+| Web Component  | `<pennant-flag code="cl">`              | `<pennant-flag code="cl" shape="rect">`    |
 
 ## CSS classes
 
@@ -43,12 +43,12 @@ import 'pennants/css/circle';
 ```
 
 ```html
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
-<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
+<span class="pn-circle pn-cl" role="img" aria-label="Chile"></span>
 <span class="pn-circle pn-jp pn-2x" role="img" aria-label="Japan"></span>
 ```
 
-Use exactly one base class per element: `pn pn-circle pn-ar` is undefined. Size helpers
+Use exactly one base class per element: `pn pn-circle pn-cl` is undefined. Size helpers
 (`.pn-lg`, `.pn-2x` to `.pn-4x`) work with every base, and every stylesheet has a `/cdn`
 variant (`pennants/css/circle/cdn`). Each stylesheet you load adds its own cost; see
 [Performance](./performance#stylesheets).
@@ -61,18 +61,18 @@ bundled once however many shapes you render it in. Pick the artwork set the shap
 
 ```js
 import { renderFlag } from 'pennants';
-import ar from 'pennants/art/1x1/ar';
-import arWide from 'pennants/art/4x3/ar';
+import cl from 'pennants/art/1x1/cl';
+import arWide from 'pennants/art/4x3/cl';
 
-renderFlag(ar); // pennant
-renderFlag(ar, { shape: 'circle' });
+renderFlag(cl); // pennant
+renderFlag(cl, { shape: 'circle' });
 renderFlag(arWide, { shape: 'rect' });
 ```
 
 ```jsx
 import { PennantSvg } from 'pennants/react';
 
-<PennantSvg art={ar} shape="square" size={24} />;
+<PennantSvg art={cl} shape="square" size={24} />;
 ```
 
 `renderFlag` is synchronous, which makes it the SSR-friendly option. `loadArt(code, { set })`
@@ -103,18 +103,26 @@ toShape(userInput); // throws RangeError for anything else
 ```
 
 Components throw a `RangeError` for unknown shapes during render; `<pennant-flag>` fires
-`pennant-error` instead. `pennantUrl` also throws for PNG `scale: 2` on any shape other than
-the pennant, since only pennant PNGs ship at 2x.
+`pennant-error` instead. `pennantUrl` also throws for `format: 'png'` on any shape other than
+the pennant, since only pennant PNGs are in the npm package.
 
-## Sprites for other shapes
+## Release assets
 
-Only `sprite/pennant.svg` is published to npm, to keep the install small. The other sprites
-(`rect.svg`, `square.svg`, `circle.svg`) are generated by the build. To get them, clone the
-repository and run:
+To keep installs small, the npm package ships PNGs for the pennant only and no sprites. Every
+[GitHub release](https://github.com/D3vaya/pennants/releases) since v0.2.0 has a
+`pennants-assets-vX.Y.Z.zip` with all of them:
 
-```sh
-npm ci
-npm run generate   # writes sprite/rect.svg, sprite/square.svg and sprite/circle.svg
+- `png/<shape>/1x/<code>.png` for every shape, plus `png/pennant/2x/`
+- `sprite/<shape>.svg`: every flag of a shape as `<symbol id="pn-<code>">`
+- `svg/<shape>/<code>.svg`, the same files as in the package
+
+Copy what you need into your public folder. Sprites must be served from the same origin as the
+page, because browsers don't load `<use>` references across origins:
+
+```html
+<svg width="33" height="36" role="img" aria-label="Mexico">
+  <use href="/flags/pennant.svg#pn-mx" />
+</svg>
 ```
 
-Symbol ids are `pn-<code>` in every sprite; the file name selects the shape.
+You can also build them from a clone of the repository with `npm ci && npm run generate`.

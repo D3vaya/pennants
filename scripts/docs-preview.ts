@@ -13,7 +13,7 @@ import { join } from 'node:path';
 import sharp from 'sharp';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const bunting = ['ar', 'br', 'mx', 'es', 'us', 'ca', 'gb', 'fr', 'de', 'it', 'pt', 'nl', 'se'];
+const bunting = ['cl', 'br', 'mx', 'es', 'us', 'ca', 'gb', 'fr', 'de', 'it', 'pt', 'nl', 'se'];
 const others = ['jp', 'kr', 'in', 'za', 'ng', 'ke', 'eg', 'ma', 'tr', 'au', 'nz', 'eu'];
 const otherShapes = ['rect', 'square', 'circle'] as const;
 const otherHeight = 60; // rendered height of the rect/square/circle row

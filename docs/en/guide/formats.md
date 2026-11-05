@@ -7,15 +7,15 @@ too.
 
 | Format                                    | Added to your app (gzip)                                       | SSR                           | Bar theming | Lazy                 | Caching                       |
 | ----------------------------------------- | -------------------------------------------------------------- | ----------------------------- | ----------- | -------------------- | ----------------------------- |
-| CSS classes `pn pn-ar`, `pn-circle pn-ar` | 0 JS, <Size probe="css" part="css" /> CSS ¹                    | Yes                           | No          | Yes, per used class  | One file per flag, HTTP cache |
+| CSS classes `pn pn-cl`, `pn-circle pn-cl` | 0 JS, <Size probe="css" part="css" /> CSS ¹                    | Yes                           | No          | Yes, per used class  | One file per flag, HTTP cache |
 | `<img>` SVG (self-hosted or CDN)          | 0                                                              | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
-| `<img>` PNG 1x / 2x                       | 0                                                              | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
-| SVG sprite `<use href>`                   | 0 JS; one 1.15 MB file (248 kB brotli)                         | Yes                           | No          | No, one file for all | One file, HTTP cache          |
-| Art module `pennants/art/1x1/ar`          | <Size probe="art-pennant" /> for the first flag                | Yes                           | Yes         | No, bundled          | Part of your bundle           |
+| `<img>` PNG 1x / 2x ⁴                     | 0                                                              | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
+| SVG sprite `<use href>` ⁴                 | 0 JS; one 1.15 MB file (248 kB brotli)                         | Yes                           | No          | No, one file for all | One file, HTTP cache          |
+| Art module `pennants/art/1x1/cl`          | <Size probe="art-pennant" /> for the first flag                | Yes                           | Yes         | No, bundled          | Part of your bundle           |
 | `loadFlag(code)`                          | <Size probe="load" /> (loader maps) + one chunk per flag shown | Client (async)                | Yes         | Yes                  | Chunk files, HTTP cache       |
 | Fetch mode ³                              | <Size probe="fetch" /> + one request per flag shown            | Browser only                  | Yes         | Yes                  | HTTP / CDN cache              |
 | React `<Pennant>`                         | <Size probe="react-pennant" /> + one chunk per flag shown      | Box on server, flag on client | Yes         | Yes                  | Chunk files                   |
-| React `<PennantSvg art={ar}>`             | <Size probe="react-svg" /> including `ar` ²                    | Yes, full markup              | Yes         | No                   | Part of your bundle           |
+| React `<PennantSvg art={cl}>`             | <Size probe="react-svg" /> including `cl` ²                    | Yes, full markup              | Yes         | No                   | Part of your bundle           |
 | `<pennant-flag>`                          | <Size probe="element" /> + one chunk per flag shown            | Client only                   | Yes         | Yes                  | Chunk files                   |
 
 ¹ With `assetsInlineLimit` set as in the [FAQ](./faq#bundler-asset-imports), or
@@ -30,20 +30,23 @@ Next.js and Angular emit files by default.
 components); browser only. Needs `connect-src` for
 the host in a CSP.
 
+⁴ The npm package has pennant PNGs (1x and 2x). PNGs of the other shapes and the sprites are
+[release assets](./shapes#release-assets).
+
 ## Quick decisions
 
 - **Static site, a few flags, no build step:** `<img>` from the CDN.
 - **Many flags in server-rendered HTML** (tables, country pickers): CSS classes. The browser
   downloads only the flags on the page.
 - **Flags known at build time, must be visible on first paint with SSR:** per-flag modules,
-  in React through `<PennantSvg art={ar} />`.
+  in React through `<PennantSvg art={cl} />`.
 - **Flag chosen at runtime** (user profile, API data): `loadFlag`, `<Pennant>` or
   `<pennant-flag>`. For the smallest bundle, use fetch mode: no loader map, flags are
   downloaded as SVG files from the CDN or your own host.
 - **You want to recolor the bar:** inline SVG (modules, `loadFlag`, React) with
   `pennants/css/theme.css`, or `<pennant-flag>`. See [Theming](./theming).
 - **Email, native apps, Open Graph images:** PNG.
-- **Hundreds of flags on one page at once:** the sprite, or CSS classes.
+- **Hundreds of flags on one page at once:** CSS classes, or a sprite from the release assets.
 
 ## SSR notes
 

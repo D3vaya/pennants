@@ -5,6 +5,6 @@ const pkg = 'node_modules/pennants';
 await mkdir('dist', { recursive: true });
 await cp('index.html', 'dist/index.html');
 await cp('local.html', 'dist/local.html');
-for (const dir of ['css', 'svg', 'sprite', 'dist']) {
+for (const dir of ['css', 'svg', 'dist']) {
   await cp(`${pkg}/${dir}`, `dist/pennants/${dir}`, { recursive: true });
 }

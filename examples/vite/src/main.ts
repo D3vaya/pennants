@@ -7,8 +7,8 @@ import 'pennants/css/circle';
 import './style.css';
 // Flag artwork: only the flags you import end up in the bundle. 1x1 art draws
 // pennant, square and circle; 4x3 art draws rect.
-import ar from 'pennants/art/1x1/ar';
-import ar4x3 from 'pennants/art/4x3/ar';
+import cl from 'pennants/art/1x1/cl';
+import cl4x3 from 'pennants/art/4x3/cl';
 import {
   getPennantName,
   isShape,
@@ -19,7 +19,6 @@ import {
 } from 'pennants';
 // Static files resolved to hashed URLs by Vite.
 import deUrl from 'pennants/svg/pennant/de.svg?url';
-import spriteUrl from 'pennants/sprite?url';
 
 const $ = <T extends Element>(selector: string) => document.querySelector<T>(selector)!;
 
@@ -27,8 +26,8 @@ const shapes: PennantShape[] = ['pennant', 'rect', 'square', 'circle'];
 $('#shapes').innerHTML = shapes
   .map(
     (shape) =>
-      `<span class="flag" role="img" aria-label="Argentina (${shape})">` +
-      `${renderFlag(shape === 'rect' ? ar4x3 : ar, { shape })}</span>`,
+      `<span class="flag" role="img" aria-label="Chile (${shape})">` +
+      `${renderFlag(shape === 'rect' ? cl4x3 : cl, { shape })}</span>`,
   )
   .join(' ');
 
@@ -47,4 +46,3 @@ shapeSelect.addEventListener('change', showLazy);
 void showLazy();
 
 $<HTMLImageElement>('#img').src = deUrl;
-$('#sprite').setAttribute('href', `${spriteUrl}#pn-mx`);

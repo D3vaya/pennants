@@ -15,7 +15,7 @@ import { join } from 'node:path';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const publicDir = join(root, 'docs', 'public');
 const folders = ['svg', 'png', 'css', 'sprite'] as const;
-const flagIconsSamples = ['ar', 'br', 'jp', 'gb-eng', 'eu', 'za'];
+const flagIconsSamples = ['cl', 'br', 'jp', 'gb-eng', 'eu', 'za'];
 
 const missing = folders.filter((folder) => !existsSync(join(root, folder)));
 if (missing.length > 0 || !existsSync(join(root, 'dist', 'index.js'))) {
