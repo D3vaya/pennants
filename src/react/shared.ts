@@ -12,7 +12,7 @@ export type PennantHtmlAttributes = Omit<
 
 /** Props shared by `Pennant` and `PennantSvg`. */
 export interface PennantCommonProps {
-  /** Height (px number or CSS length). Width follows the 66:72 ratio. Default `1em`. */
+  /** Height (px number or CSS length). Width follows the shape's ratio (66:72 for the pennant). Default `1em`. */
   size?: PennantSize;
   /**
    * Accessible name. Defaults to the localised flag name. Pass `""` to mark

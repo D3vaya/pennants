@@ -7,6 +7,6 @@
     "start": "npm run build && npx serve dist"
   },
   "dependencies": {
-    "pennants": "^0.1.0"
+    "pennants": "^0.2.0"
   }
 }

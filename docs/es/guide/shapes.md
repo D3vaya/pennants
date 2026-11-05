@@ -65,11 +65,11 @@ Elige el conjunto de dibujos del que sale la forma: `4x3` para `rect` y `1x1` pa
 ```js
 import { renderFlag } from 'pennants';
 import cl from 'pennants/art/1x1/cl';
-import arAncha from 'pennants/art/4x3/cl';
+import cl4x3 from 'pennants/art/4x3/cl';
 
 renderFlag(cl); // banderín
 renderFlag(cl, { shape: 'circle' });
-renderFlag(arAncha, { shape: 'rect' });
+renderFlag(cl4x3, { shape: 'rect' });
 ```
 
 ```jsx
@@ -123,8 +123,8 @@ Copia lo que necesites a tu carpeta pública. Los sprites tienen que servirse de
 origen que la página, porque los navegadores no cargan referencias `<use>` de otro origen:
 
 ```html
-<svg width="33" height="36" role="img" aria-label="México">
-  <use href="/flags/pennant.svg#pn-mx" />
+<svg width="33" height="36" role="img" aria-label="Chile">
+  <use href="/flags/pennant.svg#pn-cl" />
 </svg>
 ```
 

@@ -44,11 +44,11 @@ individually compressed files).
 
 | Set                                 | Raw                   | Brotli             |
 | ----------------------------------- | --------------------- | ------------------ |
-| All 271 pennant SVGs                | 1.16 MB               | 362 kB             |
-| All 271 rect / square / circle SVGs | 1.10 / 1.11 / 1.09 MB | 335 / 336 / 332 kB |
+| All 271 pennant SVGs                | 1.16 MB               | 361 kB             |
+| All 271 rect / square / circle SVGs | 1.11 / 1.12 / 1.10 MB | 336 / 337 / 333 kB |
 | Median SVG (pennant / rect)         | —                     | 525 B / 436 B      |
 | Largest SVG (`rs`, Serbia)          | 62 kB                 | 15 kB              |
-| Sprite (pennant, release asset)     | 1.15 MB               | 248 kB             |
+| Sprite (pennant, release asset)     | 1.14 MB               | 248 kB             |
 
 PNG files average 0.9 kB (pennant 1x) and 1.6 kB (pennant 2x); PNGs of the other shapes
 (0.6–1.0 kB, 1x) are [release assets](./shapes#release-assets). Country names cost nothing: ISO names come from the runtime's `Intl.DisplayNames`; only

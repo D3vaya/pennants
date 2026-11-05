@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "pennants": "^0.1.0"
+    "pennants": "^0.2.0"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^4.0.0",

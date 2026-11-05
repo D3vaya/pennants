@@ -46,11 +46,11 @@ archivo comprimido por separado).
 
 | Conjunto                             | Sin comprimir         | Brotli             |
 | ------------------------------------ | --------------------- | ------------------ |
-| Los 271 SVG de banderín              | 1,16 MB               | 362 kB             |
-| Los 271 SVG rect / square / circle   | 1,10 / 1,11 / 1,09 MB | 335 / 336 / 332 kB |
+| Los 271 SVG de banderín              | 1,16 MB               | 361 kB             |
+| Los 271 SVG rect / square / circle   | 1,11 / 1,12 / 1,10 MB | 336 / 337 / 333 kB |
 | SVG mediano (banderín / rect)        | —                     | 525 B / 436 B      |
 | SVG más pesado (`rs`, Serbia)        | 62 kB                 | 15 kB              |
-| Sprite (banderín, asset del release) | 1,15 MB               | 248 kB             |
+| Sprite (banderín, asset del release) | 1,14 MB               | 248 kB             |
 
 Los PNG pesan en promedio 0,9 kB (banderín 1x) y 1,6 kB (banderín 2x); los PNG de las otras
 formas (0,6–1,0 kB, 1x) están en los [assets del release](./shapes#assets-del-release). Los nombres de los países no pesan nada: los nombres ISO salen de `Intl.DisplayNames`

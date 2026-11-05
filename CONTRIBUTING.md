@@ -70,7 +70,9 @@ committed.
 2. `npm version <patch|minor|major> --no-git-tag-version`, then
    `node scripts/bundle-budget.ts --json docs/data/bundle-sizes.json` and
    `node scripts/docs-readme-sizes.ts`: the version is inlined into the bundles, so their sizes
-   (and the CI snapshot check) move with it.
+   (and the CI snapshot check) move with it. On a minor or major bump, also update the
+   `pennants` range in `examples/*/package.json`, and add the release to
+   `docs/{en,es}/guide/changelog.md`.
 3. Open a pull request (`main` is protected and needs green checks), merge it, then
    `git tag vX.Y.Z && git push origin vX.Y.Z` on the merged commit. The release workflow
    verifies, publishes to npm with provenance and creates the GitHub release.

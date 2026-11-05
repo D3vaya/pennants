@@ -151,7 +151,7 @@ function themeFor(locale: 'en' | 'es'): DefaultTheme.Config {
 
 export default defineConfig({
   title: 'pennants',
-  description: 'Country flags in pennant style: SVG, PNG, CSS, sprite, JS, React, Web Component.',
+  description: 'Country flags in pennant style: SVG, PNG, CSS, JS, React, Web Component.',
   base,
   cleanUrls: true,
   // English sources live in docs/en/ but are served from the site root.
@@ -176,7 +176,7 @@ export default defineConfig({
       lang: 'es-ES',
       link: '/es/',
       description:
-        'Banderas de países con forma de banderín: SVG, PNG, CSS, sprite, JS, React y Web Component.',
+        'Banderas de países con forma de banderín: SVG, PNG, CSS, JS, React y Web Component.',
       themeConfig: themeFor('es'),
     },
   },

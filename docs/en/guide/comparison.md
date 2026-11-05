@@ -17,7 +17,7 @@ npm run build && node scripts/docs-compare.ts
 |                                                | pennants                                                                  | flag-icons                      | country-flag-icons           |
 | ---------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------- | ---------------------------- |
 | Flags                                          | 271                                                                       | 271                             | 265                          |
-| All SVGs, raw / gzip / brotli                  | pennant: 1.16 MB / 416 kB / 362 kB<br>rect: 1.10 MB / 383 kB / 335 kB     | 1.93 MB / 647 kB / 561 kB (4x3) | 178 kB / 89 kB / 81 kB (3x2) |
+| All SVGs, raw / gzip / brotli                  | pennant: 1.16 MB / 416 kB / 361 kB<br>rect: 1.11 MB / 384 kB / 336 kB     | 1.93 MB / 647 kB / 561 kB (4x3) | 178 kB / 89 kB / 81 kB (3x2) |
 | Median SVG, brotli                             | pennant: 525 B, rect: 436 B                                               | 356 B (4x3)                     | 253 B (3x2)                  |
 | Full CSS, raw / gzip / brotli                  | pennant: 15.2 kB / 1.8 kB / 1.0 kB ¹<br>rect: 15.6 kB / 1.8 kB / 1.0 kB ¹ | 28.0 kB / 2.4 kB / 1.5 kB ¹     | 201 kB / 48 kB / 40 kB ²     |
 | One flag JS module (`cl`), raw / gzip / brotli | 0.5 kB / 0.3 kB / 0.3 kB (artwork, any shape)                             | —                               | 0.3 kB / 0.2 kB / 0.2 kB     |

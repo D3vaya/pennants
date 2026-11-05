@@ -10,7 +10,7 @@ too.
 | CSS classes `pn pn-cl`, `pn-circle pn-cl` | 0 JS, <Size probe="css" part="css" /> CSS ¹                    | Yes                           | No          | Yes, per used class  | One file per flag, HTTP cache |
 | `<img>` SVG (self-hosted or CDN)          | 0                                                              | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
 | `<img>` PNG 1x / 2x ⁴                     | 0                                                              | Yes                           | No          | `loading="lazy"`     | HTTP / CDN cache              |
-| SVG sprite `<use href>` ⁴                 | 0 JS; one 1.15 MB file (248 kB brotli)                         | Yes                           | No          | No, one file for all | One file, HTTP cache          |
+| SVG sprite `<use href>` ⁴                 | 0 JS; one 1.14 MB file (248 kB brotli)                         | Yes                           | No          | No, one file for all | One file, HTTP cache          |
 | Art module `pennants/art/1x1/cl`          | <Size probe="art-pennant" /> for the first flag                | Yes                           | Yes         | No, bundled          | Part of your bundle           |
 | `loadFlag(code)`                          | <Size probe="load" /> (loader maps) + one chunk per flag shown | Client (async)                | Yes         | Yes                  | Chunk files, HTTP cache       |
 | Fetch mode ³                              | <Size probe="fetch" /> + one request per flag shown            | Browser only                  | Yes         | Yes                  | HTTP / CDN cache              |
