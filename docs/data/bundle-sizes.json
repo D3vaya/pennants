@@ -1,6 +1,6 @@
 {
-  "vite": "8.3.5",
-  "generated": "2026-10-22T22:04:12.756Z",
+  "vite": "8.3.6",
+  "generated": "2026-11-05T14:35:08.572Z",
   "probes": {
     "empty": {
       "label": "Empty app (baseline)",
@@ -95,7 +95,7 @@
       "baseline": "empty",
       "entry": {
         "min": 1656,
-        "gzip": 899,
+        "gzip": 900,
         "brotli": 661
       },
       "css": null,
@@ -105,9 +105,9 @@
       "label": "`loadPennant`",
       "baseline": "empty",
       "entry": {
-        "min": 5077,
-        "gzip": 2487,
-        "brotli": 2053
+        "min": 5173,
+        "gzip": 2511,
+        "brotli": 2104
       },
       "css": null,
       "lazyFiles": 544
@@ -116,9 +116,9 @@
       "label": "`loadFlag`, circle + rect",
       "baseline": "empty",
       "entry": {
-        "min": 5115,
-        "gzip": 2504,
-        "brotli": 2079
+        "min": 5211,
+        "gzip": 2529,
+        "brotli": 2106
       },
       "css": null,
       "lazyFiles": 544
@@ -138,9 +138,9 @@
       "label": "`pennants/element/register`",
       "baseline": "empty",
       "entry": {
-        "min": 11879,
-        "gzip": 5162,
-        "brotli": 4445
+        "min": 11975,
+        "gzip": 5189,
+        "brotli": 4469
       },
       "css": null,
       "lazyFiles": 545
@@ -149,9 +149,9 @@
       "label": "React `<Pennant>`",
       "baseline": "react",
       "entry": {
-        "min": 10007,
-        "gzip": 4689,
-        "brotli": 3875
+        "min": 10103,
+        "gzip": 4718,
+        "brotli": 3856
       },
       "css": null,
       "lazyFiles": 545
@@ -160,9 +160,9 @@
       "label": "React `<Pennant shape=\"circle\">`",
       "baseline": "react",
       "entry": {
-        "min": 10022,
-        "gzip": 4694,
-        "brotli": 3836
+        "min": 10118,
+        "gzip": 4723,
+        "brotli": 3793
       },
       "css": null,
       "lazyFiles": 545
@@ -214,7 +214,7 @@
       },
       "css": {
         "min": 26300,
-        "gzip": 1971,
+        "gzip": 1972,
         "brotli": 1189
       },
       "lazyFiles": 0
@@ -245,7 +245,7 @@
       "css": {
         "min": 26740,
         "gzip": 1929,
-        "brotli": 1100
+        "brotli": 1101
       },
       "lazyFiles": 0
     },
@@ -275,7 +275,7 @@
       "css": {
         "min": 27820,
         "gzip": 1935,
-        "brotli": 1116
+        "brotli": 1118
       },
       "lazyFiles": 0
     },
@@ -305,7 +305,7 @@
       "css": {
         "min": 27820,
         "gzip": 1934,
-        "brotli": 1131
+        "brotli": 1120
       },
       "lazyFiles": 0
     },

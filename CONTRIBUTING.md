@@ -67,8 +67,11 @@ committed.
 ## Releasing (maintainers)
 
 1. Move `Unreleased` entries in `CHANGELOG.md` under the new version.
-2. `npm version <patch|minor|major>` (creates the commit and the `vX.Y.Z` tag).
-3. `git push --follow-tags`. The release workflow verifies, publishes to npm with provenance
+2. `npm version <patch|minor|major> --no-git-tag-version`, then
+   `node scripts/bundle-budget.ts --json docs/data/bundle-sizes.json` and
+   `node scripts/docs-readme-sizes.ts`: the version is inlined into the bundles, so their sizes
+   (and the CI snapshot check) move with it.
+3. Commit, push to `main`, wait for green CI, then `git tag vX.Y.Z && git push origin vX.Y.Z`. The release workflow verifies, publishes to npm with provenance
    and creates the GitHub release.
 
 The workflow currently authenticates with the `NPM_TOKEN` repository secret. Planned follow-up:
