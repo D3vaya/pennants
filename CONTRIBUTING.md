@@ -71,12 +71,12 @@ committed.
    `node scripts/bundle-budget.ts --json docs/data/bundle-sizes.json` and
    `node scripts/docs-readme-sizes.ts`: the version is inlined into the bundles, so their sizes
    (and the CI snapshot check) move with it.
-3. Commit, push to `main`, wait for green CI, then `git tag vX.Y.Z && git push origin vX.Y.Z`. The release workflow verifies, publishes to npm with provenance
-   and creates the GitHub release.
+3. Open a pull request (`main` is protected and needs green checks), merge it, then
+   `git tag vX.Y.Z && git push origin vX.Y.Z` on the merged commit. The release workflow
+   verifies, publishes to npm with provenance and creates the GitHub release.
 
-The workflow currently authenticates with the `NPM_TOKEN` repository secret. Planned follow-up:
-switch to [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC), which
-removes the long-lived token; the job already has `id-token: write`.
+Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC): npm
+trusts `release.yml` in `D3vaya/pennants`, so there is no npm token in the repository.
 
 By contributing you agree that your contributions are licensed under the MIT License and that
 you follow the [Code of Conduct](CODE_OF_CONDUCT.md).
