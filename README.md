@@ -1,9 +1,9 @@
 # pennants
 
 [![npm](https://img.shields.io/npm/v/pennants)](https://www.npmjs.com/package/pennants)
-[![core size](https://img.shields.io/bundlejs/size/pennants?exports=getPennantName&label=core)](https://bundlejs.com/?q=pennants&treeshake=[{getPennantName}])
+[![one flag](https://img.shields.io/badge/one_flag-1.7_kB_gzip-blue)](https://d3vaya.github.io/pennants/guide/performance)
 [![CI](https://github.com/D3vaya/pennants/actions/workflows/ci.yml/badge.svg)](https://github.com/D3vaya/pennants/actions/workflows/ci.yml)
-[![license](https://img.shields.io/npm/l/pennants)](LICENSE)
+[![license](https://img.shields.io/github/license/D3vaya/pennants)](https://github.com/D3vaya/pennants/blob/main/LICENSE)
 
 Every flag, every shape, one API. 271 country flags (249 ISO 3166-1 countries plus regions and
 organizations) as pennants, the signature style, and as 4:3 rectangles, squares and circles.
@@ -39,7 +39,7 @@ import 'pennants/css';
 
 ```html
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/ar.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/ar.svg"
   width="33"
   height="36"
   alt="Argentina"
@@ -147,12 +147,12 @@ See [Migrating from flag-icons](https://d3vaya.github.io/pennants/guide/migratio
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
+See [CONTRIBUTING.md](https://github.com/D3vaya/pennants/blob/main/CONTRIBUTING.md) and [SECURITY.md](https://github.com/D3vaya/pennants/blob/main/SECURITY.md).
 
 ## License
 
-[MIT](LICENSE) © 2026 d3vaya. Flag artwork from flag-icons, MIT © 2013 Panayiotis Lipiridis; see
-[NOTICE](NOTICE).
+[MIT](https://github.com/D3vaya/pennants/blob/main/LICENSE) © 2026 d3vaya. Flag artwork from flag-icons, MIT © 2013 Panayiotis Lipiridis; see
+[NOTICE](https://github.com/D3vaya/pennants/blob/main/NOTICE).
 
 ## En español
 

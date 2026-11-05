@@ -81,9 +81,17 @@ const readme = await readFile(readmePath, 'utf8');
 const from = readme.indexOf(start);
 const to = readme.indexOf(end);
 if (from === -1 || to === -1) throw new Error('README.md is missing the sizes markers');
+// Static badge: shields.io's bundlejs badge times out on a package this size.
+const badgeSize = kb(probe('art-pennant').entry.gzip).replace(' ', '_');
+const badge = `[![one flag](https://img.shields.io/badge/one_flag-${badgeSize}_gzip-blue)]`;
+const badgePattern = /^\[!\[one flag\]\([^)]*\)\]/m;
+if (!badgePattern.test(readme)) throw new Error('README.md is missing the "one flag" badge');
 // Format like the rest of the repo so `prettier --check` and `--check` agree.
 const next = await format(
-  `${readme.slice(0, from + start.length)}\n\n${lines.join('\n')}\n\n${readme.slice(to)}`,
+  `${readme.slice(0, from + start.length)}\n\n${lines.join('\n')}\n\n${readme.slice(to)}`.replace(
+    badgePattern,
+    badge,
+  ),
   { ...(await resolveConfig(readmePath)), filepath: readmePath },
 );
 

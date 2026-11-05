@@ -38,6 +38,10 @@ jobs:
             exit 1
           fi
 
+      # npm 11.5.1+ publishes through npm trusted publishing (OIDC) when the
+      # package is configured for it, and falls back to NPM_TOKEN otherwise.
+      - run: npm install --global npm@11.21.1
+
       - run: npm ci
 
       - run: npm run verify

@@ -28,7 +28,7 @@ fija la versión:
 
 ```html
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/ar.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/ar.svg"
   width="33"
   height="36"
   alt="Argentina"
@@ -125,7 +125,7 @@ const svg = await fetchPennant('ar'); // o fetchPennant('ar', { base: '/assets/p
 ```
 
 El mismo modo existe en los componentes: `<Pennant code="ar" mode="fetch" />` y
-`<pennant-flag code="ar" base="https://cdn.jsdelivr.net/npm/pennants@0.1.0">`. Las respuestas
+`<pennant-flag code="ar" base="https://cdn.jsdelivr.net/npm/pennants@0.1.1">`. Las respuestas
 se guardan en caché por URL y se sanean antes de usarse: se analizan con `DOMParser` y se
 rechazan salvo que sean un único SVG hecho solo de elementos y atributos permitidos, con
 referencias `#id` locales; después se vuelven a serializar. Nunca se permiten scripts,

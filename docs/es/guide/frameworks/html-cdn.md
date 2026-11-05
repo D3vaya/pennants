@@ -10,10 +10,10 @@ archivos de `node_modules/pennants` a tu servidor.
 Fija siempre la versión en las URLs de la CDN.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.0/css/pennant.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.1/css/pennant.min.css" />
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/dist/element/register.js"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/dist/element/register.js"
 ></script>
 
 <!-- Clases CSS: sin JavaScript -->
@@ -22,7 +22,7 @@ Fija siempre la versión en las URLs de la CDN.
 
 <!-- Imagen: svg/<forma>/<código>.svg -->
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/jp.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/jp.svg"
   width="33"
   height="36"
   alt="Japón"
@@ -38,7 +38,7 @@ Hay una hoja de estilos por forma, y cada una tiene su clase base: `css/pennant.
 `css/circle.min.css` (`pn-circle`). Carga las que necesites y combínalas en la misma página:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.0/css/circle.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.1/css/circle.min.css" />
 
 <span class="pn pn-ar" role="img" aria-label="Argentina"></span>
 <span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>

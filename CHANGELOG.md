@@ -7,6 +7,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-05
+
+### Fixed
+
+- README on npm: badges and links to `LICENSE`, `NOTICE`, `CONTRIBUTING.md` and `SECURITY.md` are
+  absolute, so they work on npmjs.com. The size badge is static and generated from the bundle
+  snapshot instead of timing out on bundlejs.
+
+### Changed
+
+- Releases publish with npm 11, ready for npm trusted publishing (OIDC).
+
 ## [0.1.0] - 2026-10-22
 
 First release.
@@ -41,5 +53,6 @@ First release.
 - Pennant bar theming with `--pennant-bar-light` / `--pennant-bar-dark` through
   `pennants/css/theme.css` (included in the pennant stylesheets), CSP-safe.
 
-[Unreleased]: https://github.com/D3vaya/pennants/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/D3vaya/pennants/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/D3vaya/pennants/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/D3vaya/pennants/releases/tag/v0.1.0

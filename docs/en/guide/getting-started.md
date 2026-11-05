@@ -26,7 +26,7 @@ Or skip the install and load files from jsDelivr. Pin the version in production:
 
 ```html
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/ar.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/ar.svg"
   width="33"
   height="36"
   alt="Argentina"
@@ -120,7 +120,7 @@ const svg = await fetchPennant('ar'); // or fetchPennant('ar', { base: '/assets/
 ```
 
 The same mode exists in the components: `<Pennant code="ar" mode="fetch" />` and
-`<pennant-flag code="ar" base="https://cdn.jsdelivr.net/npm/pennants@0.1.0">`.
+`<pennant-flag code="ar" base="https://cdn.jsdelivr.net/npm/pennants@0.1.1">`.
 Responses are cached per URL and sanitized before use: the response is parsed with
 `DOMParser` and rejected unless it is a single SVG made only of allowlisted elements and
 attributes with local `#id` references, then re-serialized. Scripts, event handlers, `style`,

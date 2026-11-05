@@ -10,10 +10,10 @@ No build step. Load a stylesheet and the Web Component from jsDelivr, or copy th
 Always pin the version in CDN URLs.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.0/css/pennant.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.1/css/pennant.min.css" />
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/dist/element/register.js"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/dist/element/register.js"
 ></script>
 
 <!-- CSS classes: no JavaScript -->
@@ -22,7 +22,7 @@ Always pin the version in CDN URLs.
 
 <!-- Plain image: svg/<shape>/<code>.svg -->
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.0/svg/pennant/jp.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/jp.svg"
   width="33"
   height="36"
   alt="Japan"
@@ -38,7 +38,7 @@ There is one stylesheet per shape, and each has its own base class: `css/pennant
 `css/circle.min.css` (`pn-circle`). Load the ones you need and mix them on one page:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.0/css/circle.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.1/css/circle.min.css" />
 
 <span class="pn pn-ar" role="img" aria-label="Argentina"></span>
 <span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
