@@ -13,8 +13,8 @@ npm install pennants
 Importa una sola vez, en el layout raíz, la hoja de cada forma que uses:
 
 ```tsx [app/layout.tsx]
-import 'pennants/css'; // className="pn pn-ar"
-import 'pennants/css/circle'; // className="pn-circle pn-ar"
+import 'pennants/css'; // className="pn pn-cl"
+import 'pennants/css/circle'; // className="pn-circle pn-cl"
 ```
 
 `pennants/css/rect` y `pennants/css/square` funcionan igual, con las clases base `pn-rect` y
@@ -32,17 +32,17 @@ se puede importar sin problemas desde Server Components.
 ```tsx [app/page.tsx]
 import Image from 'next/image';
 import { PennantSvg } from 'pennants/react';
-import ar from 'pennants/art/1x1/ar'; // pennant, square, circle
-import ar4x3 from 'pennants/art/4x3/ar'; // rect
+import cl from 'pennants/art/1x1/cl'; // pennant, square, circle
+import cl4x3 from 'pennants/art/4x3/cl'; // rect
 import jpUrl from 'pennants/svg/circle/jp.svg';
 
 export default function Page() {
   return (
     <main>
-      <PennantSvg art={ar} size={48} locale="es" />
-      <PennantSvg art={ar4x3} shape="rect" size={48} locale="es" />
-      <PennantSvg art={ar} shape="square" size={48} locale="es" />
-      <PennantSvg art={ar} shape="circle" size={48} locale="es" />
+      <PennantSvg art={cl} size={48} locale="es" />
+      <PennantSvg art={cl4x3} shape="rect" size={48} locale="es" />
+      <PennantSvg art={cl} shape="square" size={48} locale="es" />
+      <PennantSvg art={cl} shape="circle" size={48} locale="es" />
 
       <span className="pn pn-de pn-2x" role="img" aria-label="Alemania" />
       <Image src={jpUrl} alt="Japón" height={48} width={48} />

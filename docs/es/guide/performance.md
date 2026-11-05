@@ -41,23 +41,23 @@ En la práctica:
 
 ## Archivos de banderas
 
-Medido sobre la build 0.1.0 con `node scripts/docs-compare.ts` (brotli es la suma de cada
+Medido sobre la build 0.2.0 con `node scripts/docs-compare.ts` (brotli es la suma de cada
 archivo comprimido por separado).
 
-| Conjunto                           | Sin comprimir         | Brotli             |
-| ---------------------------------- | --------------------- | ------------------ |
-| Los 271 SVG de banderín            | 1,16 MB               | 362 kB             |
-| Los 271 SVG rect / square / circle | 1,10 / 1,11 / 1,09 MB | 335 / 336 / 332 kB |
-| SVG mediano (banderín / rect)      | —                     | 525 B / 430 B      |
-| SVG más pesado (`rs`, Serbia)      | 62 kB                 | 15 kB              |
-| Sprite (`sprite/pennant.svg`)      | 1,15 MB               | 248 kB             |
+| Conjunto                             | Sin comprimir         | Brotli             |
+| ------------------------------------ | --------------------- | ------------------ |
+| Los 271 SVG de banderín              | 1,16 MB               | 362 kB             |
+| Los 271 SVG rect / square / circle   | 1,10 / 1,11 / 1,09 MB | 335 / 336 / 332 kB |
+| SVG mediano (banderín / rect)        | —                     | 525 B / 436 B      |
+| SVG más pesado (`rs`, Serbia)        | 62 kB                 | 15 kB              |
+| Sprite (banderín, asset del release) | 1,15 MB               | 248 kB             |
 
-Los PNG pesan en promedio 0,9 kB (banderín 1x), 1,6 kB (banderín 2x) y 0,6–1,0 kB (otras formas,
-solo 1x). Los nombres de los países no pesan nada: los nombres ISO salen de `Intl.DisplayNames`
+Los PNG pesan en promedio 0,9 kB (banderín 1x) y 1,6 kB (banderín 2x); los PNG de las otras
+formas (0,6–1,0 kB, 1x) están en los [assets del release](./shapes#assets-del-release). Los nombres de los países no pesan nada: los nombres ISO salen de `Intl.DisplayNames`
 del propio entorno; solo se incluyen los 22 nombres que no son ISO (`gb-eng`, `asean`, ...).
 
-El paquete de npm ocupa 2,80 MB (9,29 MB descomprimido) porque trae cuatro formas en todos los
-formatos. Lo que llega a tus usuarios depende solo de lo que importes.
+El paquete de npm ocupa 1,96 MB (7,56 MB descomprimido): archivos SVG y módulos JS de las cuatro
+formas, CSS y los PNG del banderín. Lo que llega a tus usuarios depende solo de lo que importes.
 
 ## Cómo funcionan los chunks diferidos
 

@@ -36,7 +36,7 @@ Add `CUSTOM_ELEMENTS_SCHEMA` to each component that uses `<pennant-flag>`:
 ```ts [src/app/app.ts]
 import { CUSTOM_ELEMENTS_SCHEMA, Component, inject, signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import ar from 'pennants/art/1x1/ar';
+import cl from 'pennants/art/1x1/cl';
 import { renderFlag, type PennantCode, type PennantShape } from 'pennants';
 
 @Component({
@@ -47,7 +47,7 @@ import { renderFlag, type PennantCode, type PennantShape } from 'pennants';
     <button type="button" (click)="code.set('mx')">Mexico</button>
     <button type="button" (click)="shape.set('circle')">Circle</button>
 
-    <span class="flag" role="img" aria-label="Argentina" [innerHTML]="circle"></span>
+    <span class="flag" role="img" aria-label="Chile" [innerHTML]="circle"></span>
 
     <span class="pn pn-de pn-2x" role="img" aria-label="Germany"></span>
   `,
@@ -69,7 +69,7 @@ export class App {
   // Angular removes <svg> from [innerHTML]. This markup is composed from pennants/art/*,
   // which is trusted, so bypassing the sanitizer is safe. Never do this with user input.
   protected readonly circle = inject(DomSanitizer).bypassSecurityTrustHtml(
-    renderFlag(ar, { shape: 'circle' }),
+    renderFlag(cl, { shape: 'circle' }),
   );
 }
 ```

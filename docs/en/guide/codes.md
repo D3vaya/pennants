@@ -8,7 +8,7 @@ import { codes, isoCodes, isPennantCode, toPennantCode } from 'pennants';
 
 codes.length; // 271
 isoCodes.length; // 249
-isPennantCode('ar'); // true; exact lowercase match
+isPennantCode('cl'); // true; exact lowercase match
 toPennantCode(' GB-ENG '); // 'gb-eng'; throws RangeError for unknown codes
 ```
 

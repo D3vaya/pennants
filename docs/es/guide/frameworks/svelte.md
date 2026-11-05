@@ -34,7 +34,7 @@ export default defineConfig({
   import 'pennants/css';
   // Seguro en SSR: el registro se omite donde no existe customElements.
   import 'pennants/element/register';
-  import ar from 'pennants/art/1x1/ar';
+  import cl from 'pennants/art/1x1/cl';
   import { renderFlag, type PennantCode, type PennantShape } from 'pennants';
 
   let code = $state<PennantCode>('br');
@@ -42,7 +42,7 @@ export default defineConfig({
 </script>
 
 <!-- En el HTML prerenderizado. Markup de confianza compuesto desde pennants/art/*. -->
-<span class="flag" role="img" aria-label="Argentina">{@html renderFlag(ar, { shape: 'circle' })}</span>
+<span class="flag" role="img" aria-label="Chile">{@html renderFlag(cl, { shape: 'circle' })}</span>
 
 <!-- Clases CSS -->
 <span class="pn pn-de pn-2x" role="img" aria-label="Alemania"></span>

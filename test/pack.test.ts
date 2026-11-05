@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { checkPackBudget, formatMB, parsePackJson, UNPACKED_BUDGET } from '../scripts/lib/pack.ts';
 
-const pack = { size: 3_000_000, unpackedSize: 9_500_000, entryCount: 2000 };
+const pack = { size: 2_000_000, unpackedSize: 7_500_000, entryCount: 2000 };
 
 describe('parsePackJson', () => {
   it('reads sizes from npm pack --json', () => {
@@ -17,16 +17,16 @@ describe('parsePackJson', () => {
 });
 
 describe('checkPackBudget', () => {
-  it('passes within the 10 MB budget', () => {
-    expect(UNPACKED_BUDGET).toBe(10_000_000);
+  it('passes within the 8 MB budget', () => {
+    expect(UNPACKED_BUDGET).toBe(8_000_000);
     expect(checkPackBudget(pack)).toEqual({
       ok: true,
-      message: 'package 3.00 MB, unpacked 9.50 MB (2000 files), budget 10.00 MB',
+      message: 'package 2.00 MB, unpacked 7.50 MB (2000 files), budget 8.00 MB',
     });
   });
 
   it('fails over budget', () => {
-    const result = checkPackBudget(pack, 9_000_000);
+    const result = checkPackBudget(pack, 7_000_000);
     expect(result.ok).toBe(false);
     expect(result.message).toMatch(/OVER BUDGET$/);
   });

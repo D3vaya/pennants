@@ -10,19 +10,19 @@ No build step. Load a stylesheet and the Web Component from jsDelivr, or copy th
 Always pin the version in CDN URLs.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.1/css/pennant.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.2.0/css/pennant.min.css" />
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/dist/element/register.js"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.2.0/dist/element/register.js"
 ></script>
 
 <!-- CSS classes: no JavaScript -->
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
 <span class="pn pn-br pn-2x" role="img" aria-label="Brazil"></span>
 
 <!-- Plain image: svg/<shape>/<code>.svg -->
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/jp.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.2.0/svg/pennant/jp.svg"
   width="33"
   height="36"
   alt="Japan"
@@ -38,13 +38,13 @@ There is one stylesheet per shape, and each has its own base class: `css/pennant
 `css/circle.min.css` (`pn-circle`). Load the ones you need and mix them on one page:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.1.1/css/circle.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pennants@0.2.0/css/circle.min.css" />
 
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
-<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
+<span class="pn-circle pn-cl" role="img" aria-label="Chile"></span>
 ```
 
-Use one base class per element: `pn-circle pn-ar`, not `pn pn-circle pn-ar`. Rules from
+Use one base class per element: `pn-circle pn-cl`, not `pn pn-circle pn-cl`. Rules from
 different stylesheets have the same specificity, so the last stylesheet loaded would win.
 
 ## Self-hosted
@@ -53,7 +53,7 @@ different stylesheets have the same specificity, so the last stylesheet loaded w
 npm install pennants
 ```
 
-Copy `css/`, `svg/`, `sprite/` and `dist/` from `node_modules/pennants` into a public folder
+Copy `css/`, `svg/` and `dist/` from `node_modules/pennants` into a public folder
 (the example's `build.js` copies them into `dist/pennants/`). Keep `css/` and `svg/` side by
 side: the stylesheets load `../svg/<shape>/<code>.svg`.
 
@@ -62,14 +62,10 @@ side: the stylesheets load `../svg/<shape>/<code>.svg`.
 <script type="module" src="./pennants/dist/element/register.js"></script>
 
 <img src="./pennants/svg/pennant/jp.svg" width="33" height="36" alt="Japan" />
-
-<svg width="33" height="36" role="img" aria-label="Mexico">
-  <use href="./pennants/sprite/pennant.svg#pn-mx" />
-</svg>
 ```
 
-The sprite must be served from the same origin as the page: browsers don't load `<use>`
-references from other origins.
+For an SVG sprite (every flag in one file, used with `<use href>`), download it from the
+[release assets](../shapes#release-assets).
 
 ## Weight
 
@@ -77,5 +73,4 @@ references from other origins.
   when an element on the page uses its class.
 - The Web Component is about <Size probe="element" metric="gzip" /> gzip on first load. Each
   flag is a separate chunk of a few KB, fetched on demand.
-- `<img>` and the sprite need no JavaScript. The sprite holds every flag in one file of about
-  1 MB, so use it only when you show many flags.
+- `<img>` needs no JavaScript.

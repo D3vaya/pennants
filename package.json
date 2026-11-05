@@ -1,7 +1,7 @@
 {
   "name": "pennants",
-  "version": "0.1.1",
-  "description": "Lightweight country flags in pennant (banderín) style — SVG, PNG, CSS, sprite, JS, React and Web Component.",
+  "version": "0.2.0",
+  "description": "Lightweight country flags in pennant (banderín) style — SVG, PNG, CSS, JS, React and Web Component.",
   "keywords": [
     "flags",
     "country-flags",
@@ -35,9 +35,8 @@
   "files": [
     "dist",
     "svg",
-    "png",
+    "png/pennant",
     "css",
-    "sprite/pennant.svg",
     "LICENSE",
     "NOTICE",
     "README.md"
@@ -110,8 +109,6 @@
     },
     "./svg/*": "./svg/*",
     "./png/*": "./png/*",
-    "./sprite": "./sprite/pennant.svg",
-    "./sprite/pennant.svg": "./sprite/pennant.svg",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -123,7 +120,7 @@
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "check:package": "publint && attw --pack . --profile esm-only --entrypoints . ./art/1x1/ar ./fetch ./react ./react/static ./element ./element/register && node scripts/pack-budget.ts",
+    "check:package": "publint && attw --pack . --profile esm-only --entrypoints . ./art/1x1/cl ./fetch ./react ./react/static ./element ./element/register && node scripts/pack-budget.ts",
     "size": "size-limit",
     "examples:check": "node scripts/examples-check.ts",
     "bundle:budget": "node scripts/bundle-budget.ts",

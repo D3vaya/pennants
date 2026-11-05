@@ -6,7 +6,7 @@ titleTemplate: Country flags in pennant style
 hero:
   name: pennants
   text: Every flag, every shape, one API
-  tagline: 271 country flags as pennants (the signature style), rectangles, squares and circles. SVG, PNG, CSS, sprite, tree-shakable JS, React and a Web Component; you only ship the flags you show.
+  tagline: 271 country flags as pennants (the signature style), rectangles, squares and circles. SVG, PNG, CSS, tree-shakable JS, React and a Web Component; you only ship the flags you show.
   actions:
     - theme: brand
       text: Get started
@@ -25,7 +25,7 @@ features:
   - title: Four shapes
     details: Pennant by default, plus 4:3 rectangle, square and circle. Same codes, same API; pick the shape with one option.
   - title: Every format
-    details: Static SVG and PNG, CSS classes, an SVG sprite, one ES module per flag, a React component and a framework-free custom element.
+    details: Static SVG and PNG, CSS classes, one ES module per flag, a React component and a framework-free custom element.
   - title: Pay only for what you show
     details: Each flag is its own module and lazy chunk, so you ship only the flags you show. Names come from Intl.DisplayNames, so no name data ships.
   - title: Typed and localized
@@ -49,7 +49,7 @@ import 'pennants/css';
 ```
 
 ```html
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
 ```
 
 ## Pick a format

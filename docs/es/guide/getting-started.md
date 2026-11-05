@@ -28,10 +28,10 @@ fija la versión:
 
 ```html
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/ar.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.2.0/svg/pennant/cl.svg"
   width="33"
   height="36"
-  alt="Argentina"
+  alt="Chile"
 />
 ```
 
@@ -56,9 +56,9 @@ import 'pennants/css/circle'; // opcional, otra forma: clase pn-circle (o pn-rec
 ```
 
 ```html
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
 <span class="pn pn-jp pn-2x" aria-hidden="true"></span>
-<span class="pn-circle pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn-circle pn-cl" role="img" aria-label="Chile"></span>
 ```
 
 Cada clase base (`pn`, `pn-rect`, `pn-square`, `pn-circle`) mide `1em` de alto, así que sigue
@@ -78,13 +78,13 @@ incrustan.
 ### Imágenes
 
 ```html
-<img src="/assets/pennants/svg/pennant/ar.svg" width="33" height="36" alt="Argentina" />
+<img src="/assets/pennants/svg/pennant/cl.svg" width="33" height="36" alt="Chile" />
 <img
-  src="/assets/pennants/png/pennant/1x/ar.png"
-  srcset="/assets/pennants/png/pennant/2x/ar.png 2x"
+  src="/assets/pennants/png/pennant/1x/cl.png"
+  srcset="/assets/pennants/png/pennant/2x/cl.png 2x"
   width="66"
   height="72"
-  alt="Argentina"
+  alt="Chile"
 />
 ```
 
@@ -98,9 +98,9 @@ de cualquier forma.
 
 ```js
 import { renderFlag } from 'pennants';
-import ar from 'pennants/art/1x1/ar';
+import cl from 'pennants/art/1x1/cl';
 
-element.innerHTML = renderFlag(ar); // o renderFlag(ar, { shape: 'circle' })
+element.innerHTML = renderFlag(cl); // o renderFlag(cl, { shape: 'circle' })
 ```
 
 ### Carga diferida
@@ -121,11 +121,11 @@ jsDelivr o desde tu propia copia de la carpeta `svg/`.
 ```js
 import { fetchPennant } from 'pennants/fetch';
 
-const svg = await fetchPennant('ar'); // o fetchPennant('ar', { base: '/assets/pennants' })
+const svg = await fetchPennant('cl'); // o fetchPennant('cl', { base: '/assets/pennants' })
 ```
 
-El mismo modo existe en los componentes: `<Pennant code="ar" mode="fetch" />` y
-`<pennant-flag code="ar" base="https://cdn.jsdelivr.net/npm/pennants@0.1.1">`. Las respuestas
+El mismo modo existe en los componentes: `<Pennant code="cl" mode="fetch" />` y
+`<pennant-flag code="cl" base="https://cdn.jsdelivr.net/npm/pennants@0.2.0">`. Las respuestas
 se guardan en caché por URL y se sanean antes de usarse: se analizan con `DOMParser` y se
 rechazan salvo que sean un único SVG hecho solo de elementos y atributos permitidos, con
 referencias `#id` locales; después se vuelven a serializar. Nunca se permiten scripts,
@@ -140,8 +140,8 @@ fetch funciona solo en el navegador; en el servidor usa `loadFlag` o `renderFlag
 ```jsx
 import { Pennant } from 'pennants/react';
 
-<Pennant code="ar" size={32} locale="es" />;
-<Pennant code="ar" shape="circle" size={32} locale="es" />;
+<Pennant code="cl" size={32} locale="es" />;
+<Pennant code="cl" shape="circle" size={32} locale="es" />;
 ```
 
 ### Web Component
@@ -151,8 +151,8 @@ import 'pennants/element/register';
 ```
 
 ```html
-<pennant-flag code="ar" size="32" label="Argentina"></pennant-flag>
-<pennant-flag code="ar" shape="rect" size="32" label="Argentina"></pennant-flag>
+<pennant-flag code="cl" size="32" label="Chile"></pennant-flag>
+<pennant-flag code="cl" shape="rect" size="32" label="Chile"></pennant-flag>
 ```
 
 ## Siguientes pasos

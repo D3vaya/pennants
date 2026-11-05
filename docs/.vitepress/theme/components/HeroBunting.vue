@@ -4,7 +4,7 @@ import { currentShape, flagAsset } from '../shared';
 
 // Two strings of pennants hanging like bunting.
 const rows = [
-  ['ar', 'br', 'mx', 'es', 'jp', 'za', 'ca'],
+  ['cl', 'br', 'mx', 'es', 'jp', 'za', 'ca'],
   ['fr', 'kr', 'in', 'ng', 'gb-sct', 'se', 'eu'],
 ];
 const tilt = (index: number, total: number) => ((index + 0.5) / total - 0.5) * 12;

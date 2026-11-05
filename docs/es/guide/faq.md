@@ -3,7 +3,7 @@
 ## IDs duplicados al insertar una bandera más de una vez {#ids-duplicados}
 
 Cada SVG define ids para su recorte, su degradado y su dibujo. Los ids llevan la bandera y la
-forma (`pn-ar-clip` para el banderín, `pn-ar-circle-clip` para el círculo), así que banderas
+forma (`pn-cl-clip` para el banderín, `pn-cl-circle-clip` para el círculo), así que banderas
 distintas, o formas distintas de la misma bandera, nunca chocan. Insertar **el mismo** SVG dos
 veces sí genera ids repetidos. Los navegadores suelen dibujarlo igual, hasta que la primera
 copia se oculta con `display: none`: entonces las demás pierden el recorte y el degradado.
@@ -13,7 +13,7 @@ copia se oculta con `display: none`: entonces las demás pierden el recorte y el
   de React nunca comparten ids.
 - `<pennant-flag>` los mantiene dentro de su shadow root.
 - Si insertas el SVG a mano con `innerHTML`, pasa un prefijo único:
-  `renderFlag(ar, { idPrefix: 'hero' })` o `loadFlag('ar', { shape: 'circle', idPrefix: 'fila-3' })`.
+  `renderFlag(cl, { idPrefix: 'hero' })` o `loadFlag('cl', { shape: 'circle', idPrefix: 'fila-3' })`.
   Un `<img>` (por ejemplo con `toDataUri`) también aísla los ids.
 
 ## Content Security Policy {#csp}
@@ -51,7 +51,7 @@ que pases tú.
   carga la bandera después de hidratar. No hay error de hidratación ni salto de layout, pero la
   bandera no está en el HTML.
 - Para que la bandera esté en el HTML del servidor, usa `mode="img"` o
-  `<PennantSvg art={ar} />` con un import estático.
+  `<PennantSvg art={cl} />` con un import estático.
 - `fetchPennant` y el modo fetch funcionan solo en el navegador: necesitan `DOMParser` para
   sanear la respuesta, así que en el servidor `fetchPennant` rechaza la promesa. Allí usa
   `renderFlag` con un dibujo estático, `loadFlag` o `<PennantSvg art>`.
@@ -79,8 +79,8 @@ En entornos más antiguos usa `import()`. En TypeScript, usa `moduleResolution: 
 Importar un archivo de imagen devuelve lo que tu bundler tenga configurado:
 
 ```js
-import url from 'pennants/svg/pennant/ar.svg'; // Vite: la URL
-import markup from 'pennants/svg/pennant/ar.svg?raw'; // Vite: el SVG como texto
+import url from 'pennants/svg/pennant/cl.svg'; // Vite: la URL
+import markup from 'pennants/svg/pennant/cl.svg?raw'; // Vite: el SVG como texto
 ```
 
 - **webpack 5:** agrega una regla con `type: 'asset/resource'` para los `.svg` de

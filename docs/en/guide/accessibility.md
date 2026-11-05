@@ -1,6 +1,6 @@
 # Accessibility
 
-A flag either carries meaning ("Shipping to Argentina") or decorates text that already says the
+A flag either carries meaning ("Shipping to Chile") or decorates text that already says the
 country name. Decide which one it is for each use.
 
 ## Components name flags for you
@@ -31,13 +31,13 @@ as an unnamed image.
 Add the name yourself:
 
 ```html
-<img src="/flags/ar.svg" alt="Argentina" width="33" height="36" />
-<img src="/flags/ar.svg" alt="" width="33" height="36" /> Argentina
+<img src="/flags/cl.svg" alt="Chile" width="33" height="36" />
+<img src="/flags/cl.svg" alt="" width="33" height="36" /> Chile
 
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
-<span class="pn pn-ar" aria-hidden="true"></span> Argentina
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
+<span class="pn pn-cl" aria-hidden="true"></span> Chile
 
-<svg role="img" aria-label="Argentina"><use href="/pennant.svg#pn-ar" /></svg>
+<svg role="img" aria-label="Chile"><use href="/pennant.svg#pn-cl" /></svg>
 ```
 
 ## Localized names

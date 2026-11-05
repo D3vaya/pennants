@@ -24,7 +24,7 @@ export type ArtSet = '1x1' | '4x3';
 
 /** Flag artwork, as exported by the `pennants/art/<set>/<code>` modules. */
 export interface FlagArt {
-  /** Lowercase flag code, e.g. `ar` or `gb-eng`. Its ids use the `pn-<code>-` prefix. */
+  /** Lowercase flag code, e.g. `cl` or `gb-eng`. Its ids use the `pn-<code>-` prefix. */
   code: string;
   /** `viewBox` of the source drawing. */
   viewBox: string;

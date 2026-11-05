@@ -46,7 +46,7 @@ function probe(name: string): Probe {
 const rows: [string, string, string][] = [
   ['CSS classes, `assetsInlineLimit` set ¹', 'css', 'CSS'],
   ['CSS classes, `pennants/css/cdn` ²', 'css-cdn', 'CSS'],
-  ['One flag, static import (`pennants/art/1x1/ar`)', 'art-pennant', 'JS'],
+  ['One flag, static import (`pennants/art/1x1/cl`)', 'art-pennant', 'JS'],
   ['`getPennantName`', 'name', 'JS'],
   ['`fetchPennant` (`pennants/fetch`)', 'fetch', 'JS'],
   ['`loadFlag` / `loadPennant`', 'load', 'JS'],

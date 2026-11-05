@@ -1,6 +1,6 @@
 {
   "vite": "8.3.6",
-  "generated": "2026-11-05T14:35:08.572Z",
+  "generated": "2026-11-05T17:13:14.735Z",
   "probes": {
     "empty": {
       "label": "Empty app (baseline)",
@@ -25,56 +25,56 @@
       "lazyFiles": 0
     },
     "art-pennant": {
-      "label": "`pennants/art/1x1/ar` + `renderFlag` (pennant)",
+      "label": "`pennants/art/1x1/cl` + `renderFlag` (pennant)",
       "baseline": "empty",
       "entry": {
-        "min": 4587,
-        "gzip": 1716,
-        "brotli": 1559
+        "min": 2503,
+        "gzip": 1206,
+        "brotli": 1086
       },
       "css": null,
       "lazyFiles": 0
     },
     "art-rect": {
-      "label": "`pennants/art/4x3/ar` + `renderFlag` (rect)",
+      "label": "`pennants/art/4x3/cl` + `renderFlag` (rect)",
       "baseline": "empty",
       "entry": {
-        "min": 4483,
-        "gzip": 1693,
-        "brotli": 1527
+        "min": 2498,
+        "gzip": 1203,
+        "brotli": 1084
       },
       "css": null,
       "lazyFiles": 0
     },
     "art-square": {
-      "label": "`pennants/art/1x1/ar` + `renderFlag` (square)",
+      "label": "`pennants/art/1x1/cl` + `renderFlag` (square)",
       "baseline": "empty",
       "entry": {
-        "min": 4586,
-        "gzip": 1716,
-        "brotli": 1560
+        "min": 2502,
+        "gzip": 1206,
+        "brotli": 1086
       },
       "css": null,
       "lazyFiles": 0
     },
     "art-circle": {
-      "label": "`pennants/art/1x1/ar` + `renderFlag` (circle)",
+      "label": "`pennants/art/1x1/cl` + `renderFlag` (circle)",
       "baseline": "empty",
       "entry": {
-        "min": 4586,
-        "gzip": 1716,
-        "brotli": 1560
+        "min": 2502,
+        "gzip": 1206,
+        "brotli": 1086
       },
       "css": null,
       "lazyFiles": 0
     },
     "art-all": {
-      "label": "Both `ar` art sets + `renderFlag` (all four shapes)",
+      "label": "Both `cl` art sets + `renderFlag` (all four shapes)",
       "baseline": "empty",
       "entry": {
-        "min": 7041,
-        "gzip": 2031,
-        "brotli": 1798
+        "min": 2972,
+        "gzip": 1336,
+        "brotli": 1201
       },
       "css": null,
       "lazyFiles": 0
@@ -85,7 +85,7 @@
       "entry": {
         "min": 1783,
         "gzip": 1048,
-        "brotli": 785
+        "brotli": 787
       },
       "css": null,
       "lazyFiles": 0
@@ -95,8 +95,8 @@
       "baseline": "empty",
       "entry": {
         "min": 1656,
-        "gzip": 900,
-        "brotli": 661
+        "gzip": 899,
+        "brotli": 680
       },
       "css": null,
       "lazyFiles": 0
@@ -107,7 +107,7 @@
       "entry": {
         "min": 5173,
         "gzip": 2511,
-        "brotli": 2104
+        "brotli": 2094
       },
       "css": null,
       "lazyFiles": 544
@@ -118,7 +118,7 @@
       "entry": {
         "min": 5211,
         "gzip": 2529,
-        "brotli": 2106
+        "brotli": 2123
       },
       "css": null,
       "lazyFiles": 544
@@ -128,8 +128,8 @@
       "baseline": "empty",
       "entry": {
         "min": 4101,
-        "gzip": 2097,
-        "brotli": 1696
+        "gzip": 2099,
+        "brotli": 1710
       },
       "css": null,
       "lazyFiles": 0
@@ -139,8 +139,8 @@
       "baseline": "empty",
       "entry": {
         "min": 11975,
-        "gzip": 5189,
-        "brotli": 4469
+        "gzip": 5186,
+        "brotli": 4470
       },
       "css": null,
       "lazyFiles": 545
@@ -150,8 +150,8 @@
       "baseline": "react",
       "entry": {
         "min": 10103,
-        "gzip": 4718,
-        "brotli": 3856
+        "gzip": 4719,
+        "brotli": 3822
       },
       "css": null,
       "lazyFiles": 545
@@ -161,8 +161,8 @@
       "baseline": "react",
       "entry": {
         "min": 10118,
-        "gzip": 4723,
-        "brotli": 3793
+        "gzip": 4724,
+        "brotli": 3901
       },
       "css": null,
       "lazyFiles": 545
@@ -171,9 +171,9 @@
       "label": "React `<PennantSvg>` + one art module",
       "baseline": "react",
       "entry": {
-        "min": 8086,
-        "gzip": 3661,
-        "brotli": 2898
+        "min": 6002,
+        "gzip": 3120,
+        "brotli": 2381
       },
       "css": null,
       "lazyFiles": 0
@@ -182,9 +182,9 @@
       "label": "React `<PennantSvg shape=\"circle\">` + one art module",
       "baseline": "react",
       "entry": {
-        "min": 8101,
-        "gzip": 3672,
-        "brotli": 2788
+        "min": 6017,
+        "gzip": 3125,
+        "brotli": 2447
       },
       "css": null,
       "lazyFiles": 0
@@ -195,7 +195,7 @@
       "entry": {
         "min": 27,
         "gzip": 22,
-        "brotli": 10
+        "brotli": 9
       },
       "css": {
         "min": 15731,
@@ -210,7 +210,7 @@
       "entry": {
         "min": 27,
         "gzip": 22,
-        "brotli": 10
+        "brotli": 9
       },
       "css": {
         "min": 26300,
@@ -225,7 +225,7 @@
       "entry": {
         "min": 27,
         "gzip": 22,
-        "brotli": 10
+        "brotli": 9
       },
       "css": {
         "min": 16984,
@@ -240,12 +240,12 @@
       "entry": {
         "min": 27,
         "gzip": 22,
-        "brotli": 10
+        "brotli": 9
       },
       "css": {
         "min": 26740,
         "gzip": 1929,
-        "brotli": 1101
+        "brotli": 1102
       },
       "lazyFiles": 0
     },
@@ -255,7 +255,7 @@
       "entry": {
         "min": 27,
         "gzip": 22,
-        "brotli": 10
+        "brotli": 9
       },
       "css": {
         "min": 17522,
@@ -270,12 +270,12 @@
       "entry": {
         "min": 27,
         "gzip": 22,
-        "brotli": 10
+        "brotli": 9
       },
       "css": {
         "min": 27820,
         "gzip": 1935,
-        "brotli": 1118
+        "brotli": 1116
       },
       "lazyFiles": 0
     },
@@ -285,7 +285,7 @@
       "entry": {
         "min": 27,
         "gzip": 22,
-        "brotli": 10
+        "brotli": 9
       },
       "css": {
         "min": 17522,
@@ -300,12 +300,12 @@
       "entry": {
         "min": 27,
         "gzip": 22,
-        "brotli": 10
+        "brotli": 9
       },
       "css": {
         "min": 27820,
         "gzip": 1934,
-        "brotli": 1120
+        "brotli": 1131
       },
       "lazyFiles": 0
     },
@@ -315,7 +315,7 @@
       "entry": {
         "min": 64,
         "gzip": 31,
-        "brotli": 16
+        "brotli": 17
       },
       "css": {
         "min": 33075,
@@ -330,7 +330,7 @@
       "entry": {
         "min": 27,
         "gzip": 22,
-        "brotli": 10
+        "brotli": 9
       },
       "css": {
         "min": 376189,

@@ -16,8 +16,8 @@ import {
 } from '../shared';
 
 const { lang, t } = useLang();
-const flags = ['ar', 'jp', 'br', 'es', 'gb-eng', 'za'];
-const code = ref('ar');
+const flags = ['cl', 'jp', 'br', 'es', 'gb-eng', 'za'];
+const code = ref('cl');
 const format = ref<FormatId>('css');
 const markup = ref('');
 

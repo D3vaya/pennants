@@ -21,7 +21,7 @@ export function svgCode(svg: string): string | undefined {
 /**
  * Id prefix for one inlined instance: `pn<scope>-<namespace>-`, where the
  * namespace is the flag code plus, for non-pennant shapes, the shape
- * (`ar`, `ar-circle`). The scope (e.g. React's `useId()` output such as
+ * (`cl`, `cl-circle`). The scope (e.g. React's `useId()` output such as
  * `:r1:`, `«r1»` or `_R_1_`) is reduced to `[A-Za-z0-9_]`, so the first `-`
  * always separates scope from namespace and two different pairs never yield
  * the same prefix. Keeping code and shape matters because separate React

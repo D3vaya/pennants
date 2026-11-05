@@ -42,16 +42,15 @@ imagen apuntan a jsDelivr, así que Vite no tiene nada que incrustar ni emitir.
 import 'pennants/css';
 // Arte de las banderas: solo se empaquetan las que importas. El arte 1x1 dibuja
 // pennant, square y circle; el 4x3 dibuja rect.
-import ar from 'pennants/art/1x1/ar';
-import ar4x3 from 'pennants/art/4x3/ar';
+import cl from 'pennants/art/1x1/cl';
+import cl4x3 from 'pennants/art/4x3/cl';
 import { getPennantName, loadFlag, renderFlag, toPennantCode } from 'pennants';
 // Archivos estáticos como URLs con hash.
 import deUrl from 'pennants/svg/pennant/de.svg?url';
-import spriteUrl from 'pennants/sprite?url';
 
 // El mismo arte, cualquier forma (síncrono, también sirve en SSR).
-document.querySelector('#circle')!.innerHTML = renderFlag(ar, { shape: 'circle' });
-document.querySelector('#rect')!.innerHTML = renderFlag(ar4x3, { shape: 'rect' });
+document.querySelector('#circle')!.innerHTML = renderFlag(cl, { shape: 'circle' });
+document.querySelector('#rect')!.innerHTML = renderFlag(cl4x3, { shape: 'rect' });
 
 // Códigos en tiempo de ejecución: carga solo el chunk de esta bandera.
 const code = toPennantCode('BR'); // 'br'; lanza RangeError si el código no existe
@@ -61,23 +60,20 @@ lazy.setAttribute('role', 'img');
 lazy.setAttribute('aria-label', getPennantName(code, 'es'));
 
 document.querySelector<HTMLImageElement>('#img')!.src = deUrl;
-document.querySelector('#sprite')!.setAttribute('href', `${spriteUrl}#pn-mx`);
 ```
 
 Cada forma tiene su propia hoja y su clase base, así que se pueden combinar en una página.
 Añade `import 'pennants/css/circle'` y luego:
 
 ```html
-<span class="pn pn-ar pn-2x" role="img" aria-label="Argentina"></span>
-<span class="pn-circle pn-ar pn-2x" role="img" aria-label="Argentina"></span>
-<svg width="33" height="36" role="img" aria-label="México"><use id="sprite" /></svg>
+<span class="pn pn-cl pn-2x" role="img" aria-label="Chile"></span>
+<span class="pn-circle pn-cl pn-2x" role="img" aria-label="Chile"></span>
 ```
 
 Con `innerHTML`, inserta solo markup de `renderFlag`, `loadFlag` o `fetchPennant`. Nunca
 contenido que venga del usuario.
 
-`pennants/sprite` solo contiene banderines. Para los imports con `?url`, añade
-`"types": ["vite/client"]` a tu tsconfig.
+Para el import con `?url`, añade `"types": ["vite/client"]` a tu tsconfig.
 
 ## Impacto en el bundle
 

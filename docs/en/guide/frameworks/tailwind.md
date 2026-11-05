@@ -15,8 +15,8 @@ Import the stylesheet of each shape you use into Tailwind's `components` layer:
 
 ```css [src/style.css]
 @import 'tailwindcss';
-@import 'pennants/css' layer(components); /* class="pn pn-ar" */
-@import 'pennants/css/circle' layer(components); /* class="pn-circle pn-ar" */
+@import 'pennants/css' layer(components); /* class="pn pn-cl" */
+@import 'pennants/css/circle' layer(components); /* class="pn-circle pn-cl" */
 ```
 
 The layer matters. Without it, `.pn` is unlayered CSS, and unlayered CSS beats every Tailwind
@@ -33,7 +33,7 @@ follows the shape (`11/12em` for the pennant, `4/3em` for rect, `1em` for square
 Size it with font-size utilities:
 
 ```html
-<span class="pn pn-ar text-[32px]" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl text-[32px]" role="img" aria-label="Chile"></span>
 <span class="pn pn-br text-5xl" role="img" aria-label="Brazil"></span>
 <!-- Follows the surrounding text -->
 <span class="pn-circle pn-de text-5xl" role="img" aria-label="Germany"></span>

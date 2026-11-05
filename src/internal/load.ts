@@ -34,7 +34,7 @@ export async function loadArt(code: string, options: LoadArtOptions = {}): Promi
 /**
  * Wraps artwork in a shape's frame and returns a standalone SVG string.
  * Synchronous: use it with statically imported art for SSR, e.g.
- * `renderFlag(ar, { shape: 'circle' })` with `import ar from 'pennants/art/1x1/ar'`
+ * `renderFlag(cl, { shape: 'circle' })` with `import cl from 'pennants/art/1x1/cl'`
  * (`rect` expects `pennants/art/4x3/<code>`).
  */
 export function renderFlag(art: FlagArt, options: FlagOptions = {}): string {

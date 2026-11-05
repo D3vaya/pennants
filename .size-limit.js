@@ -33,10 +33,10 @@ export default [
     modifyRolldownConfig: excludeFlagChunks,
   },
   {
-    name: 'one flag art (1x1/ar)',
-    path: 'dist/art/1x1/ar.js',
+    name: 'one flag art (1x1/cl)',
+    path: 'dist/art/1x1/cl.js',
     rolldown: false,
-    limit: '1.5 kB',
+    limit: '500 B',
   },
   {
     name: 'css',

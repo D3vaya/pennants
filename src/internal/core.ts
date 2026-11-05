@@ -38,8 +38,8 @@ declare const __PENNANTS_VERSION__: string;
 export const DEFAULT_CDN_BASE = `https://cdn.jsdelivr.net/npm/pennants@${__PENNANTS_VERSION__}`;
 
 /**
- * Exact type guard for supported flag codes (lowercase, e.g. `ar`, `gb-eng`).
- * Use `toPennantCode` to normalise user input such as `' AR '`.
+ * Exact type guard for supported flag codes (lowercase, e.g. `cl`, `gb-eng`).
+ * Use `toPennantCode` to normalise user input such as `' CL '`.
  */
 export function isPennantCode(value: unknown): value is PennantCode {
   return typeof value === 'string' && codeSet.has(value);
@@ -97,8 +97,8 @@ export interface PennantUrlOptions {
    */
   format?: 'svg' | 'png';
   /**
-   * PNG density folder, only used when `format` is `png`. `2` exists for the
-   * `pennant` shape only; other shapes ship 1x PNGs (use SVG for crisp output).
+   * PNG density folder, only used when `format` is `png`. PNGs ship for the
+   * `pennant` shape only, at 1x and 2x; use SVG for the other shapes.
    */
   scale?: 1 | 2;
 }
@@ -112,8 +112,8 @@ export function toShape(value: unknown): PennantShape {
 /**
  * Builds the URL of a static flag asset. Defaults to the jsDelivr CDN,
  * pinned to this package version, so it works without bundler configuration.
- * Throws a `RangeError` for unknown codes, shapes or formats, and for PNG densities
- * that are not shipped (2x exists for `pennant` only).
+ * Throws a `RangeError` for unknown codes, shapes or formats, and for PNGs that
+ * are not shipped (PNGs exist for the `pennant` shape only, at 1x and 2x).
  */
 export function pennantUrl(code: string, options: PennantUrlOptions = {}): string {
   const { base = DEFAULT_CDN_BASE, format = 'svg', scale = 1, shape = 'pennant' } = options;
@@ -123,7 +123,7 @@ export function pennantUrl(code: string, options: PennantUrlOptions = {}): strin
   if (format !== 'svg' && format !== 'png') {
     throw new RangeError(`Unknown pennant format "${String(format)}"`);
   }
-  if (format === 'png' && scale !== 1 && (scale !== 2 || folder !== 'pennant')) {
+  if (format === 'png' && (folder !== 'pennant' || (scale !== 1 && scale !== 2))) {
     throw new RangeError(`No ${String(scale)}x PNGs for the "${folder}" shape`);
   }
   return format === 'png'

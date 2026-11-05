@@ -58,7 +58,7 @@ const cssProbe = (shape: string, cdn: boolean): Probe => {
     label: `CSS \`${path}\`${cdn ? '' : ', `assetsInlineLimit` set'}`,
     baseline: 'empty',
     ...(cdn ? {} : { config: NO_INLINE }),
-    main: `import '${path}';\ndocument.body.innerHTML = '<span class="pn pn-ar"></span>';`,
+    main: `import '${path}';\ndocument.body.innerHTML = '<span class="pn pn-cl"></span>';`,
   };
 };
 
@@ -67,38 +67,38 @@ const PROBES: Probe[] = [
   { name: 'react', label: 'Empty React app (baseline)', main: react(`jsx('b', {})`, '') },
   ...SHAPES.map((shape): Probe => ({
     name: `art-${shape}`,
-    label: `\`pennants/art/${artFor(shape)}/ar\` + \`renderFlag\` (${shape})`,
+    label: `\`pennants/art/${artFor(shape)}/cl\` + \`renderFlag\` (${shape})`,
     baseline: 'empty',
     main:
-      `import ar from 'pennants/art/${artFor(shape)}/ar';\nimport { renderFlag } from 'pennants';\n` +
-      `document.body.innerHTML = renderFlag(ar, { shape: '${shape}' });`,
+      `import cl from 'pennants/art/${artFor(shape)}/cl';\nimport { renderFlag } from 'pennants';\n` +
+      `document.body.innerHTML = renderFlag(cl, { shape: '${shape}' });`,
   })),
   {
     name: 'art-all',
-    label: 'Both `ar` art sets + `renderFlag` (all four shapes)',
+    label: 'Both `cl` art sets + `renderFlag` (all four shapes)',
     baseline: 'empty',
     main:
-      `import ar from 'pennants/art/1x1/ar';\nimport ar4x3 from 'pennants/art/4x3/ar';\n` +
+      `import cl from 'pennants/art/1x1/cl';\nimport cl4x3 from 'pennants/art/4x3/cl';\n` +
       `import { renderFlag } from 'pennants';\n` +
-      `document.body.innerHTML = ['pennant', 'square', 'circle'].map((shape) => renderFlag(ar, { shape })).join('') + renderFlag(ar4x3, { shape: 'rect' });`,
+      `document.body.innerHTML = ['pennant', 'square', 'circle'].map((shape) => renderFlag(cl, { shape })).join('') + renderFlag(cl4x3, { shape: 'rect' });`,
   },
   {
     name: 'name',
     label: '`getPennantName`',
     baseline: 'empty',
-    main: `import { getPennantName } from 'pennants';\ndocument.body.append(getPennantName('ar', 'es'));`,
+    main: `import { getPennantName } from 'pennants';\ndocument.body.append(getPennantName('cl', 'es'));`,
   },
   {
     name: 'url',
     label: '`pennantUrl`',
     baseline: 'empty',
-    main: `import { pennantUrl } from 'pennants';\ndocument.body.append(pennantUrl('ar', { shape: 'circle' }));`,
+    main: `import { pennantUrl } from 'pennants';\ndocument.body.append(pennantUrl('cl', { shape: 'circle' }));`,
   },
   {
     name: 'load',
     label: '`loadPennant`',
     baseline: 'empty',
-    main: `import { loadPennant } from 'pennants';\nloadPennant('ar').then((svg) => (document.body.innerHTML = svg));`,
+    main: `import { loadPennant } from 'pennants';\nloadPennant('cl').then((svg) => (document.body.innerHTML = svg));`,
   },
   {
     name: 'load-shapes',
@@ -106,33 +106,33 @@ const PROBES: Probe[] = [
     baseline: 'empty',
     main:
       `import { loadFlag } from 'pennants';\n` +
-      `Promise.all([loadFlag('ar', { shape: 'circle' }), loadFlag('ar', { shape: 'rect' })])` +
+      `Promise.all([loadFlag('cl', { shape: 'circle' }), loadFlag('cl', { shape: 'rect' })])` +
       `.then((svgs) => (document.body.innerHTML = svgs.join('')));`,
   },
   {
     name: 'fetch',
     label: '`fetchPennant` (`pennants/fetch`)',
     baseline: 'empty',
-    main: `import { fetchPennant } from 'pennants/fetch';\nfetchPennant('ar', { shape: 'circle' }).then((svg) => (document.body.innerHTML = svg));`,
+    main: `import { fetchPennant } from 'pennants/fetch';\nfetchPennant('cl', { shape: 'circle' }).then((svg) => (document.body.innerHTML = svg));`,
   },
   {
     name: 'element',
     label: '`pennants/element/register`',
     baseline: 'empty',
-    main: `import 'pennants/element/register';\ndocument.body.innerHTML = '<pennant-flag code="ar" shape="circle"></pennant-flag>';`,
+    main: `import 'pennants/element/register';\ndocument.body.innerHTML = '<pennant-flag code="cl" shape="circle"></pennant-flag>';`,
   },
   {
     name: 'react-pennant',
     label: 'React `<Pennant>`',
     baseline: 'react',
-    main: react(`jsx(Pennant, { code: 'ar' })`, `import { Pennant } from 'pennants/react';`),
+    main: react(`jsx(Pennant, { code: 'cl' })`, `import { Pennant } from 'pennants/react';`),
   },
   {
     name: 'react-pennant-circle',
     label: 'React `<Pennant shape="circle">`',
     baseline: 'react',
     main: react(
-      `jsx(Pennant, { code: 'ar', shape: 'circle' })`,
+      `jsx(Pennant, { code: 'cl', shape: 'circle' })`,
       `import { Pennant } from 'pennants/react';`,
     ),
   },
@@ -141,8 +141,8 @@ const PROBES: Probe[] = [
     label: 'React `<PennantSvg>` + one art module',
     baseline: 'react',
     main: react(
-      `jsx(PennantSvg, { art: ar })`,
-      `import { PennantSvg } from 'pennants/react';\nimport ar from 'pennants/art/1x1/ar';`,
+      `jsx(PennantSvg, { art: cl })`,
+      `import { PennantSvg } from 'pennants/react';\nimport cl from 'pennants/art/1x1/cl';`,
     ),
   },
   {
@@ -150,8 +150,8 @@ const PROBES: Probe[] = [
     label: 'React `<PennantSvg shape="circle">` + one art module',
     baseline: 'react',
     main: react(
-      `jsx(PennantSvg, { art: ar, shape: 'circle' })`,
-      `import { PennantSvg } from 'pennants/react';\nimport ar from 'pennants/art/1x1/ar';`,
+      `jsx(PennantSvg, { art: cl, shape: 'circle' })`,
+      `import { PennantSvg } from 'pennants/react';\nimport cl from 'pennants/art/1x1/cl';`,
     ),
   },
   ...SHAPES.flatMap((shape) => [cssProbe(shape, false), cssProbe(shape, true)]),
@@ -162,13 +162,13 @@ const PROBES: Probe[] = [
     config: NO_INLINE,
     main:
       `import 'pennants/css';\nimport 'pennants/css/circle';\n` +
-      `document.body.innerHTML = '<span class="pn pn-ar"></span><span class="pn-circle pn-ar"></span>';`,
+      `document.body.innerHTML = '<span class="pn pn-cl"></span><span class="pn-circle pn-cl"></span>';`,
   },
   {
     name: 'css-default',
     label: 'CSS `pennants/css`, Vite defaults (inlined flags)',
     baseline: 'empty',
-    main: `import 'pennants/css';\ndocument.body.innerHTML = '<span class="pn pn-ar"></span>';`,
+    main: `import 'pennants/css';\ndocument.body.innerHTML = '<span class="pn pn-cl"></span>';`,
   },
 ];
 

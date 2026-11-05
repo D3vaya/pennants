@@ -168,9 +168,7 @@ describe('pennantUrl', () => {
 
   it('selects the shape folder', () => {
     expect(pennantUrl('ar', { shape: 'circle', base: '' })).toBe('/svg/circle/ar.svg');
-    expect(pennantUrl('gb-eng', { shape: 'rect', format: 'png', base: '/a' })).toBe(
-      '/a/png/rect/1x/gb-eng.png',
-    );
+    expect(pennantUrl('gb-eng', { shape: 'rect', base: '/a' })).toBe('/a/svg/rect/gb-eng.svg');
   });
 
   it('only builds URLs of files that ship in the package', () => {
@@ -178,13 +176,17 @@ describe('pennantUrl', () => {
     const { files } = JSON.parse(readFileSync(new URL('package.json', root), 'utf8')) as {
       files: string[];
     };
-    expect(files).toEqual(expect.arrayContaining(['svg', 'png']));
+    expect(files).toEqual(expect.arrayContaining(['svg', 'png/pennant']));
     const missing: string[] = [];
     for (const shape of SHAPES) {
       const variants = [
         { format: 'svg' as const },
-        { format: 'png' as const, scale: 1 as const },
-        ...(shape === 'pennant' ? [{ format: 'png' as const, scale: 2 as const }] : []),
+        ...(shape === 'pennant'
+          ? [
+              { format: 'png' as const, scale: 1 as const },
+              { format: 'png' as const, scale: 2 as const },
+            ]
+          : []),
       ];
       for (const code of codes) {
         for (const variant of variants) {
@@ -196,8 +198,11 @@ describe('pennantUrl', () => {
     expect(missing).toEqual([]);
   });
 
-  it('rejects PNG densities that are not shipped', () => {
-    expect(() => pennantUrl('ar', { shape: 'rect', format: 'png', scale: 2 })).toThrow(RangeError);
+  it('rejects PNGs that are not shipped', () => {
+    for (const shape of SHAPES.filter((s) => s !== 'pennant')) {
+      expect(() => pennantUrl('ar', { shape, format: 'png' })).toThrow(RangeError);
+      expect(() => pennantUrl('ar', { shape, format: 'png', scale: 2 })).toThrow(RangeError);
+    }
     expect(() => pennantUrl('ar', { format: 'png', scale: 3 as 2 })).toThrow(RangeError);
     expect(pennantUrl('ar', { shape: 'rect', scale: 2 })).toMatch(/svg\/rect\/ar\.svg$/); // svg ignores scale
   });

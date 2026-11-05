@@ -1,13 +1,13 @@
 # pennants
 
 [![npm](https://img.shields.io/npm/v/pennants)](https://www.npmjs.com/package/pennants)
-[![one flag](https://img.shields.io/badge/one_flag-1.7_kB_gzip-blue)](https://d3vaya.github.io/pennants/guide/performance)
+[![one flag](https://img.shields.io/badge/one_flag-1.2_kB_gzip-blue)](https://d3vaya.github.io/pennants/guide/performance)
 [![CI](https://github.com/D3vaya/pennants/actions/workflows/ci.yml/badge.svg)](https://github.com/D3vaya/pennants/actions/workflows/ci.yml)
 [![license](https://img.shields.io/github/license/D3vaya/pennants)](https://github.com/D3vaya/pennants/blob/main/LICENSE)
 
 Every flag, every shape, one API. 271 country flags (249 ISO 3166-1 countries plus regions and
 organizations) as pennants, the signature style, and as 4:3 rectangles, squares and circles.
-SVG, PNG, CSS classes, an SVG sprite, tree-shakable ES modules, a React component and a Web
+SVG, PNG, CSS classes, tree-shakable ES modules, a React component and a Web
 Component. Typed and lazy: you only ship the flags you show.
 
 ![A string of pennant flags above rectangle, square and circle flags](https://raw.githubusercontent.com/D3vaya/pennants/main/docs/public/preview.png)
@@ -17,6 +17,7 @@ Component. Typed and lazy: you only ship the flags you show.
 [Which format?](https://d3vaya.github.io/pennants/guide/formats) ·
 [Shapes](https://d3vaya.github.io/pennants/guide/shapes) ·
 [API](https://d3vaya.github.io/pennants/api/) ·
+[Changelog](https://d3vaya.github.io/pennants/guide/changelog) ·
 [Español](https://d3vaya.github.io/pennants/es/)
 
 ```sh
@@ -32,17 +33,17 @@ import 'pennants/css';
 ```
 
 ```html
-<span class="pn pn-ar" role="img" aria-label="Argentina"></span>
+<span class="pn pn-cl" role="img" aria-label="Chile"></span>
 ```
 
 **Image or CDN**: zero bundle cost.
 
 ```html
 <img
-  src="https://cdn.jsdelivr.net/npm/pennants@0.1.1/svg/pennant/ar.svg"
+  src="https://cdn.jsdelivr.net/npm/pennants@0.2.0/svg/pennant/cl.svg"
   width="33"
   height="36"
-  alt="Argentina"
+  alt="Chile"
 />
 ```
 
@@ -50,9 +51,9 @@ import 'pennants/css';
 
 ```js
 import { renderFlag } from 'pennants';
-import ar from 'pennants/art/1x1/ar';
+import cl from 'pennants/art/1x1/cl';
 
-renderFlag(ar, { shape: 'circle' }); // SVG markup
+renderFlag(cl, { shape: 'circle' }); // SVG markup
 ```
 
 **Lazy, by code**: each flag is its own chunk.
@@ -60,7 +61,7 @@ renderFlag(ar, { shape: 'circle' }); // SVG markup
 ```js
 import { loadFlag, getPennantName } from 'pennants';
 
-const svg = await loadFlag('ar'); // or loadFlag('ar', { shape: 'rect' })
+const svg = await loadFlag('cl'); // or loadFlag('cl', { shape: 'rect' })
 getPennantName('de', 'es'); // 'Alemania'
 ```
 
@@ -69,7 +70,7 @@ getPennantName('de', 'es'); // 'Alemania'
 ```jsx
 import { Pennant } from 'pennants/react';
 
-<Pennant code="ar" size={32} />;
+<Pennant code="cl" size={32} />;
 ```
 
 **Web Component**: no framework.
@@ -78,15 +79,16 @@ import { Pennant } from 'pennants/react';
 <script type="module">
   import 'pennants/element/register';
 </script>
-<pennant-flag code="ar" size="32"></pennant-flag>
+<pennant-flag code="cl" size="32"></pennant-flag>
 ```
 
 **Shapes**: `pennant` (default), `rect` (4:3), `square`, `circle`. Pass `shape` to any API. For
-CSS, import `pennants/css/circle` (or `rect`, `square`) and use `pn-circle pn-ar`; stylesheets
+CSS, import `pennants/css/circle` (or `rect`, `square`) and use `pn-circle pn-cl`; stylesheets
 combine on one page.
 
-Also: `pennants/svg/<shape>/<code>.svg`, `pennants/png/<shape>/1x/<code>.png` (plus `2x` for
-the pennant) and `pennants/sprite` (pennant, `<use href="pennant.svg#pn-ar">`).
+Also: `pennants/svg/<shape>/<code>.svg` and `pennants/png/pennant/{1x,2x}/<code>.png`. PNGs of
+the other shapes and SVG sprites are in `pennants-assets-vX.Y.Z.zip` on each
+[GitHub release](https://github.com/D3vaya/pennants/releases).
 
 ## Weight
 
@@ -100,7 +102,7 @@ Generated from `npm run bundle:budget`; see the docs for min and brotli.
 | `<img>` / CDN, PNG                              | 0              | 0            |
 | CSS classes, `assetsInlineLimit` set ¹          | 3.8 kB CSS     | 0            |
 | CSS classes, `pennants/css/cdn` ²               | 2.0 kB CSS     | 0            |
-| One flag, static import (`pennants/art/1x1/ar`) | 1.7 kB JS      | 0            |
+| One flag, static import (`pennants/art/1x1/cl`) | 1.2 kB JS      | 0            |
 | `getPennantName`                                | 1.0 kB JS      | 0            |
 | `fetchPennant` (`pennants/fetch`)               | 2.1 kB JS      | 0            |
 | `loadFlag` / `loadPennant`                      | 2.5 kB JS      | 544          |
@@ -121,14 +123,14 @@ and the [comparison with flag-icons and country-flag-icons](https://d3vaya.githu
 ## Compared with flag-icons
 
 The artwork is [flag-icons](https://github.com/lipis/flag-icons)' and the codes are the same:
-`fi fi-ar` becomes `pn pn-ar`, or `pn-rect pn-ar` with `pennants/css/rect` to keep 4:3
+`fi fi-cl` becomes `pn pn-cl`, or `pn-rect pn-cl` with `pennants/css/rect` to keep 4:3
 rectangles.
 
 |                                 | flag-icons            | pennants                               |
 | ------------------------------- | --------------------- | -------------------------------------- |
 | Shapes                          | Rectangle 4:3 and 1:1 | Pennant, rectangle 4:3, square, circle |
 | SVG files and CSS classes       | Yes                   | Yes                                    |
-| PNG and SVG sprite              | No                    | Yes                                    |
+| PNG and SVG sprite              | No                    | Yes (sprites as release assets)        |
 | JS module per flag, lazy loader | No                    | Yes                                    |
 | TypeScript types                | No                    | `PennantCode` union, typed API         |
 | Localized names                 | No                    | `getPennantName` (`Intl.DisplayNames`) |
@@ -157,9 +159,9 @@ See [CONTRIBUTING.md](https://github.com/D3vaya/pennants/blob/main/CONTRIBUTING.
 ## En español
 
 Banderas de países como banderines, rectángulos 4:3, cuadrados y círculos, en todos los
-formatos: SVG, PNG, CSS, sprite, módulos JS, React y Web Component. Documentación completa en español:
+formatos: SVG, PNG, CSS, módulos JS, React y Web Component. Documentación completa en español:
 **[d3vaya.github.io/pennants/es/](https://d3vaya.github.io/pennants/es/)**.
 
 ```js
-import 'pennants/css'; // <span class="pn pn-ar"></span>
+import 'pennants/css'; // <span class="pn pn-cl"></span>
 ```

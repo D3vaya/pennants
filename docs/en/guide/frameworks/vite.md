@@ -41,16 +41,15 @@ URLs point to jsDelivr, so Vite has nothing to inline or emit.
 import 'pennants/css';
 // Flag artwork: only the flags you import are bundled. 1x1 art draws
 // pennant, square and circle; 4x3 art draws rect.
-import ar from 'pennants/art/1x1/ar';
-import ar4x3 from 'pennants/art/4x3/ar';
+import cl from 'pennants/art/1x1/cl';
+import cl4x3 from 'pennants/art/4x3/cl';
 import { getPennantName, loadFlag, renderFlag, toPennantCode } from 'pennants';
 // Static files as hashed URLs.
 import deUrl from 'pennants/svg/pennant/de.svg?url';
-import spriteUrl from 'pennants/sprite?url';
 
 // Same art, any shape (synchronous, works during SSR too).
-document.querySelector('#circle')!.innerHTML = renderFlag(ar, { shape: 'circle' });
-document.querySelector('#rect')!.innerHTML = renderFlag(ar4x3, { shape: 'rect' });
+document.querySelector('#circle')!.innerHTML = renderFlag(cl, { shape: 'circle' });
+document.querySelector('#rect')!.innerHTML = renderFlag(cl4x3, { shape: 'rect' });
 
 // Runtime codes: loads only this flag's chunk.
 const code = toPennantCode('BR'); // 'br'; throws RangeError on unknown codes
@@ -60,23 +59,20 @@ lazy.setAttribute('role', 'img');
 lazy.setAttribute('aria-label', getPennantName(code));
 
 document.querySelector<HTMLImageElement>('#img')!.src = deUrl;
-document.querySelector('#sprite')!.setAttribute('href', `${spriteUrl}#pn-mx`);
 ```
 
 Each shape has its own stylesheet and base class, so they mix on one page. Add
 `import 'pennants/css/circle'`, then:
 
 ```html
-<span class="pn pn-ar pn-2x" role="img" aria-label="Argentina"></span>
-<span class="pn-circle pn-ar pn-2x" role="img" aria-label="Argentina"></span>
-<svg width="33" height="36" role="img" aria-label="Mexico"><use id="sprite" /></svg>
+<span class="pn pn-cl pn-2x" role="img" aria-label="Chile"></span>
+<span class="pn-circle pn-cl pn-2x" role="img" aria-label="Chile"></span>
 ```
 
 Only insert markup from `renderFlag`, `loadFlag` or `fetchPennant` with `innerHTML`. Never
 insert user input this way.
 
-`pennants/sprite` contains pennants only. For the `?url` imports, add
-`"types": ["vite/client"]` to your tsconfig.
+For the `?url` import, add `"types": ["vite/client"]` to your tsconfig.
 
 ## Bundle impact
 

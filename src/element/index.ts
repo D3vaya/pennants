@@ -84,7 +84,7 @@ export interface DefinePennantElementOptions {
 }
 
 /**
- * `<pennant-flag code="ar" size="32" label="Argentina">` — lazily loads the
+ * `<pennant-flag code="cl" size="32" label="Chile">` — lazily loads the
  * flag into its shadow root. Fires `pennant-load` / `pennant-error`. With a
  * `base` attribute (or `definePennantElement(tag, { base })`) the flag is
  * fetched from `<base>/svg/<shape>/<code>.svg` instead of the bundled chunks.

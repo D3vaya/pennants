@@ -24,7 +24,7 @@
   --vp-button-brand-active-text: #1b1b1f;
 }
 
-/* Inline pennants used in prose, e.g. <span class="pn pn-ar"></span>. */
+/* Inline pennants used in prose, e.g. <span class="pn pn-cl"></span>. */
 .vp-doc .pn {
   vertical-align: -0.15em;
 }

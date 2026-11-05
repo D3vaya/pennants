@@ -11,11 +11,11 @@ formas `rect` y `square`, o pasarte al banderín.
 | flag-icons                                   | pennants                                                             |
 | -------------------------------------------- | -------------------------------------------------------------------- |
 | `import 'flag-icons/css/flag-icons.min.css'` | `import 'pennants/css/rect'`                                         |
-| `fi fi-ar` (4:3)                             | `pn-rect pn-ar` con `pennants/css/rect`                              |
-| `fi fi-ar fis` (1:1)                         | `pn-square pn-ar` con `pennants/css/square`                          |
-| `fib fi-ar` (solo fondo)                     | `pn-rect pn-ar` (todas las bases aplican `background-size: contain`) |
-| `flag-icons/flags/4x3/ar.svg`                | `pennants/svg/rect/ar.svg`                                           |
-| `flag-icons/flags/1x1/ar.svg`                | `pennants/svg/square/ar.svg`                                         |
+| `fi fi-cl` (4:3)                             | `pn-rect pn-cl` con `pennants/css/rect`                              |
+| `fi fi-cl fis` (1:1)                         | `pn-square pn-cl` con `pennants/css/square`                          |
+| `fib fi-cl` (solo fondo)                     | `pn-rect pn-cl` (todas las bases aplican `background-size: contain`) |
+| `flag-icons/flags/4x3/cl.svg`                | `pennants/svg/rect/cl.svg`                                           |
+| `flag-icons/flags/1x1/cl.svg`                | `pennants/svg/square/cl.svg`                                         |
 
 `.pn-rect` mide `1em` de alto y `1.333em` de ancho, la misma caja que `.fi`
 de flag-icons, así que la maquetación conserva sus espacios. Las formas rect y square agregan un
@@ -56,7 +56,7 @@ si tenías clases `fis`).
 
 ## Qué ganas
 
-- Archivos PNG y un sprite SVG, además de SVG y CSS.
+- Archivos PNG (y sprites SVG en los assets del release), además de SVG y CSS.
 - Módulos de dibujo por bandera, `loadFlag` con carga diferida, modo fetch, componentes de React
   y un Web Component.
 - Tipos de TypeScript para cada código (`PennantCode`), `getPennantName` con nombres traducidos,
@@ -68,5 +68,5 @@ Puedes usar los dos paquetes a la vez durante la migración; los prefijos (`fi` 
 chocan.
 
 ```html
-<span class="fi fi-ar"></span> <span class="pn pn-ar"></span>
+<span class="fi fi-cl"></span> <span class="pn pn-cl"></span>
 ```

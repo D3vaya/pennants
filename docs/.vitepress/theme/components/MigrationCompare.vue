@@ -2,7 +2,7 @@
 import { asset, flagAsset, siteName, useLang } from '../shared';
 
 const { lang } = useLang();
-const samples = ['ar', 'br', 'jp', 'gb-eng', 'eu', 'za'];
+const samples = ['cl', 'br', 'jp', 'gb-eng', 'eu', 'za'];
 </script>
 
 <template>

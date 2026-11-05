@@ -1,7 +1,7 @@
 /**
  * SVG sprite: every pennant as a `<symbol id="pn-<code>">`.
  *
- *   <svg><use href="pennants.svg#pn-ar"/></svg>
+ *   <svg><use href="pennants.svg#pn-cl"/></svg>
  */
 import { assertValidCode, unwrapSvg } from './pennant.ts';
 

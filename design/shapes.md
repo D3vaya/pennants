@@ -36,23 +36,23 @@ The border width scales with the canvas (`BORDER_WIDTH`): 3px on the 66px pennan
 ## Static assets
 
 - `svg/<shape>/<code>.svg`; `png/pennant/{1x,2x}/<code>.png` and `png/<shape>/1x/<code>.png`
-  for the other shapes (2x only for the pennant, to keep the package light).
-- Sprites: `sprite/<shape>.svg` (symbol ids `pn-<code>`; the file name selects the shape). Only
-  `sprite/pennant.svg` is published (`pennants/sprite`); the others are built by
-  `npm run generate` and offered as release assets.
-- Install budget: `check:package` fails when the unpacked package exceeds 10 MB.
+  for the other shapes (2x only for the pennant).
+- Sprites: `sprite/<shape>.svg` (symbol ids `pn-<code>`; the file name selects the shape).
+- npm ships `svg/` and `png/pennant/` only (since 0.2.0). Every PNG and sprite is zipped into
+  `pennants-assets-vX.Y.Z.zip` on the GitHub release (`release.yml`).
+- Install budget: `check:package` fails when the unpacked package exceeds 8 MB.
 - CSS: one file per shape to stay light: `pennants/css` (pennant), `pennants/css/rect`,
   `pennants/css/square`, `pennants/css/circle`, each with `.cdn` variant and `.d.ts`.
   Each shape has its own base class — `.pn` (pennant), `.pn-rect`, `.pn-square`, `.pn-circle` —
-  sized by the shape's aspect ratio, and flag rules are scoped to it (`.pn-circle.pn-ar`), so
+  sized by the shape's aspect ratio, and flag rules are scoped to it (`.pn-circle.pn-cl`), so
   several stylesheets mix on one page. One base class per element; `.pn-lg`/`.pn-2x`… work with
   all of them.
 - `pennantUrl(code, { shape, format, scale, base })`.
 
 ## Components
 
-- React: `<Pennant code shape="circle" />` (default `pennant`), `<PennantSvg art={ar} shape />`.
-- Element: `<pennant-flag code="ar" shape="circle">`.
+- React: `<Pennant code shape="circle" />` (default `pennant`), `<PennantSvg art={cl} shape />`.
+- Element: `<pennant-flag code="cl" shape="circle">`.
 - `pennantBox(size, shape)` respects the shape's aspect ratio.
 
 ## Budgets

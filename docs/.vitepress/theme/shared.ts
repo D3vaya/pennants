@@ -7,7 +7,7 @@ export type Lang = 'en' | 'es';
 const messages = {
   en: {
     search: 'Search',
-    searchPlaceholder: 'Code or name (ar, Japan, gb-eng)',
+    searchPlaceholder: 'Code or name (cl, Japan, gb-eng)',
     size: 'Size',
     count: (shown: number, total: number) => `${shown} of ${total} flags`,
     copy: 'Copy',
@@ -33,7 +33,7 @@ const messages = {
   },
   es: {
     search: 'Buscar',
-    searchPlaceholder: 'Código o nombre (ar, Japón, gb-eng)',
+    searchPlaceholder: 'Código o nombre (cl, Japón, gb-eng)',
     size: 'Tamaño',
     count: (shown: number, total: number) => `${shown} de ${total} banderas`,
     copy: 'Copiar',

@@ -2,7 +2,7 @@
 import { SHAPES } from 'pennants';
 import { currentShape, flagAsset, shapeBox, shapeLabels, useLang } from '../shared';
 
-withDefaults(defineProps<{ code?: string }>(), { code: 'ar' });
+withDefaults(defineProps<{ code?: string }>(), { code: 'cl' });
 const { lang, t } = useLang();
 </script>
 

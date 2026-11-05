@@ -47,6 +47,7 @@ const labels: Record<'en' | 'es', Labels> = {
       ['comparison', 'Comparison'],
       ['codes', 'Codes'],
       ['faq', 'FAQ & troubleshooting'],
+      ['changelog', 'Changelog & upgrading'],
     ],
   },
   es: {
@@ -65,6 +66,7 @@ const labels: Record<'en' | 'es', Labels> = {
       ['comparison', 'Comparación'],
       ['codes', 'Códigos'],
       ['faq', 'Preguntas frecuentes'],
+      ['changelog', 'Cambios y actualización'],
     ],
   },
 };
@@ -91,7 +93,7 @@ function themeFor(locale: 'en' | 'es'): DefaultTheme.Config {
       {
         text: `v${version}`,
         items: [
-          { text: 'Changelog', link: `${repo}/blob/main/CHANGELOG.md` },
+          { text: 'Changelog', link: guide('changelog') },
           { text: 'npm', link: 'https://www.npmjs.com/package/pennants' },
         ],
       },
@@ -157,7 +159,7 @@ export default defineConfig({
   srcExclude: ['**/README.md'],
   sitemap: { hostname: 'https://d3vaya.github.io/pennants/' },
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}svg/pennant/ar.svg` }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}svg/pennant/cl.svg` }],
     // All four stylesheets: base classes (pn, pn-rect, pn-square, pn-circle) compose on one page.
     ...['pennant', 'rect', 'square', 'circle'].map((shape): [string, Record<string, string>] => [
       'link',
@@ -179,7 +181,7 @@ export default defineConfig({
     },
   },
   themeConfig: {
-    logo: { src: '/svg/pennant/ar.svg', alt: '' },
+    logo: { src: '/svg/pennant/cl.svg', alt: '' },
     socialLinks: [
       { icon: 'github', link: repo },
       { icon: 'npm', link: 'https://www.npmjs.com/package/pennants' },

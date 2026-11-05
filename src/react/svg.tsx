@@ -8,7 +8,7 @@ import type { PennantCommonProps, PennantHtmlAttributes } from './shared.ts';
 /** Props of {@link PennantSvg}: shared props plus statically imported artwork. */
 export interface PennantSvgProps extends PennantHtmlAttributes, PennantCommonProps {
   /**
-   * Flag artwork, e.g. `import ar from 'pennants/art/1x1/ar'`. Use the `4x3`
+   * Flag artwork, e.g. `import cl from 'pennants/art/1x1/cl'`. Use the `4x3`
    * set for `shape="rect"` and `1x1` for the other shapes. Must be trusted.
    */
   art: FlagArt;
@@ -16,7 +16,7 @@ export interface PennantSvgProps extends PennantHtmlAttributes, PennantCommonPro
 
 /**
  * Synchronous flag from statically imported artwork:
- * `import ar from 'pennants/art/1x1/ar'` then `<PennantSvg art={ar} shape="circle" />`.
+ * `import cl from 'pennants/art/1x1/cl'` then `<PennantSvg art={cl} shape="circle" />`.
  * Uses only `useId`/`useMemo`, so it also renders in React Server Components.
  * Throws a `RangeError` for unknown shapes.
  */
