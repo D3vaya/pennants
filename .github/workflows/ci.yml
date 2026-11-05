@@ -186,12 +186,15 @@ jobs:
           for (const specifier of [
             'pennants/svg/pennant/ar.svg',
             'pennants/svg/rect/ar.svg',
-            'pennants/sprite',
+            'pennants/png/pennant/2x/ar.png',
             'pennants/css',
             'pennants/css/circle',
           ]) {
             assert.ok(existsSync(fileURLToPath(import.meta.resolve(specifier))), specifier);
           }
+          // Left out of the package since 0.2.0 (release assets instead).
+          assert.ok(!existsSync(fileURLToPath(import.meta.resolve('pennants/png/rect/1x/ar.png'))));
+          assert.throws(() => import.meta.resolve('pennants/sprite'), { code: 'ERR_PACKAGE_PATH_NOT_EXPORTED' });
 
           // No customElements in Node: registering is a no-op.
           assert.equal(definePennantElement(), undefined);
