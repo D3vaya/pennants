@@ -65,7 +65,8 @@ export function svgSize(
     return { width: String(round((size * width) / height)), height: String(size) };
   }
   const css = size ?? '1em';
-  const length = /^(\d*\.?\d+)([a-z]*)$/i.exec(css.trim());
+  // Unambiguous digits (no `\d*\.?\d+`): linear time on any input.
+  const length = /^(\d+(?:\.\d+)?|\.\d+)([a-z]*)$/i.exec(css.trim());
   return length
     ? { width: `${round((Number(length[1]) * width) / height)}${String(length[2])}`, height: css }
     : { height: css };
