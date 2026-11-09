@@ -117,7 +117,8 @@ export function toShape(value: unknown): PennantShape {
  */
 export function pennantUrl(code: string, options: PennantUrlOptions = {}): string {
   const { base = DEFAULT_CDN_BASE, format = 'svg', scale = 1, shape = 'pennant' } = options;
-  const root = base.replace(/\/+$/, '');
+  let root = base;
+  while (root.endsWith('/')) root = root.slice(0, -1); // a regex here backtracks on many '/'
   const normalized = toPennantCode(code);
   const folder = toShape(shape);
   if (format !== 'svg' && format !== 'png') {

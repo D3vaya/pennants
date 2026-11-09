@@ -70,15 +70,20 @@ committed.
 2. `npm version <patch|minor|major> --no-git-tag-version`, then
    `node scripts/bundle-budget.ts --json docs/data/bundle-sizes.json` and
    `node scripts/docs-readme-sizes.ts`: the version is inlined into the bundles, so their sizes
-   (and the CI snapshot check) move with it. On a minor or major bump, also update the
-   `pennants` range in `examples/*/package.json`, and add the release to
-   `docs/{en,es}/guide/changelog.md`.
+   (and the CI snapshot check) move with it. Update the version in the jsDelivr URLs of the
+   README and the docs (`test/docs-versions.test.ts` lists them and fails until you do). On a
+   minor or major bump, also update the `pennants` range in `examples/*/package.json` and
+   `e2e/readme/package.json`, and add the release to `docs/{en,es}/guide/changelog.md`.
 3. Open a pull request (`main` is protected and needs green checks), merge it, then
-   `git tag vX.Y.Z && git push origin vX.Y.Z` on the merged commit. The release workflow
-   verifies, publishes to npm with provenance and creates the GitHub release.
+   `git tag vX.Y.Z && git push origin vX.Y.Z` on the merged commit (only maintainers can push
+   `v*` tags).
+4. Approve the `npm` deployment in the Actions run. The release workflow verifies, publishes to
+   npm with provenance, creates the GitHub release, and then installs the new version from npm
+   and runs every README snippet against it (`e2e/readme`, job "README works from npm").
 
 Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC): npm
-trusts `release.yml` in `D3vaya/pennants`, so there is no npm token in the repository.
+trusts `release.yml` in `D3vaya/pennants`, environment `npm`, so there is no npm token in the
+repository and nothing is published without a maintainer's approval.
 
 By contributing you agree that your contributions are licensed under the MIT License and that
 you follow the [Code of Conduct](CODE_OF_CONDUCT.md).

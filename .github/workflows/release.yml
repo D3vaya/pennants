@@ -16,6 +16,11 @@ jobs:
     name: Publish to npm
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Needs a maintainer's approval (Settings → Environments → npm), and npm's
+    # trusted publisher only accepts tokens from this environment.
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/pennants/v/${{ github.ref_name }}
     permissions:
       contents: read
       id-token: write # npm trusted publishing (OIDC) and provenance
@@ -90,3 +95,40 @@ jobs:
             pennants-assets-*.zip
         env:
           GH_TOKEN: ${{ github.token }}
+
+  # A new user's first five minutes: install the published version from npm and
+  # run every README snippet in Node, tsc and Chromium (e2e/readme).
+  readme-e2e:
+    name: README works from npm
+    needs: [publish, github-release] # the e2e also checks the release zip
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: e2e/readme
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+
+      # The registry can take a minute to serve a new version everywhere.
+      - name: Wait for the version on npm
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          for _ in $(seq 30); do
+            npm view "pennants@${version}" version >/dev/null 2>&1 && exit 0
+            sleep 10
+          done
+          echo "::error::pennants@${version} is not on npm after 5 minutes"
+          exit 1
+
+      - run: npm install --no-audit --no-fund
+      - run: npm install --no-audit --no-fund --save-exact "pennants@${GITHUB_REF_NAME#v}"
+      - run: npx playwright install --with-deps chromium
+      - run: npm test

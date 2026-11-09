@@ -19,3 +19,5 @@ examples/*/next-env.d.ts
 examples/*/.svelte-kit/
 examples/*/.astro/
 examples/*/.angular/
+e2e/*/dist/
+e2e/*/test-results/

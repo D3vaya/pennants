@@ -4,6 +4,7 @@
 [![one flag](https://img.shields.io/badge/one_flag-1.2_kB_gzip-blue)](https://d3vaya.github.io/pennants/guide/performance)
 [![CI](https://github.com/D3vaya/pennants/actions/workflows/ci.yml/badge.svg)](https://github.com/D3vaya/pennants/actions/workflows/ci.yml)
 [![license](https://img.shields.io/github/license/D3vaya/pennants)](https://github.com/D3vaya/pennants/blob/main/LICENSE)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/D3vaya/pennants/badge)](https://scorecard.dev/viewer/?uri=github.com/D3vaya/pennants)
 
 Every flag, every shape, one API. 271 country flags (249 ISO 3166-1 countries plus regions and
 organizations) as pennants, the signature style, and as 4:3 rectangles, squares and circles.
@@ -65,7 +66,9 @@ const svg = await loadFlag('cl'); // or loadFlag('cl', { shape: 'rect' })
 getPennantName('de', 'es'); // 'Alemania'
 ```
 
-**React**: accessible name by default, SSR-safe.
+**React**: accessible name by default, SSR-safe. On the server `<Pennant>` renders a sized
+placeholder and draws the flag after hydration; pass `mode="img"` (or use `<PennantSvg>`) to have
+the flag in the server HTML.
 
 ```jsx
 import { Pennant } from 'pennants/react';
