@@ -13,6 +13,7 @@ export default tseslint.config(
       'src/generated/',
       'reference/',
       'examples/',
+      'e2e/',
       'docs/.vitepress/cache/',
       'docs/.vitepress/dist/',
       'docs/public/',

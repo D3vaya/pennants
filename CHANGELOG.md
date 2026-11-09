@@ -7,6 +7,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- README: explains what `<Pennant>` renders on the server and how to get the flag in the server
+  HTML (`mode="img"` or `<PennantSvg>`), and shows the OpenSSF Scorecard badge.
+
 ## [0.2.0] - 2026-11-05
 
 Smaller install: 1.96 MB packed / 7.56 MB unpacked, down from 2.81 MB / 9.31 MB.

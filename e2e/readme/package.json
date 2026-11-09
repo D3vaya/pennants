@@ -1,0 +1,28 @@
+{
+  "name": "pennants-e2e-readme",
+  "private": true,
+  "type": "module",
+  "description": "Follows the pennants README on npm step by step, as a new user would, and checks each step works.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4317 --strictPort",
+    "test:node": "node --test tests/node.test.mjs",
+    "test:types": "tsc --noEmit",
+    "test:browser": "playwright test",
+    "test": "npm run test:node && npm run test:types && npm run build && npm run test:browser"
+  },
+  "dependencies": {
+    "pennants": "^0.2.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7"
+  }
+}

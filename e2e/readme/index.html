@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pennants README check</title>
+  </head>
+  <body>
+    <h1>pennants README check</h1>
+
+    <h2>1. CSS classes</h2>
+    <section id="css">
+      <span class="pn pn-cl" role="img" aria-label="Chile"></span>
+    </section>
+
+    <h2>2. Image or CDN</h2>
+    <section id="cdn">
+      <img
+        src="https://cdn.jsdelivr.net/npm/pennants@__PENNANTS_VERSION__/svg/pennant/cl.svg"
+        width="33"
+        height="36"
+        alt="Chile"
+      />
+    </section>
+
+    <h2>3. One module per flag</h2>
+    <section id="module"></section>
+
+    <h2>4. Lazy, by code</h2>
+    <section id="lazy"></section>
+
+    <h2>5. React</h2>
+    <section id="react"></section>
+
+    <h2>6. Web Component</h2>
+    <section id="element">
+      <pennant-flag code="cl" size="32"></pennant-flag>
+    </section>
+
+    <h2>7. Shapes (CSS)</h2>
+    <section id="shapes">
+      <span class="pn pn-cl" role="img" aria-label="Chile pennant"></span>
+      <span class="pn-circle pn-cl" role="img" aria-label="Chile circle"></span>
+    </section>
+
+    <h2>8. Files in the package</h2>
+    <section id="files"></section>
+
+    <h2>9. En español</h2>
+    <section id="es"><span class="pn pn-cl"></span></section>
+
+    <pre id="status">running</pre>
+
+    <script type="module">
+      import 'pennants/element/register';
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

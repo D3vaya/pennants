@@ -26,3 +26,9 @@ examples/*/next-env.d.ts
 examples/*/.svelte-kit/
 examples/*/.astro/
 examples/*/.angular/
+
+e2e/*/node_modules/
+e2e/*/package-lock.json
+e2e/*/dist/
+e2e/*/test-results/
+e2e/*/playwright-report/
