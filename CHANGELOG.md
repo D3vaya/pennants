@@ -7,6 +7,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- `pennantUrl` (`base`) and the React `size` prop no longer use regular expressions that backtrack
+  quadratically on long inputs (CodeQL `js/polynomial-redos`).
+
 ### Changed
 
 - README: explains what `<Pennant>` renders on the server and how to get the flag in the server
